@@ -9,6 +9,12 @@ project(KuGouApp VERSION 1.0 LANGUAGES CXX
 find_package(Qt6 REQUIRED COMPONENTS Widgets StateMachine Core Network Multimedia
         Core5Compat Sql Concurrent Gui)
 
+# 设置资源文件路径宏
+file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/Res_Qrc/Res" RESOURCE_DIR_PATH)
+add_definitions(-DRESOURCE_DIR=\"${RESOURCE_DIR_PATH}\")
+
+# message(STATUS "RESOURCE_DIR_PATH: ${RESOURCE_DIR_PATH}")
+
 file(GLOB QRC_FILE Res_Qrc/*.qrc)
 
 if (WIN32)
