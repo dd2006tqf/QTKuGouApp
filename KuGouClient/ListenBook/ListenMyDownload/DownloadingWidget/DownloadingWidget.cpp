@@ -64,7 +64,7 @@ void DownloadingWidget::initUi()
     ui->downloading_pause_toolButton->setIcon(
         QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/stop-gray.svg"))); ///< 设置暂停按钮图标
     ui->downloading_clear_toolButton->setIcon(
-        QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/delete-black.svg"))); ///< 设置清除按钮图标
+        QIcon(QString(RESOURCE_DIR) + "/menuIcon/delete-black.svg")); ///< 设置清除按钮图标
 }
 
 /**

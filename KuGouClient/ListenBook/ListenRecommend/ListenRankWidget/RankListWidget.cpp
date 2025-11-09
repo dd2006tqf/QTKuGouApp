@@ -16,14 +16,15 @@
  */
 RankListWidget::RankListWidget(QWidget *parent)
     : QWidget(parent)
-    , ui(new Ui::RankListWidget)
+      , ui(new Ui::RankListWidget)
 {
-    ui->setupUi(this);                                   ///< 初始化 UI
-    ui ->desc_label ->setFont(QFont("TaiwanPearl", 10 ));
-    ui ->info_label ->setFont(QFont("TaiwanPearl", 9 ));
+    ui->setupUi(this); ///< 初始化 UI
+    ui->desc_label->setFont(QFont("TaiwanPearl", 10));
+    ui->info_label->setFont(QFont("TaiwanPearl", 9));
     ui->desc_label->setStyleSheet(QStringLiteral("color: black; ")); ///< 设置描述标签默认颜色
-    ui->fire_label->setStyleSheet(QStringLiteral("border-image: url(\":/ListenBook/Res/listenbook/fire.svg\");")); ///< 设置火焰图标
-    ui->info_label->setStyleSheet(QStringLiteral("color: gray;")); ///< 设置信息标签颜色
+    ui->fire_label->setStyleSheet(
+        QStringLiteral("border-image: url(\"RESOURCE_DIR/listenbook/fire.svg\");")); ///< 设置火焰图标
+    ui->info_label->setStyleSheet(QStringLiteral("color: gray;"));                   ///< 设置信息标签颜色
 }
 
 /**
@@ -41,12 +42,12 @@ RankListWidget::~RankListWidget()
  */
 void RankListWidget::setDescText(const QString &text) const
 {
-    const auto font = ui->desc_label->font();            ///< 获取字体
-    const QFontMetrics fm(font);                         ///< 创建字体测量工具
+    const auto font = ui->desc_label->font(); ///< 获取字体
+    const QFontMetrics fm(font); ///< 创建字体测量工具
     const QString elidedText = fm.elidedText(text, Qt::ElideRight, this->width() - 110); ///< 省略文本
-    ui->desc_label->setText(elidedText);                 ///< 设置描述标签文本
+    ui->desc_label->setText(elidedText); ///< 设置描述标签文本
     auto desc_label_toolTip = new ElaToolTip(ui->desc_label); ///< 创建工具提示
-    desc_label_toolTip->setToolTip(text);                ///< 设置工具提示内容
+    desc_label_toolTip->setToolTip(text); ///< 设置工具提示内容
 }
 
 /**
@@ -56,10 +57,11 @@ void RankListWidget::setDescText(const QString &text) const
  */
 void RankListWidget::setInfoText(const QString &text) const
 {
-    const auto font = ui->info_label->font();            ///< 获取字体
-    const QFontMetrics fm(font);                         ///< 创建字体测量工具
-    const QString elidedText = fm.elidedText(text, Qt::ElideRight, ui->info_label->width()); ///< 省略文本
-    ui->info_label->setText(elidedText);                 ///< 设置信息标签文本
+    const auto font = ui->info_label->font(); ///< 获取字体
+    const QFontMetrics fm(font);              ///< 创建字体测量工具
+    const QString elidedText = fm.elidedText(text, Qt::ElideRight, ui->info_label->width());
+    ///< 省略文本
+    ui->info_label->setText(elidedText); ///< 设置信息标签文本
 }
 
 /**
@@ -68,7 +70,8 @@ void RankListWidget::setInfoText(const QString &text) const
  */
 void RankListWidget::setCoverImg(const QString &path) const
 {
-    ui->rank_cover_label->setStyleSheet(QString("border-radius: 5px;border-image: url(%1);").arg(path)); ///< 设置封面图片和圆角
+    ui->rank_cover_label->setStyleSheet(
+        QString("border-radius: 5px;border-image: url(%1);").arg(path)); ///< 设置封面图片和圆角
 }
 
 /**
@@ -86,7 +89,7 @@ void RankListWidget::setRankMedal(const QString &path) const
  */
 void RankListWidget::setRankNumber(const QString &number) const
 {
-    ui->rank_number_label->setText(number);              ///< 设置排名文本
+    ui->rank_number_label->setText(number);                                        ///< 设置排名文本
     ui->rank_number_label->setStyleSheet(QString("font-size: 15px;color: gray;")); ///< 设置排名样式
 }
 
@@ -96,7 +99,7 @@ void RankListWidget::setRankNumber(const QString &number) const
  */
 void RankListWidget::enterEvent(QEnterEvent *event)
 {
-    QWidget::enterEvent(event);                          ///< 调用父类进入事件
+    QWidget::enterEvent(event);                                       ///< 调用父类进入事件
     ui->desc_label->setStyleSheet(QStringLiteral("color: #26A1FF;")); ///< 设置悬停颜色
 }
 
@@ -106,6 +109,6 @@ void RankListWidget::enterEvent(QEnterEvent *event)
  */
 void RankListWidget::leaveEvent(QEvent *event)
 {
-    QWidget::leaveEvent(event);                          ///< 调用父类离开事件
+    QWidget::leaveEvent(event);                                     ///< 调用父类离开事件
     ui->desc_label->setStyleSheet(QStringLiteral("color: black;")); ///< 恢复默认颜色
 }

@@ -22,21 +22,18 @@
  */
 UploadingSong::UploadingSong(QWidget *parent)
     : QWidget(parent)
-    , ui(new Ui::UploadingSong)
+      , ui(new Ui::UploadingSong)
 {
     ui->setupUi(this);
     QFile file(GET_CURRENT_DIR + QStringLiteral("/uploading.css")); ///< 加载样式表
-    if (file.open(QIODevice::ReadOnly))
-    {
-        this->setStyleSheet(file.readAll());             ///< 应用样式表
-    }
-    else
-    {
+    if (file.open(QIODevice::ReadOnly)) {
+        this->setStyleSheet(file.readAll()); ///< 应用样式表
+    } else {
         qDebug() << "样式表打开失败QAQ";
-        STREAM_ERROR() << "样式表打开失败QAQ";          ///< 记录错误日志
+        STREAM_ERROR() << "样式表打开失败QAQ"; ///< 记录错误日志
         return;
     }
-    initUi();                                            ///< 初始化界面
+    initUi(); ///< 初始化界面
 }
 
 /**
@@ -44,7 +41,7 @@ UploadingSong::UploadingSong(QWidget *parent)
  */
 UploadingSong::~UploadingSong()
 {
-    delete ui;                                           ///< 删除 UI
+    delete ui; ///< 删除 UI
 }
 
 /**
@@ -54,10 +51,15 @@ UploadingSong::~UploadingSong()
 void UploadingSong::initUi()
 {
     ui->title_widget->setStyleSheet("font-family: 'TaiwanPearl';font-size: 13px;");
-    ui->cloud_upload_toolButton->setIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/upload-white.svg"))); ///< 设置上传按钮图标
-    ui->cloud_start_toolButton->setIcon(QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/play3-gray.svg"))); ///< 设置开始按钮图标
-    ui->cloud_pause_toolButton->setIcon(QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/stop-gray.svg"))); ///< 设置暂停按钮图标
-    ui->cloud_clear_toolButton->setIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/delete-gray.svg"))); ///< 设置清除按钮图标
+    ui->cloud_upload_toolButton->setIcon(
+        QIcon(QString(RESOURCE_DIR) + "/menuIcon/upload-white.svg"));
+    ///< 设置上传按钮图标
+    ui->cloud_start_toolButton->setIcon(
+        QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/play3-gray.svg"))); ///< 设置开始按钮图标
+    ui->cloud_pause_toolButton->setIcon(
+        QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/stop-gray.svg"))); ///< 设置暂停按钮图标
+    ui->cloud_clear_toolButton->setIcon(QIcon(QString(RESOURCE_DIR) + "/menuIcon/delete-gray.svg"));
+    ///< 设置清除按钮图标
 }
 
 /**
@@ -66,9 +68,11 @@ void UploadingSong::initUi()
  */
 void UploadingSong::on_cloud_upload_toolButton_clicked()
 {
-    ElaMessageBar::information(ElaMessageBarType::BottomRight, "Info",
+    ElaMessageBar::information(ElaMessageBarType::BottomRight,
+                               "Info",
                                QString("%1 功能暂未实现 敬请期待").arg(ui->cloud_upload_toolButton->text()),
-                               1000, this->window());    ///< 显示提示
+                               1000,
+                               this->window()); ///< 显示提示
 }
 
 /**
@@ -77,5 +81,5 @@ void UploadingSong::on_cloud_upload_toolButton_clicked()
  */
 void UploadingSong::on_search_pushButton_clicked()
 {
-    emit find_more_music();                              ///< 触发搜索信号
+    emit find_more_music(); ///< 触发搜索信号
 }

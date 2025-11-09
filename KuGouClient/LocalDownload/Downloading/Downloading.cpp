@@ -23,21 +23,18 @@
  */
 Downloading::Downloading(QWidget *parent)
     : QWidget(parent)
-    , ui(new Ui::Downloading)
+      , ui(new Ui::Downloading)
 {
-    ui->setupUi(this);                                   ///< 初始化 UI
+    ui->setupUi(this);                                                ///< 初始化 UI
     QFile file(GET_CURRENT_DIR + QStringLiteral("/downloading.css")); ///< 加载样式表
-    if (file.open(QIODevice::ReadOnly))
-    {
-        this->setStyleSheet(file.readAll());             ///< 应用样式表
-    }
-    else
-    {
+    if (file.open(QIODevice::ReadOnly)) {
+        this->setStyleSheet(file.readAll()); ///< 应用样式表
+    } else {
         qDebug() << "样式表打开失败QAQ";
-        STREAM_ERROR() << "样式表打开失败QAQ";          ///< 记录错误日志
+        STREAM_ERROR() << "样式表打开失败QAQ"; ///< 记录错误日志
         return;
     }
-    initUi();                                            ///< 初始化界面
+    initUi(); ///< 初始化界面
 }
 
 /**
@@ -45,7 +42,7 @@ Downloading::Downloading(QWidget *parent)
  */
 Downloading::~Downloading()
 {
-    delete ui;                                           ///< 删除 UI
+    delete ui; ///< 删除 UI
 }
 
 /**
@@ -56,11 +53,13 @@ void Downloading::initUi()
 {
     ui->title_widget->setStyleSheet("font-family: 'TaiwanPearl';font-size: 13px;");
     auto setting_toolButton_toolTip = new ElaToolTip(ui->setting_toolButton); ///< 创建设置按钮工具提示
-    setting_toolButton_toolTip->setToolTip(QStringLiteral("下载设置")); ///< 设置下载设置提示
-    ui->start_toolButton->setIcon(QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/play3-white.svg"))); ///< 设置开始按钮图标
-    ui->stop_toolButton->setIcon(QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/stop-gray.svg"))); ///< 设置停止按钮图标
-    ui->clear_toolButton->setIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/delete-black.svg"))); ///< 设置清除按钮图标
-
+    setting_toolButton_toolTip->setToolTip(QStringLiteral("下载设置"));           ///< 设置下载设置提示
+    ui->start_toolButton->setIcon(QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/play3-white.svg")));
+    ///< 设置开始按钮图标
+    ui->stop_toolButton->setIcon(QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/stop-gray.svg")));
+    ///< 设置停止按钮图标
+    ui->clear_toolButton->setIcon(QIcon(QString(RESOURCE_DIR) + "/menuIcon/delete-black.svg"));
+    ///< 设置清除按钮图标
 }
 
 /**
@@ -69,7 +68,11 @@ void Downloading::initUi()
  */
 void Downloading::on_start_toolButton_clicked()
 {
-    ElaMessageBar::warning(ElaMessageBarType::BottomRight, "Warning", "暂无正在下载音乐", 1000, this->window()); ///< 显示警告
+    ElaMessageBar::warning(ElaMessageBarType::BottomRight,
+                           "Warning",
+                           "暂无正在下载音乐",
+                           1000,
+                           this->window()); ///< 显示警告
 }
 
 /**
@@ -78,7 +81,11 @@ void Downloading::on_start_toolButton_clicked()
  */
 void Downloading::on_stop_toolButton_clicked()
 {
-    ElaMessageBar::warning(ElaMessageBarType::BottomRight, "Warning", "暂无正在下载音乐", 1000, this->window()); ///< 显示警告
+    ElaMessageBar::warning(ElaMessageBarType::BottomRight,
+                           "Warning",
+                           "暂无正在下载音乐",
+                           1000,
+                           this->window()); ///< 显示警告
 }
 
 /**
@@ -87,7 +94,11 @@ void Downloading::on_stop_toolButton_clicked()
  */
 void Downloading::on_clear_toolButton_clicked()
 {
-    ElaMessageBar::warning(ElaMessageBarType::BottomRight, "Warning", "暂无正在下载音乐", 1000, this->window()); ///< 显示警告
+    ElaMessageBar::warning(ElaMessageBarType::BottomRight,
+                           "Warning",
+                           "暂无正在下载音乐",
+                           1000,
+                           this->window()); ///< 显示警告
 }
 
 /**
@@ -96,7 +107,12 @@ void Downloading::on_clear_toolButton_clicked()
  */
 void Downloading::on_setting_toolButton_clicked()
 {
-    ElaMessageBar::information(ElaMessageBarType::BottomRight, "Info", "下载设置 功能暂未实现 敬请期待", 1000, this->window()); ///< 显示提示
+    ElaMessageBar::information(ElaMessageBarType::BottomRight,
+                               "Info",
+                               "下载设置 功能暂未实现 敬请期待",
+                               1000,
+                               this->window());
+    ///< 显示提示
 }
 
 /**
@@ -105,5 +121,5 @@ void Downloading::on_setting_toolButton_clicked()
  */
 void Downloading::on_search_pushButton_clicked()
 {
-    emit find_more_music();                              ///< 触发搜索信号
+    emit find_more_music(); ///< 触发搜索信号
 }

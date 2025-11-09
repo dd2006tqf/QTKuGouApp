@@ -90,13 +90,13 @@ void ListenRecommend::initUi()
 
     ui->all_classify_toolButton->setHoverFontColor(QColor(QStringLiteral("#26A1FF"))); ///< 设置悬停字体颜色
     ui->all_classify_toolButton->setIcon(
-        QIcon(QStringLiteral(":/ListenBook/Res/listenbook/down-black.svg"))); ///< 设置默认图标
+        QIcon(QString(RESOURCE_DIR) + "/listenbook/down-black.svg")); ///< 设置默认图标
     ui->all_classify_toolButton->setEnterIcon(
-        QIcon(QStringLiteral(":/ListenBook/Res/listenbook/down-blue.svg"))); ///< 设置悬停图标
+        QIcon(QString(RESOURCE_DIR) + "/listenbook/down-blue.svg")); ///< 设置悬停图标
     ui->all_classify_toolButton->setLeaveIcon(
-        QIcon(QStringLiteral(":/ListenBook/Res/listenbook/down-black.svg"))); ///< 设置离开图标
-    ui->all_classify_toolButton->setIconSize(QSize(10, 10));                  ///< 设置图标大小
-    ui->all_classify_toolButton->setApproach(true);                           ///< 启用接近效果
+        QIcon(QString(RESOURCE_DIR) + "/listenbook/down-black.svg")); ///< 设置离开图标
+    ui->all_classify_toolButton->setIconSize(QSize(10, 10));          ///< 设置图标大小
+    ui->all_classify_toolButton->setApproach(true);                   ///< 启用接近效果
 
     this->m_refreshTimer->setSingleShot(true); ///< 设置定时器单次触发
 
@@ -273,7 +273,9 @@ void ListenRecommend::initDailyRecommendGalleryWidget()
                                  const auto it = new GalleryPhotoWidget(
                                      ui->daily_recommend_widget->getGalleryWidget()); ///< 创建照片卡片
                                  it->setCoverPix(
-                                     QString(":/BlockCover/Res/blockcover/music-block-cover%1.jpg").
+                                     QString(
+                                         QString(RESOURCE_DIR) +
+                                         "/blockcover/music-block-cover%1.jpg").
                                      arg(10 + idx[0]));                                    ///< 设置封面
                                  it->setTitleText(this->m_galleryVector[0][idx[0]].first); ///< 设置标题
                                  it->setPopularText(this->m_galleryVector[0][idx[0]].second);
@@ -346,7 +348,9 @@ void ListenRecommend::initOtherGalleryWidget(const QString &jsonFileName,
                                  const auto it = new
                                      GalleryPhotoWidget(gallery->getGalleryWidget()); ///< 创建照片卡片
                                  it->setCoverPix(
-                                     QString(":/BlockCover/Res/blockcover/music-block-cover%1.jpg").
+                                     QString(
+                                         QString(RESOURCE_DIR) +
+                                         "/blockcover/music-block-cover%1.jpg").
                                      arg(10 + cnt * 40 + idx[cnt])); ///< 设置封面
                                  it->setTitleText(this->m_galleryVector[cnt][idx[cnt]].first);
                                  ///< 设置标题
@@ -369,11 +373,11 @@ void ListenRecommend::on_all_classify_toolButton_clicked()
 {
     if (ui->all_classify_toolButton->isChecked()) {
         ui->all_classify_toolButton->setIcon(
-            QIcon(QStringLiteral(":/ListenBook/Res/listenbook/up-gray.svg"))); ///< 设置向上图标
+            QIcon(QString(RESOURCE_DIR) + "/listenbook/up-gray.svg")); ///< 设置向上图标
         ui->all_classify_toolButton->setEnterIcon(
-            QIcon(QStringLiteral(":/ListenBook/Res/listenbook/up-blue.svg")));
+            QIcon(QString(RESOURCE_DIR) + "/listenbook/up-blue.svg"));
         ui->all_classify_toolButton->setLeaveIcon(
-            QIcon(QStringLiteral(":/ListenBook/Res/listenbook/up-gray.svg")));
+            QIcon(QString(RESOURCE_DIR) + "/listenbook/up-gray.svg"));
         const QPoint globalPos = ui->all_classify_toolButton->mapToGlobal(
             QPoint(ui->all_classify_toolButton->width() - m_menu->width(),
                    ui->all_classify_toolButton->height() + 10));       ///< 计算菜单位置
@@ -385,21 +389,21 @@ void ListenRecommend::on_all_classify_toolButton_clicked()
                 [this]() {
                     ui->all_classify_toolButton->setChecked(false);
                     ui->all_classify_toolButton->setIcon(
-                        QIcon(QStringLiteral(":/ListenBook/Res/listenbook/down-gray.svg")));
+                        QIcon(QString(RESOURCE_DIR) + "/listenbook/down-gray.svg"));
                     ///< 恢复向下图标
                     ui->all_classify_toolButton->setEnterIcon(
-                        QIcon(QStringLiteral(":/ListenBook/Res/listenbook/down-blue.svg")));
+                        QIcon(QString(RESOURCE_DIR) + "/listenbook/down-blue.svg"));
                     ui->all_classify_toolButton->setLeaveIcon(
-                        QIcon(QStringLiteral(":/ListenBook/Res/listenbook/down-gray.svg")));
+                        QIcon(QString(RESOURCE_DIR) + "/listenbook/down-gray.svg"));
                 });
         m_menu->exec(globalPos); ///< 显示菜单
     } else {
         ui->all_classify_toolButton->setIcon(
-            QIcon(QStringLiteral(":/ListenBook/Res/listenbook/down-gray.svg"))); ///< 设置向下图标
+            QIcon(QString(RESOURCE_DIR) + "/listenbook/down-gray.svg")); ///< 设置向下图标
         ui->all_classify_toolButton->setEnterIcon(
-            QIcon(QStringLiteral(":/ListenBook/Res/listenbook/down-blue.svg")));
+            QIcon(QString(RESOURCE_DIR) + "/listenbook/down-blue.svg"));
         ui->all_classify_toolButton->setLeaveIcon(
-            QIcon(QStringLiteral(":/ListenBook/Res/listenbook/down-gray.svg")));
+            QIcon(QString(RESOURCE_DIR) + "/listenbook/down-gray.svg"));
     }
 }
 
@@ -424,7 +428,7 @@ void ListenRecommend::onRefreshTimeout()
     const auto cnt = refreshObj->getCnt(); ///< 获取计数
     for (const auto &it : refreshObj->getGalleryWidget()->getWidgets()) {
         it->setCoverPix(
-            QString(":/BlockCover/Res/blockcover/music-block-cover%1.jpg").arg(
+            QString(QString(RESOURCE_DIR) + "/blockcover/music-block-cover%1.jpg").arg(
                 10 + cnt * 40 + idx[cnt] % 40));                                     ///< 更新封面
         it->setTitleText(this->m_galleryVector[cnt][idx[cnt]].first);                ///< 更新标题
         it->setPopularText(this->m_galleryVector[cnt][idx[cnt]].second);             ///< 更新流行度

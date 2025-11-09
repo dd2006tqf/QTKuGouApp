@@ -249,9 +249,9 @@ void LocalSong::initUi()
 
     auto searchLineEdit = new MySearchLineEdit(this);
     this->m_searchAction->
-          setIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/search-black.svg"))); ///< 设置搜索动作图标
-    this->m_searchAction->setIconVisibleInMenu(false);                                ///< 仅显示图标
-    searchLineEdit->addAction(this->m_searchAction, QLineEdit::TrailingPosition);     ///< 添加搜索动作
+          setIcon(QIcon(QString(RESOURCE_DIR) + "/menuIcon/search-black.svg"));   ///< 设置搜索动作图标
+    this->m_searchAction->setIconVisibleInMenu(false);                            ///< 仅显示图标
+    searchLineEdit->addAction(this->m_searchAction, QLineEdit::TrailingPosition); ///< 添加搜索动作
     searchLineEdit->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     searchLineEdit->setFixedWidth(30);
     searchLineEdit->setMaxWidth(200); ///< 设置搜索框最大宽度
@@ -265,7 +265,7 @@ void LocalSong::initUi()
     ui->local_search_suggest_box->removeDefaultTrailAction();
     searchLineEdit->setPlaceholderText("");
     QToolButton *searchButton = nullptr; ///< 搜索按钮
-    foreach(QToolButton *btn, searchLineEdit->findChildren<QToolButton*>()) {
+    foreach(QToolButton * btn, searchLineEdit->findChildren<QToolButton*>()) {
         if (btn->defaultAction() == this->m_searchAction) {
             searchButton = btn;                                          ///< 找到搜索按钮
             auto search_lineEdit_toolTip = new ElaToolTip(searchButton); ///< 创建搜索按钮工具提示
@@ -489,7 +489,10 @@ void LocalSong::startSerialLoading()
         return;
 
     // 如果已经在加载中，停止当前加载
-    if (m_loadTimer && m_loadTimer->isActive()) {
+    if (m_loadTimer && m_loadTimer
+        ->
+        isActive()
+    ) {
         m_loadTimer->stop();
     }
 
@@ -512,7 +515,10 @@ void LocalSong::startSerialLoading()
 
 void LocalSong::finishLoading()
 {
-    if (m_loadTimer && m_loadTimer->isActive()) {
+    if (m_loadTimer && m_loadTimer
+        ->
+        isActive()
+    ) {
         m_loadTimer->stop();
     }
 
@@ -1364,10 +1370,10 @@ bool LocalSong::eventFilter(QObject *watched, QEvent *event)
     if (button && button->defaultAction() == this->m_searchAction) {
         if (event->type() == QEvent::Enter) {
             this->m_searchAction->setIcon(
-                QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/search-blue.svg"))); ///< 设置蓝色图标
+                QIcon(QString(RESOURCE_DIR) + "/menuIcon/search-blue.svg")); ///< 设置蓝色图标
         } else if (event->type() == QEvent::Leave) {
             this->m_searchAction->setIcon(
-                QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/search-black.svg")));
+                QIcon(QString(RESOURCE_DIR) + "/menuIcon/search-black.svg"));
             ///< 设置黑色图标
         }
     }

@@ -40,7 +40,7 @@
  * @param kind 推荐界面类型
  * @param parent 父控件指针，默认为 nullptr
  */
-TableWidget::TableWidget(const QString &title, KIND kind, QWidget *parent)
+TableWidget::TableWidget(const QString& title, KIND kind, QWidget* parent)
     : QWidget(parent), m_titleLab(new QLabel(title, this)) ///< 初始化标题标签
       , m_kind(kind)                                       ///< 初始化界面类型
       , m_tabHLayout(new QHBoxLayout)                      ///< 初始化标题栏布局
@@ -57,36 +57,44 @@ TableWidget::TableWidget(const QString &title, KIND kind, QWidget *parent)
     initSource(); ///< 加载资源
 
     this->m_adjust_ToolBtn->hide(); ///< 初始隐藏调整按钮
-    if (kind == KIND::ItemList) {
+    if (kind == KIND::ItemList)
+    {
         connect(this->m_adjust_ToolBtn,
                 &QToolButton::clicked,
                 this,
-                [this] {
+                [this]
+                {
                     emit hideTitle();
                 }); ///< 连接调整按钮隐藏标题信号
-    } else if (kind == KIND::BlockList) {
+    }
+    else if (kind == KIND::BlockList)
+    {
         connect(this->m_adjust_ToolBtn,
                 &QToolButton::clicked,
                 this,
-                [this] {
+                [this]
+                {
                     // 第一次调用时固定高度（防止动画导致布局抖动）
-                    if (m_gridContainer->maximumHeight() != m_gridContainer->sizeHint().height()) {
+                    if (m_gridContainer->maximumHeight() != m_gridContainer->sizeHint().height())
+                    {
                         m_gridContainer->setFixedHeight(m_gridContainer->sizeHint().height());
                     }
 
                     // 添加透明度效果
-                    if (!m_gridContainer->graphicsEffect()) {
-                        auto *opacityEffect = new QGraphicsOpacityEffect(m_gridContainer);
+                    if (!m_gridContainer->graphicsEffect())
+                    {
+                        auto* opacityEffect = new QGraphicsOpacityEffect(m_gridContainer);
                         opacityEffect->setOpacity(1.0);
                         m_gridContainer->setGraphicsEffect(opacityEffect);
                     }
 
-                    auto *opacityEffect = qobject_cast<QGraphicsOpacityEffect *>(
+                    auto* opacityEffect = qobject_cast<QGraphicsOpacityEffect*>(
                         m_gridContainer->graphicsEffect());
                     bool expanding = !m_gridContainer->isVisible();
 
                     // 展开前先完全透明
-                    if (expanding) {
+                    if (expanding)
+                    {
                         opacityEffect->setOpacity(0.0);
                         m_gridContainer->show();
                     }
@@ -95,21 +103,24 @@ TableWidget::TableWidget(const QString &title, KIND kind, QWidget *parent)
                     qreal endOpacity = expanding ? 1.0 : 0.0;
 
                     // 透明度动画
-                    auto *opacityAnim = new QPropertyAnimation(opacityEffect, "opacity");
+                    auto* opacityAnim = new QPropertyAnimation(opacityEffect, "opacity");
                     opacityAnim->setDuration(250);
                     opacityAnim->setStartValue(startOpacity);
                     opacityAnim->setEndValue(endOpacity);
                     opacityAnim->setEasingCurve(QEasingCurve::InOutQuad);
 
                     // 缩放动画（让收回有点缩小感）
-                    auto *scaleAnim = new QPropertyAnimation(m_gridContainer, "geometry");
+                    auto* scaleAnim = new QPropertyAnimation(m_gridContainer, "geometry");
                     scaleAnim->setDuration(250);
                     QRect geo = m_gridContainer->geometry();
-                    if (expanding) {
+                    if (expanding)
+                    {
                         scaleAnim->setStartValue(
                             QRect(geo.x(), geo.y() + 10, geo.width(), geo.height() - 10));
                         scaleAnim->setEndValue(geo);
-                    } else {
+                    }
+                    else
+                    {
                         scaleAnim->setStartValue(geo);
                         scaleAnim->setEndValue(QRect(geo.x(),
                                                      geo.y() + 10,
@@ -122,15 +133,17 @@ TableWidget::TableWidget(const QString &title, KIND kind, QWidget *parent)
                     connect(opacityAnim,
                             &QPropertyAnimation::valueChanged,
                             this,
-                            [=](const QVariant &value) {
+                            [=](const QVariant& value)
+                            {
                                 if (!expanding && value.toReal() <= 0.05 && m_gridContainer->
-                                    isVisible()) {
+                                    isVisible())
+                                {
                                     m_gridContainer->hide();
                                 }
                             });
 
                     // 同步执行
-                    auto *group = new QParallelAnimationGroup(this);
+                    auto* group = new QParallelAnimationGroup(this);
                     group->addAnimation(opacityAnim);
                     group->addAnimation(scaleAnim);
 
@@ -138,7 +151,8 @@ TableWidget::TableWidget(const QString &title, KIND kind, QWidget *parent)
                     connect(group,
                             &QParallelAnimationGroup::finished,
                             this,
-                            [=] {
+                            [=]
+                            {
                                 group->deleteLater();
                             });
 
@@ -149,7 +163,8 @@ TableWidget::TableWidget(const QString &title, KIND kind, QWidget *parent)
     connect(this,
             &TableWidget::gridChange,
             this,
-            [this](const int &len) {
+            [this](const int& len)
+            {
                 onGridChange(len);
             }); ///< 连接网格列数变化信号
 
@@ -168,7 +183,7 @@ TableWidget::TableWidget(const QString &title, KIND kind, QWidget *parent)
  * @param ev 绘制事件
  * @note 绘制控件背景
  */
-void TableWidget::paintEvent(QPaintEvent *ev)
+void TableWidget::paintEvent(QPaintEvent* ev)
 {
     QWidget::paintEvent(ev);
     QStyleOption opt;
@@ -182,7 +197,7 @@ void TableWidget::paintEvent(QPaintEvent *ev)
  * @param ev 进入事件
  * @note 显示调整按钮和分隔线
  */
-void TableWidget::enterEvent(QEnterEvent *ev)
+void TableWidget::enterEvent(QEnterEvent* ev)
 {
     this->m_adjust_ToolBtn->show(); ///< 显示调整按钮
     this->line1->show();            ///< 显示分隔线
@@ -193,7 +208,7 @@ void TableWidget::enterEvent(QEnterEvent *ev)
  * @param ev 离开事件
  * @note 隐藏调整按钮和分隔线
  */
-void TableWidget::leaveEvent(QEvent *ev)
+void TableWidget::leaveEvent(QEvent* ev)
 {
     this->m_adjust_ToolBtn->hide(); ///< 隐藏调整按钮
     this->line1->hide();            ///< 隐藏分隔线
@@ -204,22 +219,26 @@ void TableWidget::leaveEvent(QEvent *ev)
  * @param event 调整大小事件
  * @note 调整网格布局并更新列宽
  */
-void TableWidget::resizeEvent(QResizeEvent *event)
+void TableWidget::resizeEvent(QResizeEvent* event)
 {
     QWidget::resizeEvent(event);
     // qDebug() << "this->width : " << this->width();   ///<
     // 未使用，保留用于调试
     emit gridChange(this->width()); ///< 触发网格列数变化信号
-    if (this->m_kind == KIND::ItemList) {
-        if (!this->window()) {
+    if (this->m_kind == KIND::ItemList)
+    {
+        if (!this->window())
+        {
             qWarning() << "无法获取顶级窗口！";
             STREAM_WARN() << "无法获取顶级窗口！"; ///< 记录错误日志
             return;
         }
         int topLevelWidth = this->window()->width();
         auto average = (topLevelWidth - 255) / 3; ///< 计算平均列宽
-        for (int i = 0; i < 3; ++i) {
-            for (int j = 0; j < 3; ++j) {
+        for (int i = 0; i < 3; ++i)
+        {
+            for (int j = 0; j < 3; ++j)
+            {
                 this->m_gridLayout->itemAtPosition(i, j)
                     ->widget()
                     ->setFixedWidth(average); ///< 设置推荐项宽度
@@ -233,7 +252,7 @@ void TableWidget::resizeEvent(QResizeEvent *event)
  * @param event 鼠标事件
  * @note 忽略事件
  */
-void TableWidget::mousePressEvent(QMouseEvent *event)
+void TableWidget::mousePressEvent(QMouseEvent* event)
 {
     event->ignore(); ///< 忽略事件
 }
@@ -243,7 +262,7 @@ void TableWidget::mousePressEvent(QMouseEvent *event)
  * @param event 鼠标事件
  * @note 忽略事件
  */
-void TableWidget::mouseReleaseEvent(QMouseEvent *event)
+void TableWidget::mouseReleaseEvent(QMouseEvent* event)
 {
     event->ignore(); ///< 忽略事件
 }
@@ -253,7 +272,7 @@ void TableWidget::mouseReleaseEvent(QMouseEvent *event)
  * @param event 鼠标事件
  * @note 忽略事件
  */
-void TableWidget::mouseDoubleClickEvent(QMouseEvent *event)
+void TableWidget::mouseDoubleClickEvent(QMouseEvent* event)
 {
     event->ignore(); ///< 忽略事件
 }
@@ -265,10 +284,12 @@ void TableWidget::mouseDoubleClickEvent(QMouseEvent *event)
  * @return 是否处理事件
  * @note 处理更多标签的鼠标点击事件
  */
-bool TableWidget::eventFilter(QObject *watched, QEvent *event)
+bool TableWidget::eventFilter(QObject* watched, QEvent* event)
 {
-    if (watched == this->m_more_Lab) {
-        if (event->type() == QEvent::MouseButtonPress) {
+    if (watched == this->m_more_Lab)
+    {
+        if (event->type() == QEvent::MouseButtonPress)
+        {
             ElaMessageBar::information(
                 ElaMessageBarType::BottomRight,
                 "Info",
@@ -328,9 +349,12 @@ void TableWidget::initUi()
     this->m_refreshTimer->setSingleShot(true); ///< 设置刷新定时器为单次触发
 
     QFile file(GET_CURRENT_DIR + QStringLiteral("/tab.css")); ///< 加载样式表
-    if (file.open(QIODevice::ReadOnly)) {
+    if (file.open(QIODevice::ReadOnly))
+    {
         this->setStyleSheet(file.readAll()); ///< 应用样式表
-    } else {
+    }
+    else
+    {
         qDebug() << "样式表打开失败QAQ";
         STREAM_ERROR() << "样式表打开失败QAQ"; ///< 记录错误日志
         return;
@@ -359,9 +383,12 @@ void TableWidget::initUi()
     this->m_gridContainer->setAttribute(
         Qt::WA_OpaquePaintEvent); ///< 设置网格容器不透明绘制
 
-    if (this->m_kind == KIND::ItemList) {
+    if (this->m_kind == KIND::ItemList)
+    {
         initItemListWidget(); ///< 初始化小图标列表推荐控件
-    } else if (this->m_kind == KIND::BlockList) {
+    }
+    else if (this->m_kind == KIND::BlockList)
+    {
         this->m_play_ToolBtn->hide(); ///< 隐藏播放按钮
         this->m_more_Lab->setText(
             QStringLiteral("歌单广场 >")); ///< 设置更多标签文本
@@ -372,8 +399,9 @@ void TableWidget::initUi()
 void TableWidget::initSource()
 {
     QFile file(GET_CURRENT_DIR
-               + QStringLiteral("/tablist.json")); ///< 加载 JSON 文件
-    if (!file.open(QIODevice::ReadOnly)) {
+        + QStringLiteral("/tablist.json")); ///< 加载 JSON 文件
+    if (!file.open(QIODevice::ReadOnly))
+    {
         qWarning() << "Could not open file for reading tablist.json";
         STREAM_WARN()
             << "Could not open file for reading tablist.json"; ///< 记录警告日志
@@ -381,7 +409,8 @@ void TableWidget::initSource()
     const auto song_singer_obj
         = QJsonDocument::fromJson(file.readAll()); ///< 解析 JSON
     auto arr = song_singer_obj.array();
-    for (const auto &item : arr) {
+    for (const auto& item : arr)
+    {
         auto obj = item.toObject();
         this->m_songInfo.emplace_back(
             obj.value(QStringLiteral("song")).toString(),
@@ -389,8 +418,9 @@ void TableWidget::initSource()
     }
     file.close();
     file.setFileName(GET_CURRENT_DIR
-                     + QStringLiteral("/desc.json")); ///< 设置为 desc.json
-    if (!file.open(QIODevice::ReadOnly)) {
+        + QStringLiteral("/desc.json")); ///< 设置为 desc.json
+    if (!file.open(QIODevice::ReadOnly))
+    {
         qWarning() << "Could not open file for reading desc.json";
         STREAM_WARN()
             << "Could not open file for reading desc.json"; ///< 记录警告日志
@@ -398,7 +428,8 @@ void TableWidget::initSource()
     const auto descObj
         = QJsonDocument::fromJson(file.readAll()); ///< 解析 desc.json
     arr = descObj.array();
-    for (const auto &item : arr) {
+    for (const auto& item : arr)
+    {
         auto obj = item.toObject();
         this->m_descVector.emplace_back(
             obj.value(QStringLiteral("desc")).toString());
@@ -415,9 +446,10 @@ void TableWidget::initSource()
  */
 void TableWidget::initBlockCover()
 {
-    for (int i = 1; i <= 60; ++i) {
+    for (int i = 1; i <= 60; ++i)
+    {
         this->m_blockCoverPaths.emplace_back(
-            QString(":/BlockCover/Res/blockcover/music-block-cover%1.jpg")
+            QString(QString(RESOURCE_DIR) + "/blockcover/music-block-cover%1.jpg")
             .arg(i));
         ///< 添加封面路径
     }
@@ -446,9 +478,10 @@ void TableWidget::shuffleBlockCover()
  */
 void TableWidget::initListCover()
 {
-    for (int i = 1; i <= 60; ++i) {
+    for (int i = 1; i <= 60; ++i)
+    {
         this->m_listCoverPaths.emplace_back(
-            QString(":/ListCover/Res/listcover/music-list-cover%1.jpg")
+            QString(QString(RESOURCE_DIR) + "/listcover/music-list-cover%1.jpg")
             .arg(i));
         ///< 添加封面路径
     }
@@ -482,8 +515,10 @@ void TableWidget::initItemBlockWidget()
     this->m_gridLayout->setVerticalSpacing(10);         ///< 设置垂直间距
     this->m_gridLayout->setHorizontalSpacing(5);        ///< 设置水平间距
     this->m_gridLayout->setContentsMargins(0, 5, 0, 5); ///< 设置边距
-    for (int i = 0; i < 2; ++i) {
-        for (int j = 0; j < 7; ++j) {
+    for (int i = 0; i < 2; ++i)
+    {
+        for (int j = 0; j < 7; ++j)
+        {
             auto pixPath = this->m_blockCoverPaths[i * 7 + j]; ///< 获取封面路径
             auto desc = this->m_descVector[i * 7 + j];         ///< 获取描述文本
             auto block = new ItemBlockWidget(pixPath,
@@ -493,8 +528,10 @@ void TableWidget::initItemBlockWidget()
             this->m_gridLayout->addWidget(block, i, j); ///< 添加到网格
         }
     }
-    for (int i = 0; i < 2; ++i) {
-        for (int j = 0; j < this->m_showCol; ++j) {
+    for (int i = 0; i < 2; ++i)
+    {
+        for (int j = 0; j < this->m_showCol; ++j)
+        {
             this->m_gridLayout->itemAtPosition(i, j)
                 ->widget()
                 ->show(); ///< 显示前 m_showCol 列
@@ -521,8 +558,10 @@ void TableWidget::initItemListWidget()
     this->m_gridLayout->setColumnStretch(1, 1);
     this->m_gridLayout->setColumnStretch(2, 1);
 
-    for (int i = 0; i < 3; ++i) {
-        for (int j = 0; j < 3; ++j) {
+    for (int i = 0; i < 3; ++i)
+    {
+        for (int j = 0; j < 3; ++j)
+        {
             auto pixPath = this->m_listCoverPaths[i * 3 + j]; ///< 获取封面路径
             auto name = this->m_songInfo[i * 3 + j].first;    ///< 获取歌曲名
             auto author = this->m_songInfo[i * 3 + j].second; ///< 获取歌手
@@ -550,25 +589,31 @@ void TableWidget::onGridChange(int len)
     this->m_hide_col_6 = true; ///< 初始化第六列隐藏状态
     this->m_hide_col_7 = true; ///< 初始化第七列隐藏状态
     auto item = this->m_gridLayout->itemAtPosition(0, 5);
-    if (item) {
+    if (item)
+    {
         this->m_hide_col_6 = item->widget()->isHidden(); ///< 更新第六列隐藏状态
         // qDebug() << "hide_col_6 : " << hide_col_6;   ///<
         // 未使用，保留用于调试
     }
     item = this->m_gridLayout->itemAtPosition(0, 6);
-    if (item) {
+    if (item)
+    {
         this->m_hide_col_7 = item->widget()->isHidden(); ///< 更新第七列隐藏状态
         // qDebug() << "hide_col_7 : " << hide_col_7;   ///<
         // 未使用，保留用于调试
     }
 
-    if (this->m_hide_col_6) {
+    if (this->m_hide_col_6)
+    {
         this->m_showCol = 5; ///< 显示前5列
         if (len < 1000) { return; }
-        if (len < 1200) {
-            for (int i = 0; i < 2; ++i) {
+        if (len < 1200)
+        {
+            for (int i = 0; i < 2; ++i)
+            {
                 auto item = this->m_gridLayout->itemAtPosition(i, 5);
-                if (item) {
+                if (item)
+                {
                     item->widget()->show(); ///< 显示第六列
                 }
                 // qDebug() << "show一个";              ///<
@@ -580,14 +625,18 @@ void TableWidget::onGridChange(int len)
         }
         // 由于直接全屏需要一定时间，因此不存在从5列直接变成7列的情况
         // 但是，上面说的是正常缩放的情况，但如果存在突然发送的信号的情况。。。
-        else {
-            for (int i = 0; i < 2; ++i) {
+        else
+        {
+            for (int i = 0; i < 2; ++i)
+            {
                 auto item = this->m_gridLayout->itemAtPosition(i, 5);
-                if (item) {
+                if (item)
+                {
                     item->widget()->show(); ///< 显示第六列
                 }
                 item = this->m_gridLayout->itemAtPosition(i, 6);
-                if (item) {
+                if (item)
+                {
                     item->widget()->show(); ///< 显示第七列
                 }
                 // qDebug() << "show一个";              ///<
@@ -597,33 +646,49 @@ void TableWidget::onGridChange(int len)
             // @note
             // 直接全屏需要时间，不存在从5列直接变为7列，但可能因异常信号触发
         }
-    } else if (!this->m_hide_col_6 && this->m_hide_col_7) {
+    }
+    else if (!this->m_hide_col_6 && this->m_hide_col_7)
+    {
         this->m_showCol = 6; ///< 显示前6列
-        if (len < 1000) {
-            for (int i = 0; i < 2; ++i) {
+        if (len < 1000)
+        {
+            for (int i = 0; i < 2; ++i)
+            {
                 auto item = this->m_gridLayout->itemAtPosition(i, 5);
-                if (item) {
+                if (item)
+                {
                     item->widget()->hide(); ///< 隐藏第六列
                 }
             }
             this->m_showCol = 5; ///< 更新显示列数
-        } else if (len >= 1200) {
-            for (int i = 0; i < 2; ++i) {
+        }
+        else if (len >= 1200)
+        {
+            for (int i = 0; i < 2; ++i)
+            {
                 auto item = this->m_gridLayout->itemAtPosition(i, 6);
-                if (item) {
+                if (item)
+                {
                     item->widget()->show(); ///< 显示第七列
                 }
             }
             this->m_showCol = 7; ///< 更新显示列数
         }
-    } else if (!this->m_hide_col_7) {
+    }
+    else if (!this->m_hide_col_7)
+    {
         this->m_showCol = 7; ///< 显示前7列
-        if (len < 1000) {
+        if (len < 1000)
+        {
             this->m_showCol = 5; ///< 更新显示列数
-        } else if (len < 1200) {
-            for (int i = 0; i < 2; ++i) {
+        }
+        else if (len < 1200)
+        {
+            for (int i = 0; i < 2; ++i)
+            {
                 auto item = this->m_gridLayout->itemAtPosition(i, 6);
-                if (item) {
+                if (item)
+                {
                     item->widget()->hide(); ///< 隐藏第七列
                 }
             }
@@ -640,7 +705,8 @@ void TableWidget::onGridChange(int len)
  */
 void TableWidget::onRefreshBtnClicked()
 {
-    if (!this->m_refreshTimer->isActive()) {
+    if (!this->m_refreshTimer->isActive())
+    {
         this->m_refreshTimer->start(300); ///< 启动定时器，300ms 延迟
     }
 }
@@ -653,16 +719,21 @@ void TableWidget::onRefreshTimeout()
 {
     qDebug() << "刷新TableWidget";
     STREAM_INFO() << "刷新TableWidget"; ///< 记录刷新日志
-    if (this->m_kind == KIND::BlockList) {
+    if (this->m_kind == KIND::BlockList)
+    {
         shuffleBlockCover();                             ///< 打乱块状封面和描述
         this->m_gridContainer->setUpdatesEnabled(false); ///< 禁用更新以优化性能
         this->m_gridContainer->hide();                   ///< 隐藏容器
-        for (int i = 0; i < 2; ++i) {
-            for (int j = 0; j < 7; ++j) {
+        for (int i = 0; i < 2; ++i)
+        {
+            for (int j = 0; j < 7; ++j)
+            {
                 auto item = this->m_gridLayout->itemAtPosition(i, j);
-                if (item) {
+                if (item)
+                {
                     auto widget = item->widget();
-                    if (widget) {
+                    if (widget)
+                    {
                         this->m_gridLayout->removeWidget(
                             widget);           ///< 移除旧控件
                         widget->deleteLater(); ///< 延迟删除
@@ -681,8 +752,10 @@ void TableWidget::onRefreshTimeout()
         emit gridChange(this->width()); ///< 触发网格列数变化
         // qDebug() << "当前显示 ： " << this->m_showCol; ///<
         // 未使用，保留用于调试
-        for (int i = 0; i < 2; ++i) {
-            for (int j = 0; j < this->m_showCol; ++j) {
+        for (int i = 0; i < 2; ++i)
+        {
+            for (int j = 0; j < this->m_showCol; ++j)
+            {
                 this->m_gridLayout->itemAtPosition(i, j)
                     ->widget()
                     ->show(); ///< 显示前 m_showCol 列
@@ -690,16 +763,22 @@ void TableWidget::onRefreshTimeout()
         }
         this->m_gridContainer->setUpdatesEnabled(true); ///< 启用更新
         this->m_gridContainer->show();                  ///< 显示容器
-    } else {
+    }
+    else
+    {
         shuffleListCover();                              ///< 打乱列表封面和歌曲信息
         this->m_gridContainer->setUpdatesEnabled(false); ///< 禁用更新以优化性能
         this->m_gridContainer->hide();                   ///< 隐藏容器
-        for (int i = 0; i < 3; ++i) {
-            for (int j = 0; j < 3; ++j) {
+        for (int i = 0; i < 3; ++i)
+        {
+            for (int j = 0; j < 3; ++j)
+            {
                 auto item = this->m_gridLayout->itemAtPosition(i, j);
-                if (item) {
+                if (item)
+                {
                     auto widget = item->widget();
-                    if (widget) {
+                    if (widget)
+                    {
                         this->m_gridLayout->removeWidget(
                             widget);           ///< 移除旧控件
                         widget->deleteLater(); ///< 延迟删除
@@ -734,7 +813,7 @@ void TableWidget::onRefreshTimeout()
  * @return 圆角图片
  * @note 使用抗锯齿和剪裁路径生成圆角图片
  */
-QPixmap roundedPixmap(QPixmap &src, QSize size, int radius)
+QPixmap roundedPixmap(QPixmap& src, QSize size, int radius)
 {
     QPixmap scaled = src.scaled(size,
                                 Qt::KeepAspectRatioByExpanding,
@@ -764,9 +843,9 @@ QPixmap roundedPixmap(QPixmap &src, QSize size, int radius)
  * @param parent 父控件指针，默认为 nullptr
  */
 ItemListWidget::ItemListWidget(QPixmap coverPix,
-                               const QString &name,
-                               const QString &author,
-                               QWidget *parent)
+                               const QString& name,
+                               const QString& author,
+                               QWidget* parent)
     : QWidget(parent),
       m_mask(new SMaskWidget(this))               ///< 初始化遮罩控件
       , m_coverLab(new QLabel(this))              ///< 初始化封面标签
@@ -805,17 +884,20 @@ ItemListWidget::ItemListWidget(QPixmap coverPix,
         QStringLiteral("more_ToolBtn")); ///< 设置更多按钮对象名
 
     QFile file(GET_CURRENT_DIR
-               + QStringLiteral("/tablist.css")); ///< 加载样式表
-    if (file.open(QIODevice::ReadOnly)) {
+        + QStringLiteral("/tablist.css")); ///< 加载样式表
+    if (file.open(QIODevice::ReadOnly))
+    {
         this->setStyleSheet(file.readAll()); ///< 应用样式表
-    } else {
+    }
+    else
+    {
         qDebug() << "样式表打开失败QAQ";
         STREAM_ERROR() << "样式表打开失败QAQ"; ///< 记录错误日志
         return;
     }
     initUi(); ///< 初始化界面
 
-    connect(qobject_cast<TableWidget *>(parent),
+    connect(qobject_cast<TableWidget*>(parent),
             &TableWidget::hideTitle,
             this,
             &ItemListWidget::onHide); ///< 连接隐藏标题信号
@@ -826,7 +908,7 @@ ItemListWidget::ItemListWidget(QPixmap coverPix,
  * @param name 歌曲名
  * @note 更新歌曲名并触发显示更新
  */
-void ItemListWidget::setNameText(const QString &name)
+void ItemListWidget::setNameText(const QString& name)
 {
     this->m_songName = name; ///< 更新歌曲名
     updateSongName();        ///< 更新显示
@@ -837,7 +919,7 @@ void ItemListWidget::setNameText(const QString &name)
  * @param singer 歌手
  * @note 更新歌手并触发显示更新
  */
-void ItemListWidget::setSingerText(const QString &singer)
+void ItemListWidget::setSingerText(const QString& singer)
 {
     this->m_singer = singer; ///< 更新歌手
     updateSinger();          ///< 更新显示
@@ -848,7 +930,7 @@ void ItemListWidget::setSingerText(const QString &singer)
  * @param ev 绘制事件
  * @note 绘制控件背景和悬停遮罩
  */
-void ItemListWidget::paintEvent(QPaintEvent *ev)
+void ItemListWidget::paintEvent(QPaintEvent* ev)
 {
     QWidget::paintEvent(ev); ///< 调用父类绘制
     // qDebug() << "ItemListWidget重绘";                ///<
@@ -859,10 +941,13 @@ void ItemListWidget::paintEvent(QPaintEvent *ev)
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this); ///< 绘制控件背景
 
     p.setRenderHint(QPainter::Antialiasing, true); ///< 启用抗锯齿
-    if (this->m_isHoverCoverLab) {
+    if (this->m_isHoverCoverLab)
+    {
         this->m_mask->show();  ///< 显示遮罩
         this->m_mask->raise(); ///< 提升遮罩层级
-    } else {
+    }
+    else
+    {
         this->m_mask->hide(); ///< 隐藏遮罩
     }
 
@@ -875,10 +960,11 @@ void ItemListWidget::paintEvent(QPaintEvent *ev)
  * @param ev 进入事件
  * @note 显示遮罩和操作按钮
  */
-void ItemListWidget::enterEvent(QEnterEvent *ev)
+void ItemListWidget::enterEvent(QEnterEvent* ev)
 {
     QWidget::enterEvent(ev); ///< 调用父类处理
-    if (!this->m_isHoverCoverLab) {
+    if (!this->m_isHoverCoverLab)
+    {
         this->m_isHoverCoverLab = true;   ///< 设置悬停状态
         updateSongName();                 ///< 更新歌曲名显示
         updateSinger();                   ///< 更新歌手显示
@@ -894,10 +980,11 @@ void ItemListWidget::enterEvent(QEnterEvent *ev)
  * @param ev 离开事件
  * @note 隐藏遮罩和操作按钮
  */
-void ItemListWidget::leaveEvent(QEvent *ev)
+void ItemListWidget::leaveEvent(QEvent* ev)
 {
     QWidget::leaveEvent(ev); ///< 调用父类处理
-    if (this->m_isHoverCoverLab) {
+    if (this->m_isHoverCoverLab)
+    {
         this->m_isHoverCoverLab = false;  ///< 清除悬停状态
         updateSongName();                 ///< 更新歌曲名显示
         updateSinger();                   ///< 更新歌手显示
@@ -913,11 +1000,11 @@ void ItemListWidget::leaveEvent(QEvent *ev)
  * @param event 调整大小事件
  * @note 调整控件高度、封面和遮罩大小
  */
-void ItemListWidget::resizeEvent(QResizeEvent *event)
+void ItemListWidget::resizeEvent(QResizeEvent* event)
 {
     QWidget::resizeEvent(event); ///< 调用父类处理
     this->setFixedHeight(event->size().width()
-                         / this->m_aspectRatio); ///< 设置固定高度（宽高比 6）
+        / this->m_aspectRatio); ///< 设置固定高度（宽高比 6）
     this->m_coverLab->setFixedSize(this->height(),
                                    this->height());       ///< 设置封面大小
     this->m_mask->setFixedSize(this->m_coverLab->size()); ///< 设置遮罩大小
@@ -930,7 +1017,7 @@ void ItemListWidget::resizeEvent(QResizeEvent *event)
  * @param event 鼠标事件
  * @note 忽略事件
  */
-void ItemListWidget::mousePressEvent(QMouseEvent *event)
+void ItemListWidget::mousePressEvent(QMouseEvent* event)
 {
     event->ignore(); ///< 忽略事件
 }
@@ -940,7 +1027,7 @@ void ItemListWidget::mousePressEvent(QMouseEvent *event)
  * @param event 鼠标事件
  * @note 忽略事件
  */
-void ItemListWidget::mouseReleaseEvent(QMouseEvent *event)
+void ItemListWidget::mouseReleaseEvent(QMouseEvent* event)
 {
     event->ignore(); ///< 忽略事件
 }
@@ -950,7 +1037,7 @@ void ItemListWidget::mouseReleaseEvent(QMouseEvent *event)
  * @param event 鼠标事件
  * @note 忽略事件
  */
-void ItemListWidget::mouseDoubleClickEvent(QMouseEvent *event)
+void ItemListWidget::mouseDoubleClickEvent(QMouseEvent* event)
 {
     event->ignore(); ///< 忽略事件
 }
@@ -1119,25 +1206,29 @@ void ItemListWidget::onMoreToolBtn()
  */
 void ItemListWidget::onHide()
 {
-    if (!graphicsEffect()) {
-        auto *opacityEffect = new QGraphicsOpacityEffect(this);
+    if (!graphicsEffect())
+    {
+        auto* opacityEffect = new QGraphicsOpacityEffect(this);
         opacityEffect->setOpacity(1.0);
         setGraphicsEffect(opacityEffect);
     }
 
-    auto *opacityEffect = qobject_cast<QGraphicsOpacityEffect *>(graphicsEffect());
+    auto* opacityEffect = qobject_cast<QGraphicsOpacityEffect*>(graphicsEffect());
     bool expanding = !isVisible();
 
-    auto *anim = new QPropertyAnimation(opacityEffect, "opacity", this);
+    auto* anim = new QPropertyAnimation(opacityEffect, "opacity", this);
     anim->setDuration(250);
     anim->setEasingCurve(QEasingCurve::InOutQuad);
 
-    if (expanding) {
+    if (expanding)
+    {
         opacityEffect->setOpacity(0.0);
         show();
         anim->setStartValue(0.0);
         anim->setEndValue(1.0);
-    } else {
+    }
+    else
+    {
         anim->setStartValue(opacityEffect->opacity());
         anim->setEndValue(0.0);
     }
@@ -1145,8 +1236,10 @@ void ItemListWidget::onHide()
     connect(anim,
             &QPropertyAnimation::finished,
             this,
-            [=] {
-                if (!expanding) {
+            [=]
+            {
+                if (!expanding)
+                {
                     // 立即 hide 并强制刷新
                     hide();
                     // 立即更新，避免残留闪烁
@@ -1169,7 +1262,8 @@ QList<QString> tipArr = {
     QStringLiteral("日语"), QStringLiteral("经典"), QStringLiteral("国语"),
     QStringLiteral("流行"), QStringLiteral("兴奋"), QStringLiteral("英语"),
     QStringLiteral("古风"), QStringLiteral("韩语"), QStringLiteral("寂寞"),
-    QStringLiteral("运动"), QStringLiteral("说唱"), QStringLiteral("校园")};
+    QStringLiteral("运动"), QStringLiteral("说唱"), QStringLiteral("校园")
+};
 
 /**
  * @brief 构造函数，初始化块状推荐项
@@ -1177,9 +1271,9 @@ QList<QString> tipArr = {
  * @param desc 描述文本
  * @param parent 父控件指针，默认为 nullptr
  */
-ItemBlockWidget::ItemBlockWidget(const QString &path,
-                                 const QString &desc,
-                                 QWidget *parent)
+ItemBlockWidget::ItemBlockWidget(const QString& path,
+                                 const QString& desc,
+                                 QWidget* parent)
     : QWidget(parent), m_bacWidget(new QWidget(this)) ///< 初始化背景控件
       ,
       m_mask(std::make_unique<SMaskWidget>(this)) ///< 初始化遮罩控件
@@ -1210,7 +1304,7 @@ ItemBlockWidget::ItemBlockWidget(const QString &path,
  * @param text 提示文本
  * @note 更新提示标签内容
  */
-void ItemBlockWidget::setTipLabText(const QString &text) const
+void ItemBlockWidget::setTipLabText(const QString& text) const
 {
     this->m_tipLab->setText(text); ///< 设置提示标签文本
 }
@@ -1220,10 +1314,10 @@ void ItemBlockWidget::setTipLabText(const QString &text) const
  * @param text 播放量文本
  * @note 添加“万”单位并设置文本
  */
-void ItemBlockWidget::setPopularBtnText(const QString &text) const
+void ItemBlockWidget::setPopularBtnText(const QString& text) const
 {
     this->m_popularBtn->setText(QStringLiteral(" ") + text
-                                + QStringLiteral("万")); ///< 设置播放量文本
+        + QStringLiteral("万")); ///< 设置播放量文本
 }
 
 /**
@@ -1248,7 +1342,7 @@ void ItemBlockWidget::setDescribeText(QString desc) const
  * @param ev 绘制事件
  * @note 绘制控件背景，注释掉的悬停蒙层绘制逻辑保留
  */
-void ItemBlockWidget::paintEvent(QPaintEvent *ev)
+void ItemBlockWidget::paintEvent(QPaintEvent* ev)
 {
     QWidget::paintEvent(ev); ///< 调用父类绘制
     QStyleOption opt;
@@ -1273,10 +1367,11 @@ void ItemBlockWidget::paintEvent(QPaintEvent *ev)
  * @param ev 进入事件
  * @note 显示遮罩并更新流行按钮样式
  */
-void ItemBlockWidget::enterEvent(QEnterEvent *ev)
+void ItemBlockWidget::enterEvent(QEnterEvent* ev)
 {
     QWidget::enterEvent(ev); ///< 调用父类处理
-    if (!this->m_isHoverCoverLab) {
+    if (!this->m_isHoverCoverLab)
+    {
         this->m_isHoverCoverLab = true; ///< 设置悬停状态
         this->m_mask->show();           ///< 显示遮罩
         this->m_mask->raise();          ///< 提升遮罩层级
@@ -1292,10 +1387,11 @@ void ItemBlockWidget::enterEvent(QEnterEvent *ev)
  * @param ev 离开事件
  * @note 隐藏遮罩并恢复流行按钮样式
  */
-void ItemBlockWidget::leaveEvent(QEvent *ev)
+void ItemBlockWidget::leaveEvent(QEvent* ev)
 {
     QWidget::leaveEvent(ev); ///< 调用父类处理
-    if (this->m_isHoverCoverLab) {
+    if (this->m_isHoverCoverLab)
+    {
         this->m_isHoverCoverLab = false; ///< 清除悬停状态
         this->m_popularBtn->setStyleSheet(QStringLiteral(
             "color:white;border-radius:10px;background-color: "
@@ -1310,11 +1406,11 @@ void ItemBlockWidget::leaveEvent(QEvent *ev)
  * @param event 调整大小事件
  * @note 调整控件高度、背景控件、遮罩和描述标签大小
  */
-void ItemBlockWidget::resizeEvent(QResizeEvent *event)
+void ItemBlockWidget::resizeEvent(QResizeEvent* event)
 {
     QWidget::resizeEvent(event); ///< 调用父类处理
     this->setFixedHeight(event->size().width()
-                         + DescribeLabHeight); ///< 设置固定高度
+        + DescribeLabHeight); ///< 设置固定高度
     this->m_bacWidget->setFixedSize(event->size().width() / 1.05,
                                     event->size().width()
                                     / 1.05); ///< 设置背景控件大小
@@ -1334,7 +1430,7 @@ void ItemBlockWidget::resizeEvent(QResizeEvent *event)
  * @param event 鼠标事件
  * @note 忽略事件
  */
-void ItemBlockWidget::mousePressEvent(QMouseEvent *event)
+void ItemBlockWidget::mousePressEvent(QMouseEvent* event)
 {
     event->ignore(); ///< 忽略事件
 }
@@ -1344,7 +1440,7 @@ void ItemBlockWidget::mousePressEvent(QMouseEvent *event)
  * @param event 鼠标事件
  * @note 忽略事件
  */
-void ItemBlockWidget::mouseReleaseEvent(QMouseEvent *event)
+void ItemBlockWidget::mouseReleaseEvent(QMouseEvent* event)
 {
     event->ignore(); ///< 忽略事件
 }
@@ -1354,7 +1450,7 @@ void ItemBlockWidget::mouseReleaseEvent(QMouseEvent *event)
  * @param event 鼠标事件
  * @note 忽略事件
  */
-void ItemBlockWidget::mouseDoubleClickEvent(QMouseEvent *event)
+void ItemBlockWidget::mouseDoubleClickEvent(QMouseEvent* event)
 {
     event->ignore(); ///< 忽略事件
 }
@@ -1402,7 +1498,7 @@ void ItemBlockWidget::initUi()
             "rgba(128, 128, 128, 127);")); ///< 设置流行按钮样式
 
     this->m_describeLab->setAlignment(Qt::AlignHCenter
-                                      | Qt::AlignVCenter); ///< 设置描述标签居中
+        | Qt::AlignVCenter); ///< 设置描述标签居中
 
     auto vlayout = new QVBoxLayout(this);    ///< 创建垂直布局
     vlayout->setContentsMargins(0, 0, 0, 0); ///< 设置布局边距

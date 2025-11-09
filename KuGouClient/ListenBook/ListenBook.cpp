@@ -20,16 +20,19 @@
  * @brief 构造函数，初始化听书主界面
  * @param parent 父控件指针，默认为 nullptr
  */
-ListenBook::ListenBook(QWidget *parent)
+ListenBook::ListenBook(QWidget* parent)
     : QWidget(parent)
       , ui(new Ui::ListenBook)
       , m_buttonGroup(std::make_unique<QButtonGroup>(this))
 {
     ui->setupUi(this);
     QFile file(GET_CURRENT_DIR + QStringLiteral("/listen.css"));
-    if (file.open(QIODevice::ReadOnly)) {
+    if (file.open(QIODevice::ReadOnly))
+    {
         setStyleSheet(file.readAll());
-    } else {
+    }
+    else
+    {
         qDebug() << "样式表打开失败QAQ";
         STREAM_ERROR() << "样式表打开失败QAQ";
         return;
@@ -38,7 +41,8 @@ ListenBook::ListenBook(QWidget *parent)
     initStackedWidget();
     connect(ui->stackedWidget,
             &SlidingStackedWidget::animationFinished,
-            [this] {
+            [this]
+            {
                 enableButton(true);
             });
     enableButton(true);
@@ -57,23 +61,27 @@ ListenBook::~ListenBook()
  * @param id 页面索引
  * @return 创建的页面控件
  */
-QWidget *ListenBook::createPage(int id)
+QWidget* ListenBook::createPage(int id)
 {
-    QWidget *page = nullptr;
-    switch (id) {
+    QWidget* page = nullptr;
+    switch (id)
+    {
     case 0: // Recommend
-        if (!m_listenRecommend) {
+        if (!m_listenRecommend)
+        {
             m_listenRecommend = std::make_unique<ListenRecommend>(ui->stackedWidget);
         }
         page = m_listenRecommend.get();
         break;
     case 1: // My Download
-        if (!m_listenMyDownload) {
+        if (!m_listenMyDownload)
+        {
             m_listenMyDownload = std::make_unique<ListenMyDownload>(ui->stackedWidget);
             connect(m_listenMyDownload.get(),
                     &ListenMyDownload::switch_to_listen_recommend,
                     this,
-                    [this] {
+                    [this]
+                    {
                         ui->listen_recommend_toolButton->click();
                         ui->listen_recommend_toolButton->setChecked(true);
                     });
@@ -81,12 +89,14 @@ QWidget *ListenBook::createPage(int id)
         page = m_listenMyDownload.get();
         break;
     case 2: // Recently Play
-        if (!m_listenRecentlyPlay) {
+        if (!m_listenRecentlyPlay)
+        {
             m_listenRecentlyPlay = std::make_unique<ListenRecentlyPlay>(ui->stackedWidget);
             connect(m_listenRecentlyPlay.get(),
                     &ListenRecentlyPlay::switch_to_listen_recommend,
                     this,
-                    [this] {
+                    [this]
+                    {
                         ui->listen_recommend_toolButton->click();
                         ui->listen_recommend_toolButton->setChecked(true);
                     });
@@ -106,31 +116,39 @@ QWidget *ListenBook::createPage(int id)
  */
 void ListenBook::initUi()
 {
-    QToolButton *buttons[] = {
+    QToolButton* buttons[] = {
         ui->listen_recommend_toolButton,
         ui->listen_my_download_toolButton,
         ui->recently_play_toolButton
     };
 
     const QString iconPaths[][2] = {
-        {":/ListenBook/Res/listenbook/recommend-black.svg",
-         ":/ListenBook/Res/listenbook/recommend-gray.svg"},
-        {":/ListenBook/Res/listenbook/download-black.svg",
-         ":/ListenBook/Res/listenbook/download-gray.svg"},
-        {":/ListenBook/Res/listenbook/recent-black.svg",
-         ":/ListenBook/Res/listenbook/recent-gray.svg"}
+        {
+            QString(RESOURCE_DIR) + "/listenbook/recommend-black.svg",
+            QString(RESOURCE_DIR) + "/listenbook/recommend-gray.svg"
+        },
+        {
+            QString(RESOURCE_DIR) + "/listenbook/download-black.svg",
+            QString(RESOURCE_DIR) + "/listenbook/download-gray.svg"
+        },
+        {
+            QString(RESOURCE_DIR) + "/listenbook/recent-black.svg",
+            QString(RESOURCE_DIR) + "/listenbook/recent-gray.svg"
+        }
     };
     const QSize iconSizes[] = {QSize(17, 17), QSize(21, 21), QSize(19, 19)};
     const QString texts[] = {"   推荐", "  我的下载", "   最近播放"};
 
-    for (int i = 0; i < 3; ++i) {
+    for (int i = 0; i < 3; ++i)
+    {
         buttons[i]->setIcon(QIcon(iconPaths[i][1]));
         buttons[i]->setIconSize(iconSizes[i]);
         buttons[i]->setText(texts[i]);
         connect(buttons[i],
                 &QToolButton::toggled,
                 buttons[i],
-                [=](bool checked) {
+                [=](bool checked)
+                {
                     buttons[i]->setIcon(QIcon(iconPaths[i][checked ? 0 : 1]));
                 });
     }
@@ -145,7 +163,8 @@ void ListenBook::initUi()
     connect(ui->indicator_toolButton,
             &QToolButton::toggled,
             ui->indicator_toolButton,
-            [=](bool checked) {
+            [=](bool checked)
+            {
                 ui->indicator_toolButton->setStyleSheet(checked
                                                             ? R"(QToolButton{
                 background-color:transparent;
@@ -180,7 +199,8 @@ void ListenBook::initStackedWidget()
     m_buttonGroup->addButton(ui->recently_play_toolButton, 2);
     m_buttonGroup->setExclusive(true);
 
-    for (int i = 0; i < 3; ++i) {
+    for (int i = 0; i < 3; ++i)
+    {
         ui->stackedWidget->insertWidget(i, createPage(i));
     }
 
@@ -193,8 +213,10 @@ void ListenBook::initStackedWidget()
     connect(m_buttonGroup.get(),
             &QButtonGroup::idClicked,
             this,
-            [this](int id) {
-                if (m_currentIdx == id) {
+            [this](int id)
+            {
+                if (m_currentIdx == id)
+                {
                     return;
                 }
 

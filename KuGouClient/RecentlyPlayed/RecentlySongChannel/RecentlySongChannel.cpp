@@ -24,22 +24,19 @@
  */
 RecentlySongChannel::RecentlySongChannel(QWidget *parent)
     : QWidget(parent)
-    , ui(new Ui::RecentlySongChannel)
-    , m_searchAction(new QAction(this))
+      , ui(new Ui::RecentlySongChannel)
+      , m_searchAction(new QAction(this))
 {
     ui->setupUi(this);
     QFile file(GET_CURRENT_DIR + QStringLiteral("/song.css")); ///< 加载样式表
-    if (file.open(QIODevice::ReadOnly))
-    {
-        this->setStyleSheet(file.readAll());             ///< 应用样式表
-    }
-    else
-    {
+    if (file.open(QIODevice::ReadOnly)) {
+        this->setStyleSheet(file.readAll()); ///< 应用样式表
+    } else {
         qDebug() << "样式表打开失败QAQ";
-        STREAM_ERROR() << "样式表打开失败QAQ";          ///< 记录错误日志
+        STREAM_ERROR() << "样式表打开失败QAQ"; ///< 记录错误日志
         return;
     }
-    initUi();                                            ///< 初始化界面
+    initUi(); ///< 初始化界面
 }
 
 /**
@@ -47,7 +44,7 @@ RecentlySongChannel::RecentlySongChannel(QWidget *parent)
  */
 RecentlySongChannel::~RecentlySongChannel()
 {
-    delete ui;                                           ///< 删除 UI
+    delete ui; ///< 删除 UI
 }
 
 /**
@@ -56,21 +53,26 @@ RecentlySongChannel::~RecentlySongChannel()
  */
 void RecentlySongChannel::initUi()
 {
-    auto recently_share_toolButton_toolTip = new ElaToolTip(ui->recently_share_toolButton); ///< 分享按钮工具提示
+    auto recently_share_toolButton_toolTip = new ElaToolTip(ui->recently_share_toolButton);
+    ///< 分享按钮工具提示
     recently_share_toolButton_toolTip->setToolTip(QStringLiteral("分享"));
-    auto recently_batch_toolButton_toolTip = new ElaToolTip(ui->recently_batch_toolButton); ///< 批量操作按钮工具提示
+    auto recently_batch_toolButton_toolTip = new ElaToolTip(ui->recently_batch_toolButton);
+    ///< 批量操作按钮工具提示
     recently_batch_toolButton_toolTip->setToolTip(QStringLiteral("批量操作"));
-    ui->recently_play_toolButton->setIcon(QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/play3-white.svg"))); ///< 设置播放按钮图标
-    this->m_searchAction->setIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/search-black.svg"))); ///< 设置搜索动作图标
+    ui->recently_play_toolButton->setIcon(
+        QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/play3-white.svg"))); ///< 设置播放按钮图标
+    this->m_searchAction->setIcon(QIcon(QString(RESOURCE_DIR) + "/menuIcon/search-black.svg"));
+    ///< 设置搜索动作图标
     this->m_searchAction->setIconVisibleInMenu(false); ///< 仅显示图标
-    ui->search_lineEdit->addAction(this->m_searchAction, QLineEdit::TrailingPosition); ///< 添加搜索动作到搜索框
-    ui->search_lineEdit->setMaxWidth(150);              ///< 设置搜索框最大宽度
+    ui->search_lineEdit->addAction(this->m_searchAction, QLineEdit::TrailingPosition);
+    ///< 添加搜索动作到搜索框
+    ui->search_lineEdit->setMaxWidth(150); ///< 设置搜索框最大宽度
     ui->search_lineEdit->setBorderRadius(10);
-    auto font = QFont("AaSongLiuKaiTi");                ///< 设置搜索框字体
+    auto font = QFont("AaSongLiuKaiTi"); ///< 设置搜索框字体
     font.setWeight(QFont::Bold);
     ui->search_lineEdit->setFont(font);
     QToolButton *searchButton = nullptr;
-    foreach (QToolButton *btn, ui->search_lineEdit->findChildren<QToolButton *>()) {
+    foreach(QToolButton * btn, ui->search_lineEdit->findChildren<QToolButton*>()) {
         if (btn->defaultAction() == this->m_searchAction) {
             searchButton = btn;
             auto search_lineEdit_toolTip = new ElaToolTip(searchButton); ///< 搜索按钮工具提示
@@ -79,13 +81,13 @@ void RecentlySongChannel::initUi()
         }
     }
     if (searchButton) {
-        searchButton->installEventFilter(this);          ///< 安装搜索按钮事件过滤器
+        searchButton->installEventFilter(this); ///< 安装搜索按钮事件过滤器
     }
-    const auto lay = new QHBoxLayout(ui->table_widget);  ///< 创建频道块布局
-    const auto block = new RecentlyChannelBlock(ui->table_widget); ///< 创建频道块
+    const auto lay = new QHBoxLayout(ui->table_widget);                             ///< 创建频道块布局
+    const auto block = new RecentlyChannelBlock(ui->table_widget);                  ///< 创建频道块
     block->setCoverPix(QStringLiteral(":/TabIcon/Res/tabIcon/guess-you-love.jpg")); ///< 设置封面图片
-    lay->addWidget(block);                               ///< 添加频道块
-    lay->addStretch();                                   ///< 添加拉伸
+    lay->addWidget(block);                                                          ///< 添加频道块
+    lay->addStretch();                                                              ///< 添加拉伸
 }
 
 /**
@@ -97,14 +99,20 @@ void RecentlySongChannel::initUi()
  */
 bool RecentlySongChannel::eventFilter(QObject *watched, QEvent *event)
 {
-    if (const auto button = qobject_cast<QToolButton *>(watched); button && button->defaultAction() == this->m_searchAction) {
+    if (const auto button = qobject_cast<QToolButton *>(watched);
+        button && button->defaultAction() == this->
+        m_searchAction) {
         if (event->type() == QEvent::Enter) {
-            this->m_searchAction->setIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/search-blue.svg"))); ///< 设置搜索按钮悬停图标
+            this->m_searchAction->setIcon(
+                QIcon(QString(RESOURCE_DIR) + "/menuIcon/search-blue.svg"));
+            ///< 设置搜索按钮悬停图标
         } else if (event->type() == QEvent::Leave) {
-            this->m_searchAction->setIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/search-black.svg"))); ///< 设置搜索按钮默认图标
+            this->m_searchAction->setIcon(
+                QIcon(QString(RESOURCE_DIR) + "/menuIcon/search-black.svg"));
+            ///< 设置搜索按钮默认图标
         }
     }
-    return QObject::eventFilter(watched, event);         ///< 调用父类过滤器
+    return QObject::eventFilter(watched, event); ///< 调用父类过滤器
 }
 
 /**
@@ -113,7 +121,8 @@ bool RecentlySongChannel::eventFilter(QObject *watched, QEvent *event)
  */
 void RecentlySongChannel::on_recently_play_toolButton_clicked()
 {
-    ElaMessageBar::warning(ElaMessageBarType::BottomRight, "Warning", "暂无音乐", 1000, this->window()); ///< 显示警告
+    ElaMessageBar::warning(ElaMessageBarType::BottomRight, "Warning", "暂无音乐", 1000, this->window());
+    ///< 显示警告
 }
 
 /**
@@ -122,7 +131,12 @@ void RecentlySongChannel::on_recently_play_toolButton_clicked()
  */
 void RecentlySongChannel::on_recently_share_toolButton_clicked()
 {
-    ElaMessageBar::information(ElaMessageBarType::BottomRight, "Info", "批量操作 功能暂未实现 敬请期待", 1000, this->window()); ///< 显示信息
+    ElaMessageBar::information(ElaMessageBarType::BottomRight,
+                               "Info",
+                               "批量操作 功能暂未实现 敬请期待",
+                               1000,
+                               this->window());
+    ///< 显示信息
 }
 
 /**
@@ -131,7 +145,12 @@ void RecentlySongChannel::on_recently_share_toolButton_clicked()
  */
 void RecentlySongChannel::on_recently_batch_toolButton_clicked()
 {
-    ElaMessageBar::information(ElaMessageBarType::BottomRight, "Info", "批量操作 功能暂未实现 敬请期待", 1000, this->window()); ///< 显示信息
+    ElaMessageBar::information(ElaMessageBarType::BottomRight,
+                               "Info",
+                               "批量操作 功能暂未实现 敬请期待",
+                               1000,
+                               this->window());
+    ///< 显示信息
 }
 
 /**
@@ -140,5 +159,5 @@ void RecentlySongChannel::on_recently_batch_toolButton_clicked()
  */
 void RecentlySongChannel::on_search_pushButton_clicked()
 {
-    emit find_more_channel();                           ///< 触发搜索频道信号
+    emit find_more_channel(); ///< 触发搜索频道信号
 }

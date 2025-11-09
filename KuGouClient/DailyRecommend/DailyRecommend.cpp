@@ -66,13 +66,13 @@ void DailyRecommend::initUi()
     this->m_refreshMask->keepLoading();
     ui->history_recommend_toolButton->setIconSize(QSize(10, 10)); ///< 设置历史推荐按钮图标大小
     ui->history_recommend_toolButton->setIcon(
-        QIcon(QStringLiteral(":/ListenBook/Res/listenbook/down-gray.svg")));
+        QIcon(QString(RESOURCE_DIR) + "/listenbook/down-gray.svg"));
     ///< 设置默认图标
     ui->history_recommend_toolButton->setEnterIcon(
-        QIcon(QStringLiteral(":/ListenBook/Res/listenbook/down-blue.svg")));
+        QIcon(QString(RESOURCE_DIR) + "/listenbook/down-blue.svg"));
     ///< 设置悬停图标
     ui->history_recommend_toolButton->setLeaveIcon(
-        QIcon(QStringLiteral(":/ListenBook/Res/listenbook/down-gray.svg")));
+        QIcon(QString(RESOURCE_DIR) + "/listenbook/down-gray.svg"));
     ///< 设置离开图标
     ui->history_recommend_toolButton->setApproach(true); ///< 启用接近效果
     ui->history_recommend_toolButton->setHoverFontColor(QColor(QStringLiteral("#3AA1FF")));

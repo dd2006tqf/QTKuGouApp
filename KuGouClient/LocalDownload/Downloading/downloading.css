@@ -54,9 +54,9 @@ QToolButton#setting_toolButton {
     outline: 1px solid #9f9f9f; /*无用，被覆盖*/
     border-radius: 9px;
     background-color: transparent;
-    border-image: url(":/MenuIcon/Res/menuIcon/settings-black.svg");
+    border-image: url("RESOURCE_DIR/menuIcon/settings-black.svg");
 }
 
 QToolButton#setting_toolButton:hover {
-    border-image: url(":/MenuIcon/Res/menuIcon/settings-blue.svg");
+    border-image: url("RESOURCE_DIR/menuIcon/settings-blue.svg");
 }

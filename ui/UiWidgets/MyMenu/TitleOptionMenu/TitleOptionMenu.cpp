@@ -22,10 +22,8 @@ REGISTER_MENU(MyMenu::MenuKind::TitleOption, TitleOptionMenu)
  * @brief 构造函数，初始化标题栏选项菜单
  * @param parent 父控件指针，默认为 nullptr
  */
-TitleOptionMenu::TitleOptionMenu(QWidget* parent)
-    : BaseMenu(parent)
-{
-}
+TitleOptionMenu::TitleOptionMenu(QWidget *parent)
+    : BaseMenu(parent) {}
 
 /**
  * @brief 初始化菜单布局和内容
@@ -48,13 +46,16 @@ void TitleOptionMenu::initMenu()
             a_dynamicWallPaperBtn->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
             a_dynamicWallPaperBtn->setStyleSheet("font-size: 12px;");
             a_dynamicWallPaperBtn->setText(QStringLiteral("动态壁纸"));
-            a_dynamicWallPaperBtn->setIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/wallpaper.png")));
+            a_dynamicWallPaperBtn->
+                setIcon(QIcon(QString(RESOURCE_DIR) + "/menuIcon/wallpaper.png"));
             a_dynamicWallPaperBtn->setIconSize(QSize(35, 35));
-            connect(a_dynamicWallPaperBtn, &QToolButton::clicked, this, [this]
-            {
-                emit wallpaper(); ///< 发出设置动态壁纸信号
-                this->hide();
-            });
+            connect(a_dynamicWallPaperBtn,
+                    &QToolButton::clicked,
+                    this,
+                    [this] {
+                        emit wallpaper(); ///< 发出设置动态壁纸信号
+                        this->hide();
+                    });
         }
 
         // 手机播放按钮
@@ -68,13 +69,16 @@ void TitleOptionMenu::initMenu()
             a_phonePlayBtn->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
             a_phonePlayBtn->setStyleSheet("font-size: 12px;");
             a_phonePlayBtn->setText(QStringLiteral("手机play"));
-            a_phonePlayBtn->setIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/phonePlay.png")));
+            a_phonePlayBtn->setIcon(
+                QIcon(QString(RESOURCE_DIR) + "/menuIcon/phonePlay.png"));
             a_phonePlayBtn->setIconSize(QSize(35, 35));
-            connect(a_phonePlayBtn, &QToolButton::clicked, this, [this]
-            {
-                emit phonePlay(); ///< 发出手机播放信号
-                this->hide();
-            });
+            connect(a_phonePlayBtn,
+                    &QToolButton::clicked,
+                    this,
+                    [this] {
+                        emit phonePlay(); ///< 发出手机播放信号
+                        this->hide();
+                    });
         }
 
         // 传歌到设备按钮
@@ -88,13 +92,16 @@ void TitleOptionMenu::initMenu()
             a_uploadToDeviceBtn->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
             a_uploadToDeviceBtn->setStyleSheet("font-size: 11px;");
             a_uploadToDeviceBtn->setText(QStringLiteral("传歌到设备"));
-            a_uploadToDeviceBtn->setIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/uploadToDevice.png")));
+            a_uploadToDeviceBtn->setIcon(
+                QIcon(QString(RESOURCE_DIR) + "/menuIcon/uploadToDevice.png"));
             a_uploadToDeviceBtn->setIconSize(QSize(35, 35));
-            connect(a_uploadToDeviceBtn, &QToolButton::clicked, this, [this]
-            {
-                emit uploadToDevice(); ///< 发出传歌到设备信号
-                this->hide();
-            });
+            connect(a_uploadToDeviceBtn,
+                    &QToolButton::clicked,
+                    this,
+                    [this] {
+                        emit uploadToDevice(); ///< 发出传歌到设备信号
+                        this->hide();
+                    });
         }
 
         // 听歌赚金币按钮
@@ -108,13 +115,16 @@ void TitleOptionMenu::initMenu()
             a_earnCoinBtn->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
             a_earnCoinBtn->setStyleSheet("font-size: 11px;");
             a_earnCoinBtn->setText(QStringLiteral("听歌赚金币"));
-            a_earnCoinBtn->setIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/earnCoin.png")));
+            a_earnCoinBtn->setIcon(
+                QIcon(QString(RESOURCE_DIR) + "/menuIcon/earnCoin.png"));
             a_earnCoinBtn->setIconSize(QSize(35, 35));
-            connect(a_earnCoinBtn, &QToolButton::clicked, this, [this]
-            {
-                emit earnCoin(); ///< 发出听歌赚金币信号
-                this->hide();
-            });
+            connect(a_earnCoinBtn,
+                    &QToolButton::clicked,
+                    this,
+                    [this] {
+                        emit earnCoin(); ///< 发出听歌赚金币信号
+                        this->hide();
+                    });
         }
 
         // 顶部按钮容器
@@ -143,16 +153,21 @@ void TitleOptionMenu::initMenu()
         auto a_controlToolBtn = new MenuBtn(this);
         a_controlToolBtn->setFixedSize(360, 37);
         a_controlToolBtn->setIconSize(QSize(20, 20));
-        a_controlToolBtn->setIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/controller-black.svg")));
-        a_controlToolBtn->initIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/controller-black.svg")),
-                                   QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/controller-blue.svg"))); ///< 设置正常和悬停图标
+        a_controlToolBtn->setIcon(
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/controller-black.svg"));
+        a_controlToolBtn->initIcon(
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/controller-black.svg"),
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/controller-blue.svg"));
+        ///< 设置正常和悬停图标
         a_controlToolBtn->setText(QStringLiteral("   音乐遥控器"));
         a_controlAction->setDefaultWidget(a_controlToolBtn);
-        connect(a_controlToolBtn, &QToolButton::clicked, this, [this]
-        {
-            emit controller(); ///< 发出音乐遥控器信号
-            this->hide();
-        });
+        connect(a_controlToolBtn,
+                &QToolButton::clicked,
+                this,
+                [this] {
+                    emit controller(); ///< 发出音乐遥控器信号
+                    this->hide();
+                });
         // 以下为注释掉的悬停事件处理代码，保留以供调试
         /*connect(a_controlAction, &QWidgetAction::hovered, this, [a_controlToolBtn,this] {
             checkHover();
@@ -171,16 +186,20 @@ void TitleOptionMenu::initMenu()
         auto a_balanceToolBtn = new MenuBtn(this);
         a_balanceToolBtn->setFixedSize(360, 37);
         a_balanceToolBtn->setIconSize(QSize(20, 20));
-        a_balanceToolBtn->setIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/balance-black.svg")));
-        a_balanceToolBtn->initIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/balance-black.svg")),
-                                   QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/balance-blue.svg")));
+        a_balanceToolBtn->setIcon(
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/balance-black.svg"));
+        a_balanceToolBtn->initIcon(
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/balance-black.svg"),
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/balance-blue.svg"));
         a_balanceToolBtn->setText(QStringLiteral("   均衡器"));
         a_balanceAction->setDefaultWidget(a_balanceToolBtn);
-        connect(a_balanceToolBtn, &QToolButton::clicked, this, [this]
-        {
-            emit balance(); ///< 发出均衡器信号
-            this->hide();
-        });
+        connect(a_balanceToolBtn,
+                &QToolButton::clicked,
+                this,
+                [this] {
+                    emit balance(); ///< 发出均衡器信号
+                    this->hide();
+                });
         // 以下为注释掉的悬停事件处理代码，保留以供调试
         /*connect(a_balanceAction, &QWidgetAction::hovered, this, [a_balanceToolBtn,this] {
             checkHover();
@@ -199,16 +218,20 @@ void TitleOptionMenu::initMenu()
         auto a_aiHelpToolBtn = new MenuBtn(this);
         a_aiHelpToolBtn->setFixedSize(360, 37);
         a_aiHelpToolBtn->setIconSize(QSize(20, 20));
-        a_aiHelpToolBtn->setIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/aihelp-black.svg")));
-        a_aiHelpToolBtn->initIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/aihelp-black.svg")),
-                                  QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/aihelp-blue.svg")));
+        a_aiHelpToolBtn->setIcon(
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/aihelp-black.svg"));
+        a_aiHelpToolBtn->initIcon(
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/aihelp-black.svg"),
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/aihelp-blue.svg"));
         a_aiHelpToolBtn->setText(QStringLiteral("   AI帮你唱"));
         a_aiHelpAction->setDefaultWidget(a_aiHelpToolBtn);
-        connect(a_aiHelpToolBtn, &QToolButton::clicked, this, [this]
-        {
-            emit aiHelpYou(); ///< 发出 AI 帮你唱信号
-            this->hide();
-        });
+        connect(a_aiHelpToolBtn,
+                &QToolButton::clicked,
+                this,
+                [this] {
+                    emit aiHelpYou(); ///< 发出 AI 帮你唱信号
+                    this->hide();
+                });
         // 以下为注释掉的悬停事件处理代码，保留以供调试
         /*connect(a_aiHelpAction, &QWidgetAction::hovered, this, [a_aiHelpToolBtn,this] {
             checkHover();
@@ -227,16 +250,20 @@ void TitleOptionMenu::initMenu()
         auto a_pluginToolBtn = new MenuBtn(this);
         a_pluginToolBtn->setFixedSize(360, 37);
         a_pluginToolBtn->setIconSize(QSize(20, 20));
-        a_pluginToolBtn->setIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/soundPlugin-black.svg")));
-        a_pluginToolBtn->initIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/soundPlugin-black.svg")),
-                                  QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/soundPlugin-blue.svg")));
+        a_pluginToolBtn->setIcon(
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/soundPlugin-black.svg"));
+        a_pluginToolBtn->initIcon(
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/soundPlugin-black.svg"),
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/soundPlugin-blue.svg"));
         a_pluginToolBtn->setText(QStringLiteral("   音效插件"));
         a_pluginAction->setDefaultWidget(a_pluginToolBtn);
-        connect(a_pluginToolBtn, &QToolButton::clicked, this, [this]
-        {
-            emit soundPlugin(); ///< 发出音效插件信号
-            this->hide();
-        });
+        connect(a_pluginToolBtn,
+                &QToolButton::clicked,
+                this,
+                [this] {
+                    emit soundPlugin(); ///< 发出音效插件信号
+                    this->hide();
+                });
         // 以下为注释掉的悬停事件处理代码，保留以供调试
         /*connect(a_pluginAction, &QWidgetAction::hovered, this, [a_pluginToolBtn,this] {
             checkHover();
@@ -255,16 +282,20 @@ void TitleOptionMenu::initMenu()
         auto a_timeSettingToolBtn = new MenuBtn(this);
         a_timeSettingToolBtn->setFixedSize(360, 37);
         a_timeSettingToolBtn->setIconSize(QSize(20, 20));
-        a_timeSettingToolBtn->setIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/timeSetting-black.svg")));
-        a_timeSettingToolBtn->initIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/timeSetting-black.svg")),
-                                       QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/timeSetting-blue.svg")));
+        a_timeSettingToolBtn->setIcon(
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/timeSetting-black.svg"));
+        a_timeSettingToolBtn->initIcon(
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/timeSetting-black.svg"),
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/timeSetting-blue.svg"));
         a_timeSettingToolBtn->setText(QStringLiteral("   定时设置"));
         a_timeSettingAction->setDefaultWidget(a_timeSettingToolBtn);
-        connect(a_timeSettingToolBtn, &QToolButton::clicked, this, [this]
-        {
-            emit timeSetting(); ///< 发出定时设置信号
-            this->hide();
-        });
+        connect(a_timeSettingToolBtn,
+                &QToolButton::clicked,
+                this,
+                [this] {
+                    emit timeSetting(); ///< 发出定时设置信号
+                    this->hide();
+                });
         // 以下为注释掉的悬停事件处理代码，保留以供调试
         /*connect(a_timeSettingAction, &QWidgetAction::hovered, this, [a_timeSettingToolBtn,this] {
             checkHover();
@@ -283,16 +314,20 @@ void TitleOptionMenu::initMenu()
         auto a_appToolToolBtn = new MenuBtn(this);
         a_appToolToolBtn->setFixedSize(360, 37);
         a_appToolToolBtn->setIconSize(QSize(20, 20));
-        a_appToolToolBtn->setIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/appTool-black.svg")));
-        a_appToolToolBtn->initIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/appTool-black.svg")),
-                                   QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/appTool-blue.svg")));
+        a_appToolToolBtn->setIcon(
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/appTool-black.svg"));
+        a_appToolToolBtn->initIcon(
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/appTool-black.svg"),
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/appTool-blue.svg"));
         a_appToolToolBtn->setText(QStringLiteral("   应用工具"));
         a_appToolAction->setDefaultWidget(a_appToolToolBtn);
-        connect(a_appToolToolBtn, &QToolButton::clicked, this, [this]
-        {
-            emit appTool(); ///< 发出应用工具信号
-            this->hide();
-        });
+        connect(a_appToolToolBtn,
+                &QToolButton::clicked,
+                this,
+                [this] {
+                    emit appTool(); ///< 发出应用工具信号
+                    this->hide();
+                });
         // 以下为注释掉的悬停事件处理代码，保留以供调试
         /*connect(a_appToolAction, &QWidgetAction::hovered, this, [a_appToolToolBtn,this] {
             checkHover();
@@ -311,16 +346,20 @@ void TitleOptionMenu::initMenu()
         auto a_restoreWindowBtn = new MenuBtn(this);
         a_restoreWindowBtn->setFixedSize(360, 37);
         a_restoreWindowBtn->setIconSize(QSize(20, 20));
-        a_restoreWindowBtn->setIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/restoreWindow-black.svg")));
-        a_restoreWindowBtn->initIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/restoreWindow-black.svg")),
-                                     QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/restoreWindow-blue.svg")));
+        a_restoreWindowBtn->setIcon(
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/restoreWindow-black.svg"));
+        a_restoreWindowBtn->initIcon(
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/restoreWindow-black.svg"),
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/restoreWindow-blue.svg"));
         a_restoreWindowBtn->setText(QStringLiteral("   恢复窗口"));
         a_restoreWindowAction->setDefaultWidget(a_restoreWindowBtn);
-        connect(a_restoreWindowBtn, &QToolButton::clicked, this, [this]
-        {
-            emit restoreWindow(); ///< 发出恢复窗口信号
-            this->hide();
-        });
+        connect(a_restoreWindowBtn,
+                &QToolButton::clicked,
+                this,
+                [this] {
+                    emit restoreWindow(); ///< 发出恢复窗口信号
+                    this->hide();
+                });
         // 以下为注释掉的悬停事件处理代码，保留以供调试
         /*connect(a_restoreWindowAction, &QWidgetAction::hovered, this, [a_restoreWindowBtn,this] {
             checkHover();
@@ -339,17 +378,21 @@ void TitleOptionMenu::initMenu()
         auto a_checkUpdateToolBtn = new MenuBtn(this);
         a_checkUpdateToolBtn->setFixedSize(360, 37);
         a_checkUpdateToolBtn->setIconSize(QSize(20, 20));
-        a_checkUpdateToolBtn->setIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/checkUpdate-black.svg")));
-        a_checkUpdateToolBtn->initIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/checkUpdate-black.svg")),
-                                       QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/checkUpdate-blue.svg")));
+        a_checkUpdateToolBtn->setIcon(
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/checkUpdate-black.svg"));
+        a_checkUpdateToolBtn->initIcon(
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/checkUpdate-black.svg"),
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/checkUpdate-blue.svg"));
         a_checkUpdateToolBtn->setText(QStringLiteral("   检查更新"));
         a_checkUpdateAction->setDefaultWidget(a_checkUpdateToolBtn);
-        connect(a_checkUpdateToolBtn, &QToolButton::clicked, this, [this]
-        {
-            // emit checkUpdate(); ///< 发出检查更新信号
-            QDesktopServices::openUrl(QUrl("https://gitee.com/a-mo-xi-wei/KuGouApp"));
-            this->hide();
-        });
+        connect(a_checkUpdateToolBtn,
+                &QToolButton::clicked,
+                this,
+                [this] {
+                    // emit checkUpdate(); ///< 发出检查更新信号
+                    QDesktopServices::openUrl(QUrl("https://gitee.com/a-mo-xi-wei/KuGouApp"));
+                    this->hide();
+                });
         // 以下为注释掉的悬停事件处理代码，保留以供调试
         /*connect(a_checkUpdateAction, &QWidgetAction::hovered, this, [a_checkUpdateToolBtn,this] {
             checkHover();
@@ -380,42 +423,48 @@ void TitleOptionMenu::initMenu()
             "font-size: 15px;border-top-right-radius: 0px;border-bottom-right-radius: 0px;margin-right: 0;");
         a_helpFaceBackToolBtn->setFixedSize(325, 37);
         a_helpFaceBackToolBtn->setIconSize(QSize(20, 20));
-        a_helpFaceBackToolBtn->setIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/helpFaceback-black.svg")));
-        a_helpFaceBackToolBtn->initIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/helpFaceback-black.svg")),
-                                        QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/helpFaceback-blue.svg")));
+        a_helpFaceBackToolBtn->setIcon(
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/helpFaceback-black.svg"));
+        a_helpFaceBackToolBtn->initIcon(
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/helpFaceback-black.svg"),
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/helpFaceback-blue.svg"));
         a_helpFaceBackToolBtn->setText(QStringLiteral("   帮助与意见反馈"));
         a_helpFaceBackToolBtn->setAttribute(Qt::WA_TransparentForMouseEvents);
 
         // 右侧箭头按钮
         auto a_helpRightBtn = new MenuBtn(this);
         a_helpRightBtn->setObjectName("helpRightBtn");
-        a_helpRightBtn->setStyleSheet("border-top-left-radius: 0px;border-bottom-left-radius: 0px;margin-left: 0;");
+        a_helpRightBtn->setStyleSheet(
+            "border-top-left-radius: 0px;border-bottom-left-radius: 0px;margin-left: 0;");
         a_helpRightBtn->setFixedSize(35, 37);
         a_helpRightBtn->setToolButtonStyle(Qt::ToolButtonIconOnly);
-        a_helpRightBtn->setIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/right-black.svg")));
-        a_helpRightBtn->initIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/right-black.svg")),
-                                 QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/right-blue.svg")));
+        a_helpRightBtn->setIcon(
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/right-black.svg"));
+        a_helpRightBtn->initIcon(
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/right-black.svg"),
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/right-blue.svg"));
         a_helpRightBtn->setAttribute(Qt::WA_TransparentForMouseEvents);
 
         layout->addWidget(a_helpFaceBackToolBtn);
         layout->addWidget(a_helpRightBtn);
         a_helpFaceBackAction->setDefaultWidget(widget);
         widget->setAttribute(Qt::WA_TransparentForMouseEvents);
-        connect(a_helpFaceBackAction, &QWidgetAction::hovered, this,
-                [widget, a_helpFaceBackToolBtn, a_helpRightBtn, this]
-        {
-            checkHover();
-            this->m_currentHover.emplace_back(widget);
-            this->m_currentHover.emplace_back(a_helpFaceBackToolBtn);
-            this->m_currentHover.emplace_back(a_helpRightBtn);
-            this->m_lastHover = this->m_currentHover;
-            QEvent enterEvent(QEvent::Enter);
-            QCoreApplication::sendEvent(a_helpFaceBackToolBtn, &enterEvent);
-            QCoreApplication::sendEvent(a_helpRightBtn, &enterEvent);
-            widget->setAttribute(Qt::WA_UnderMouse, true);
-            a_helpFaceBackToolBtn->setAttribute(Qt::WA_UnderMouse, true);
-            a_helpRightBtn->setAttribute(Qt::WA_UnderMouse, true); ///< 模拟控件进入悬停状态
-        });
+        connect(a_helpFaceBackAction,
+                &QWidgetAction::hovered,
+                this,
+                [widget, a_helpFaceBackToolBtn, a_helpRightBtn, this] {
+                    checkHover();
+                    this->m_currentHover.emplace_back(widget);
+                    this->m_currentHover.emplace_back(a_helpFaceBackToolBtn);
+                    this->m_currentHover.emplace_back(a_helpRightBtn);
+                    this->m_lastHover = this->m_currentHover;
+                    QEvent enterEvent(QEvent::Enter);
+                    QCoreApplication::sendEvent(a_helpFaceBackToolBtn, &enterEvent);
+                    QCoreApplication::sendEvent(a_helpRightBtn, &enterEvent);
+                    widget->setAttribute(Qt::WA_UnderMouse, true);
+                    a_helpFaceBackToolBtn->setAttribute(Qt::WA_UnderMouse, true);
+                    a_helpRightBtn->setAttribute(Qt::WA_UnderMouse, true); ///< 模拟控件进入悬停状态
+                });
 
         // 事件过滤器：监听父组件悬停状态
         //widget->installEventFilter(this);
@@ -425,16 +474,21 @@ void TitleOptionMenu::initMenu()
         {
             auto a_useHelpToolBtn = new MenuBtn(this);
             a_useHelpToolBtn->setFixedSize(160, 35);
-            a_useHelpToolBtn->setIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/useHelp-black.svg")));
-            a_useHelpToolBtn->initIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/useHelp-black.svg")),
-                                       QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/useHelp-blue.svg")));
+            a_useHelpToolBtn->setIcon(
+                QIcon(QString(RESOURCE_DIR) + "/menuIcon/useHelp-black.svg"));
+            a_useHelpToolBtn->initIcon(
+                QIcon(QString(RESOURCE_DIR) + "/menuIcon/useHelp-black.svg"),
+                QIcon(QString(RESOURCE_DIR) + "/menuIcon/useHelp-blue.svg"));
             a_useHelpToolBtn->setText(QStringLiteral("  使用帮助"));
             a_useHelpAction->setDefaultWidget(a_useHelpToolBtn);
-            connect(a_useHelpToolBtn, &QToolButton::clicked, this, [this]
-            {
-                QDesktopServices::openUrl(QUrl("https://gitee.com/a-mo-xi-wei/KuGouApp/blob/master/README.md"));
-                this->hide();
-            });
+            connect(a_useHelpToolBtn,
+                    &QToolButton::clicked,
+                    this,
+                    [this] {
+                        QDesktopServices::openUrl(
+                            QUrl("https://gitee.com/a-mo-xi-wei/KuGouApp/blob/master/README.md"));
+                        this->hide();
+                    });
             // 以下为注释掉的悬停事件处理代码，保留以供调试
             /*connect(a_useHelpAction, &QWidgetAction::hovered, this, [a_useHelpToolBtn,this] {
                 checkHover();
@@ -452,16 +506,21 @@ void TitleOptionMenu::initMenu()
         {
             auto a_feedbackToolBtn = new MenuBtn(this);
             a_feedbackToolBtn->setFixedSize(160, 35);
-            a_feedbackToolBtn->setIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/feedback-black.svg")));
-            a_feedbackToolBtn->initIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/feedback-black.svg")),
-                                        QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/feedback-blue.svg")));
+            a_feedbackToolBtn->setIcon(
+                QIcon(QString(RESOURCE_DIR) + "/menuIcon/feedback-black.svg"));
+            a_feedbackToolBtn->initIcon(
+                QIcon(QString(RESOURCE_DIR) + "/menuIcon/feedback-black.svg"),
+                QIcon(QString(RESOURCE_DIR) + "/menuIcon/feedback-blue.svg"));
             a_feedbackToolBtn->setText(QStringLiteral("  意见反馈"));
             a_feedbackAction->setDefaultWidget(a_feedbackToolBtn);
-            connect(a_feedbackToolBtn, &QToolButton::clicked, this, [this]
-            {
-                QDesktopServices::openUrl(QUrl("https://gitee.com/a-mo-xi-wei/KuGouApp/issues"));
-                this->hide();
-            });
+            connect(a_feedbackToolBtn,
+                    &QToolButton::clicked,
+                    this,
+                    [this] {
+                        QDesktopServices::openUrl(
+                            QUrl("https://gitee.com/a-mo-xi-wei/KuGouApp/issues"));
+                        this->hide();
+                    });
             // 以下为注释掉的悬停事件处理代码，保留以供调试
             /*connect(a_feedbackAction, &QWidgetAction::hovered, this, [a_feedbackToolBtn,this] {
                 checkHover();
@@ -479,16 +538,21 @@ void TitleOptionMenu::initMenu()
         {
             auto a_communityToolBtn = new MenuBtn(this);
             a_communityToolBtn->setFixedSize(160, 35);
-            a_communityToolBtn->setIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/community-black.svg")));
-            a_communityToolBtn->initIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/community-black.svg")),
-                                         QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/community-blue.svg")));
+            a_communityToolBtn->setIcon(
+                QIcon(QString(RESOURCE_DIR) + "/menuIcon/community-black.svg"));
+            a_communityToolBtn->initIcon(
+                QIcon(QString(RESOURCE_DIR) + "/menuIcon/community-black.svg"),
+                QIcon(QString(RESOURCE_DIR) + "/menuIcon/community-blue.svg"));
             a_communityToolBtn->setText(QStringLiteral("  用户反馈社区"));
             a_communityAction->setDefaultWidget(a_communityToolBtn);
-            connect(a_communityToolBtn, &QToolButton::clicked, this, [this]
-            {
-                QDesktopServices::openUrl(QUrl("https://gitee.com/a-mo-xi-wei/KuGouApp/issues"));
-                this->hide();
-            });
+            connect(a_communityToolBtn,
+                    &QToolButton::clicked,
+                    this,
+                    [this] {
+                        QDesktopServices::openUrl(
+                            QUrl("https://gitee.com/a-mo-xi-wei/KuGouApp/issues"));
+                        this->hide();
+                    });
             // 以下为注释掉的悬停事件处理代码，保留以供调试
             /*connect(a_communityAction, &QWidgetAction::hovered, this, [a_communityToolBtn,this] {
                 checkHover();
@@ -506,16 +570,20 @@ void TitleOptionMenu::initMenu()
         {
             auto a_updateInfoToolBtn = new MenuBtn(this);
             a_updateInfoToolBtn->setFixedSize(160, 35);
-            a_updateInfoToolBtn->setIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/updateInfo-black.svg")));
-            a_updateInfoToolBtn->initIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/updateInfo-black.svg")),
-                                          QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/updateInfo-blue.svg")));
+            a_updateInfoToolBtn->setIcon(
+                QIcon(QString(RESOURCE_DIR) + "/menuIcon/updateInfo-black.svg"));
+            a_updateInfoToolBtn->initIcon(
+                QIcon(QString(RESOURCE_DIR) + "/menuIcon/updateInfo-black.svg"),
+                QIcon(QString(RESOURCE_DIR) + "/menuIcon/updateInfo-blue.svg"));
             a_updateInfoToolBtn->setText(QStringLiteral("  更新信息"));
             a_updateInfoAction->setDefaultWidget(a_updateInfoToolBtn);
-            connect(a_updateInfoToolBtn, &QToolButton::clicked, this, [this]
-            {
-                emit updateInfo(); ///< 发出更新信息信号
-                this->hide();
-            });
+            connect(a_updateInfoToolBtn,
+                    &QToolButton::clicked,
+                    this,
+                    [this] {
+                        emit updateInfo(); ///< 发出更新信息信号
+                        this->hide();
+                    });
             // 以下为注释掉的悬停事件处理代码，保留以供调试
             /*connect(a_updateInfoAction, &QWidgetAction::hovered, this, [a_updateInfoToolBtn,this] {
                 checkHover();
@@ -533,16 +601,20 @@ void TitleOptionMenu::initMenu()
         {
             auto a_aboutToolBtn = new MenuBtn(this);
             a_aboutToolBtn->setFixedSize(160, 35);
-            a_aboutToolBtn->setIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/about-black.svg")));
-            a_aboutToolBtn->initIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/about-black.svg")),
-                                     QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/about-blue.svg")));
+            a_aboutToolBtn->setIcon(
+                QIcon(QString(RESOURCE_DIR) + "/menuIcon/about-black.svg"));
+            a_aboutToolBtn->initIcon(
+                QIcon(QString(RESOURCE_DIR) + "/menuIcon/about-black.svg"),
+                QIcon(QString(RESOURCE_DIR) + "/menuIcon/about-blue.svg"));
             a_aboutToolBtn->setText(QStringLiteral("  关于应用"));
             a_aboutAction->setDefaultWidget(a_aboutToolBtn);
-            connect(a_aboutToolBtn, &QToolButton::clicked, this, [this]
-            {
-                emit about(); ///< 发出关于应用信号
-                this->hide();
-            });
+            connect(a_aboutToolBtn,
+                    &QToolButton::clicked,
+                    this,
+                    [this] {
+                        emit about(); ///< 发出关于应用信号
+                        this->hide();
+                    });
             // 以下为注释掉的悬停事件处理代码，保留以供调试
             /*connect(a_aboutAction, &QWidgetAction::hovered, this, [a_aboutToolBtn,this] {
                 checkHover();
@@ -573,16 +645,20 @@ void TitleOptionMenu::initMenu()
         auto a_settingsToolBtn = new MenuBtn(this);
         a_settingsToolBtn->setFixedSize(360, 37);
         a_settingsToolBtn->setIconSize(QSize(20, 20));
-        a_settingsToolBtn->setIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/settings-black.svg")));
-        a_settingsToolBtn->initIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/settings-black.svg")),
-                                    QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/settings-blue.svg")));
+        a_settingsToolBtn->setIcon(
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/settings-black.svg"));
+        a_settingsToolBtn->initIcon(
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/settings-black.svg"),
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/settings-blue.svg"));
         a_settingsToolBtn->setText(QStringLiteral("   设置"));
         a_settingsAction->setDefaultWidget(a_settingsToolBtn);
-        connect(a_settingsToolBtn, &QToolButton::clicked, this, [this]
-        {
-            emit settings(); ///< 发出设置信号
-            this->hide();
-        });
+        connect(a_settingsToolBtn,
+                &QToolButton::clicked,
+                this,
+                [this] {
+                    emit settings(); ///< 发出设置信号
+                    this->hide();
+                });
         // 以下为注释掉的悬停事件处理代码，保留以供调试
         /*connect(a_settingsAction, &QWidgetAction::hovered, this, [a_settingsToolBtn,this] {
             checkHover();
@@ -601,16 +677,20 @@ void TitleOptionMenu::initMenu()
         auto a_logOutToolBtn = new MenuBtn(this);
         a_logOutToolBtn->setFixedSize(360, 37);
         a_logOutToolBtn->setIconSize(QSize(20, 20));
-        a_logOutToolBtn->setIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/logOut-black.svg")));
-        a_logOutToolBtn->initIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/logOut-black.svg")),
-                                  QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/logOut-blue.svg")));
+        a_logOutToolBtn->setIcon(
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/logOut-black.svg"));
+        a_logOutToolBtn->initIcon(
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/logOut-black.svg"),
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/logOut-blue.svg"));
         a_logOutToolBtn->setText(QStringLiteral("   退出登录"));
         a_logOutAction->setDefaultWidget(a_logOutToolBtn);
-        connect(a_logOutToolBtn, &QToolButton::clicked, this, [this]
-        {
-            emit logOut(); ///< 发出退出登录信号
-            this->hide();
-        });
+        connect(a_logOutToolBtn,
+                &QToolButton::clicked,
+                this,
+                [this] {
+                    emit logOut(); ///< 发出退出登录信号
+                    this->hide();
+                });
         // 以下为注释掉的悬停事件处理代码，保留以供调试
         /*connect(a_logOutAction, &QWidgetAction::hovered, this, [a_logOutToolBtn,this] {
             checkHover();
@@ -629,16 +709,20 @@ void TitleOptionMenu::initMenu()
         auto a_exitToolBtn = new MenuBtn(this);
         a_exitToolBtn->setFixedSize(360, 37);
         a_exitToolBtn->setIconSize(QSize(20, 20));
-        a_exitToolBtn->setIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/exit-black.svg")));
-        a_exitToolBtn->initIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/exit-black.svg")),
-                                QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/exit-blue.svg")));
+        a_exitToolBtn->setIcon(
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/exit-black.svg"));
+        a_exitToolBtn->initIcon(
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/exit-black.svg"),
+            QIcon(QString(RESOURCE_DIR) + "/menuIcon/exit-blue.svg"));
         a_exitToolBtn->setText(QStringLiteral("   退出酷狗音乐"));
         a_exitAction->setDefaultWidget(a_exitToolBtn);
-        connect(a_exitToolBtn, &QToolButton::clicked, this, [this]
-        {
-            emit exit(); ///< 发出退出应用信号
-            this->hide();
-        });
+        connect(a_exitToolBtn,
+                &QToolButton::clicked,
+                this,
+                [this] {
+                    emit exit(); ///< 发出退出应用信号
+                    this->hide();
+                });
         // 以下为注释掉的悬停事件处理代码，保留以供调试
         /*connect(a_exitAction, &QWidgetAction::hovered, this, [a_exitToolBtn,this] {
             checkHover();
@@ -676,7 +760,7 @@ void TitleOptionMenu::initMenu()
  * @brief 获取当前菜单对象
  * @return 当前菜单对象指针
  */
-const TitleOptionMenu* TitleOptionMenu::getMenu() const
+const TitleOptionMenu *TitleOptionMenu::getMenu() const
 {
     return this;
 }

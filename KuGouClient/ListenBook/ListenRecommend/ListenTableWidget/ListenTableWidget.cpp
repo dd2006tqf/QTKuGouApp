@@ -15,10 +15,10 @@
  */
 ListenTableWidget::ListenTableWidget(QWidget *parent)
     : QWidget(parent)
-    , ui(new Ui::ListenTableWidget)
+      , ui(new Ui::ListenTableWidget)
 {
-    ui->setupUi(this);                                   ///< 初始化 UI
-    initUi();                                            ///< 初始化界面
+    ui->setupUi(this); ///< 初始化 UI
+    initUi();          ///< 初始化界面
 }
 
 /**
@@ -35,25 +35,25 @@ ListenTableWidget::~ListenTableWidget()
  */
 void ListenTableWidget::setTitle(const QString &title) const
 {
-    ui->title_label->setText(title);                     ///< 设置标题文本
+    ui->title_label->setText(title); ///< 设置标题文本
 }
 
 /**
  * @brief 获取画廊控件
  * @return 画廊控件指针
  */
-GalleryWidget* ListenTableWidget::getGalleryWidget() const
+GalleryWidget *ListenTableWidget::getGalleryWidget() const
 {
-    return ui->gallery_widget;                           ///< 返回画廊控件
+    return ui->gallery_widget; ///< 返回画廊控件
 }
 
 /**
  * @brief 设置计数
  * @param cnt 计数值
  */
-void ListenTableWidget::setCnt(const int& cnt)
+void ListenTableWidget::setCnt(const int &cnt)
 {
-    this->m_cnt = cnt;                                   ///< 设置计数值
+    this->m_cnt = cnt; ///< 设置计数值
 }
 
 /**
@@ -62,7 +62,7 @@ void ListenTableWidget::setCnt(const int& cnt)
  */
 int ListenTableWidget::getCnt() const
 {
-    return this->m_cnt;                                  ///< 返回计数值
+    return this->m_cnt; ///< 返回计数值
 }
 
 /**
@@ -71,7 +71,7 @@ int ListenTableWidget::getCnt() const
  */
 QString ListenTableWidget::getTitle() const
 {
-    return ui->title_label->text();                      ///< 返回标题文本
+    return ui->title_label->text(); ///< 返回标题文本
 }
 
 /**
@@ -80,7 +80,8 @@ QString ListenTableWidget::getTitle() const
  */
 void ListenTableWidget::initUi()
 {
-    ui->toolButton->setIcon(QIcon(QStringLiteral(":/ListenBook/Res/listenbook/refresh-gray.svg"))); ///< 设置默认图标
+    ui->toolButton->setIcon(QIcon(QString(RESOURCE_DIR) + "/listenbook/refresh-gray.svg"));
+    ///< 设置默认图标
     ui->toolButton->setStyleSheet(R"(
         QToolButton#toolButton{
             font-family: 'TaiwanPearl';
@@ -91,8 +92,8 @@ void ListenTableWidget::initUi()
         QToolButton#toolButton:hover{
             color: #26A1FF;
         }
-    )");                                                ///< 设置按钮样式
-    ui->toolButton->installEventFilter(this);            ///< 安装事件过滤器
+    )");                                      ///< 设置按钮样式
+    ui->toolButton->installEventFilter(this); ///< 安装事件过滤器
 }
 
 /**
@@ -103,20 +104,21 @@ void ListenTableWidget::initUi()
  */
 bool ListenTableWidget::eventFilter(QObject *watched, QEvent *event)
 {
-    if (watched == ui->toolButton)
-    {
-        if (event->type() == QEvent::Enter)
-        {
-            ui->toolButton->setIcon(QIcon(QStringLiteral(":/ListenBook/Res/listenbook/refresh-blue.svg"))); ///< 设置悬停图标
+    if (watched == ui->toolButton) {
+        if (event->type() == QEvent::Enter) {
+            ui->toolButton->setIcon(
+                QIcon(QString(RESOURCE_DIR) + "/listenbook/refresh-blue.svg"));
+            ///< 设置悬停图标
             return true;
         }
-        if (event->type() == QEvent::Leave)
-        {
-            ui->toolButton->setIcon(QIcon(QStringLiteral(":/ListenBook/Res/listenbook/refresh-gray.svg"))); ///< 恢复默认图标
+        if (event->type() == QEvent::Leave) {
+            ui->toolButton->setIcon(
+                QIcon(QString(RESOURCE_DIR) + "/listenbook/refresh-gray.svg"));
+            ///< 恢复默认图标
             return true;
         }
     }
-    return QWidget::eventFilter(watched, event);         ///< 调用父类事件过滤器
+    return QWidget::eventFilter(watched, event); ///< 调用父类事件过滤器
 }
 
 /**
@@ -125,5 +127,5 @@ bool ListenTableWidget::eventFilter(QObject *watched, QEvent *event)
  */
 void ListenTableWidget::on_toolButton_clicked()
 {
-    emit toolBtnClicked();                               ///< 发出刷新信号
+    emit toolBtnClicked(); ///< 发出刷新信号
 }

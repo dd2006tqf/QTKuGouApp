@@ -79,12 +79,12 @@ void SongList::initUi()
     this->m_refreshMask->keepLoading();
 
     ui->all_toolButton->setMouseTracking(true); ///< 启用鼠标跟踪
-    ui->all_toolButton->setIcon(QIcon(QStringLiteral(":/ListenBook/Res/listenbook/down-gray.svg")));
+    ui->all_toolButton->setIcon(QIcon(QString(RESOURCE_DIR) + "/listenbook/down-gray.svg"));
     ///< 设置默认图标
     ui->all_toolButton->setEnterIcon(
-        QIcon(QStringLiteral(":/ListenBook/Res/listenbook/down-blue.svg"))); ///< 设置悬停图标
+        QIcon(QString(RESOURCE_DIR) + "/listenbook/down-blue.svg")); ///< 设置悬停图标
     ui->all_toolButton->setLeaveIcon(
-        QIcon(QStringLiteral(":/ListenBook/Res/listenbook/down-gray.svg")));  ///< 设置离开图标
+        QIcon(QString(RESOURCE_DIR) + "/listenbook/down-gray.svg"));          ///< 设置离开图标
     ui->all_toolButton->setHoverFontColor(QColor(QStringLiteral("#3AA1FF"))); ///< 设置悬停字体颜色
     ui->all_toolButton->setApproach(true);                                    ///< 启用接近效果
     ui->all_toolButton->setChangeSize(true);                                  ///< 启用动态大小
@@ -224,12 +224,12 @@ void SongList::on_all_toolButton_clicked()
 {
     if (ui->all_toolButton->isChecked()) {
         ui->all_toolButton->setIcon(
-            QIcon(QStringLiteral(":/ListenBook/Res/listenbook/up-gray.svg"))); ///< 设置向上图标
+            QIcon(QString(RESOURCE_DIR) + "/listenbook/up-gray.svg")); ///< 设置向上图标
         ui->all_toolButton->setEnterIcon(
-            QIcon(QStringLiteral(":/ListenBook/Res/listenbook/up-blue.svg")));
+            QIcon(QString(RESOURCE_DIR) + "/listenbook/up-blue.svg"));
         ///< 设置悬停向上图标
         ui->all_toolButton->setLeaveIcon(
-            QIcon(QStringLiteral(":/ListenBook/Res/listenbook/up-gray.svg")));
+            QIcon(QString(RESOURCE_DIR) + "/listenbook/up-gray.svg"));
         ///< 设置离开向上图标
 
         const QPoint globalPos = ui->all_toolButton->mapToGlobal(
@@ -249,25 +249,25 @@ void SongList::on_all_toolButton_clicked()
                 [this] {
                     ui->all_toolButton->setChecked(false); ///< 取消按钮选中状态
                     ui->all_toolButton->setIcon(
-                        QIcon(QStringLiteral(":/ListenBook/Res/listenbook/down-gray.svg")));
+                        QIcon(QString(RESOURCE_DIR) + "/listenbook/down-gray.svg"));
                     ///< 恢复向下图标
                     ui->all_toolButton->setEnterIcon(
-                        QIcon(QStringLiteral(":/ListenBook/Res/listenbook/down-blue.svg")));
+                        QIcon(QString(RESOURCE_DIR) + "/listenbook/down-blue.svg"));
                     ///< 恢复悬停向下图标
                     ui->all_toolButton->setLeaveIcon(
-                        QIcon(QStringLiteral(":/ListenBook/Res/listenbook/down-gray.svg")));
+                        QIcon(QString(RESOURCE_DIR) + "/listenbook/down-gray.svg"));
                     ///< 恢复离开向下图标
                 });
 
         m_menu->exec(globalPos); ///< 显示菜单
     } else {
         ui->all_toolButton->setIcon(
-            QIcon(QStringLiteral(":/ListenBook/Res/listenbook/down-gray.svg"))); ///< 设置向下图标
+            QIcon(QString(RESOURCE_DIR) + "/listenbook/down-gray.svg")); ///< 设置向下图标
         ui->all_toolButton->setEnterIcon(
-            QIcon(QStringLiteral(":/ListenBook/Res/listenbook/down-blue.svg")));
+            QIcon(QString(RESOURCE_DIR) + "/listenbook/down-blue.svg"));
         ///< 设置悬停向下图标
         ui->all_toolButton->setLeaveIcon(
-            QIcon(QStringLiteral(":/ListenBook/Res/listenbook/down-gray.svg")));
+            QIcon(QString(RESOURCE_DIR) + "/listenbook/down-gray.svg"));
         ///< 设置离开向下图标
     }
 }

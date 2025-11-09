@@ -33,9 +33,9 @@
  */
 MusicRepository::MusicRepository(QWidget* parent)
     : QWidget(parent)
-    , ui(new Ui::MusicRepository)
-    , m_buttonGroup(std::make_unique<QButtonGroup>(this))
-    , m_currentIdx(0)
+      , ui(new Ui::MusicRepository)
+      , m_buttonGroup(std::make_unique<QButtonGroup>(this))
+      , m_currentIdx(0)
 {
     ui->setupUi(this);
     QFile file(GET_CURRENT_DIR + QStringLiteral("/musicrepo.css")); ///< 加载样式表
@@ -114,7 +114,7 @@ void MusicRepository::initButtonGroup()
     for (int i = 0; i < 4; ++i)
     {
         auto* placeholder = new QWidget;
-        auto* layout      = new QVBoxLayout(placeholder);
+        auto* layout = new QVBoxLayout(placeholder);
         layout->setContentsMargins(0, 0, 0, 0);
         layout->setSpacing(0);
         m_repoPages[i] = placeholder;
@@ -170,7 +170,7 @@ void MusicRepository::initButtonGroup()
             }
         }
         placeholder = m_repoPages[id];
-        layout      = placeholder->layout();
+        layout = placeholder->layout();
         // 创建新页面
         int beginIndex = id * 10 + 1;
         // qDebug() << "[DEBUG] Creating new repo page. Begin index:" << beginIndex;
@@ -218,7 +218,7 @@ void MusicRepository::initUi()
             return data;
         }
         const auto obj = QJsonDocument::fromJson(file.readAll()); ///< 解析 JSON
-        auto arr       = obj.array();
+        auto arr = obj.array();
         for (const auto& item : arr)
         {
             data.append(item.toObject()); ///< 添加数据项
@@ -239,7 +239,7 @@ void MusicRepository::initUi()
         for (int i = 1; i <= std::min(60, static_cast<int>(datas.size())); ++i)
         {
             this->m_musicData.emplace_back(
-                QString(":/BlockCover/Res/blockcover/music-block-cover%1.jpg").arg(i),
+                QString(QString(RESOURCE_DIR) + "/blockcover/music-block-cover%1.jpg").arg(i),
                 datas[i].value("song").toString(),
                 datas[i].value("singer").toString());
         }
@@ -268,7 +268,7 @@ void MusicRepository::initUi()
             queue->enqueue(task);
 
         auto runner = std::make_shared<std::function<void()>>();
-        *runner     = [queue, runner]()
+        *runner = [queue, runner]()
         {
             if (queue->isEmpty())
                 return;
@@ -283,7 +283,6 @@ void MusicRepository::initUi()
 
         (*runner)();
     });
-
 }
 
 /**
@@ -309,7 +308,7 @@ void MusicRepository::initNewDiskWidget()
     };
 
     // 使用 lambda 设置控件属性
-    auto setupWidget = [](MusicRepoBlock * widget, const auto & block)
+    auto setupWidget = [](MusicRepoBlock* widget, const auto& block)
     {
         if (!widget)
         {
@@ -356,7 +355,7 @@ void MusicRepository::initSelectWidget()
     };
 
     // 使用 lambda 设置控件属性
-    auto setupWidget = [](MusicRepoVideo * widget, const auto & video)
+    auto setupWidget = [](MusicRepoVideo* widget, const auto& video)
     {
         if (!widget)
         {
@@ -397,8 +396,8 @@ void MusicRepository::resizeEvent(QResizeEvent* event)
     ui->singer_widget->setFixedHeight(average);                                 ///< 设置歌手高度
     ui->classify_widget->setFixedHeight(average);                               ///< 设置分类高度
 
-    static int lastVisibleState = -1;            ///< 记录上一次可见状态
-    const int currentWidth      = this->width(); ///< 获取当前宽度
+    static int lastVisibleState = -1;       ///< 记录上一次可见状态
+    const int currentWidth = this->width(); ///< 获取当前宽度
     int newVisibleState;
     if (currentWidth < 1045)
     {
@@ -417,12 +416,12 @@ void MusicRepository::resizeEvent(QResizeEvent* event)
         switch (newVisibleState)
         {
         case 0:
-            ui->block_widget6->hide(); ///< 隐藏块 6
-            ui->block_widget7->hide();     ///< 隐藏块 7
-            ui->video_widget4->hide();     ///< 隐藏视频 4
-            ui->video_widget5->hide();     ///< 隐藏视频 5
-            ui->video_widget9->hide();     ///< 隐藏视频 9
-            ui->video_widget10->hide();    ///< 隐藏视频 10
+            ui->block_widget6->hide();  ///< 隐藏块 6
+            ui->block_widget7->hide();  ///< 隐藏块 7
+            ui->video_widget4->hide();  ///< 隐藏视频 4
+            ui->video_widget5->hide();  ///< 隐藏视频 5
+            ui->video_widget9->hide();  ///< 隐藏视频 9
+            ui->video_widget10->hide(); ///< 隐藏视频 10
             break;
         case 1:
             ui->block_widget6->show(); ///< 显示块 6
@@ -433,12 +432,12 @@ void MusicRepository::resizeEvent(QResizeEvent* event)
             ui->video_widget10->hide();
             break;
         case 2:
-            ui->block_widget6->show(); ///< 显示块 6
-            ui->block_widget7->show();     ///< 显示块 7
-            ui->video_widget4->show();     ///< 显示视频 4
-            ui->video_widget5->show();     ///< 显示视频 5
-            ui->video_widget9->show();     ///< 显示视频 9
-            ui->video_widget10->show();    ///< 显示视频 10
+            ui->block_widget6->show();  ///< 显示块 6
+            ui->block_widget7->show();  ///< 显示块 7
+            ui->video_widget4->show();  ///< 显示视频 4
+            ui->video_widget5->show();  ///< 显示视频 5
+            ui->video_widget9->show();  ///< 显示视频 9
+            ui->video_widget10->show(); ///< 显示视频 10
             break;
         default:
             break;

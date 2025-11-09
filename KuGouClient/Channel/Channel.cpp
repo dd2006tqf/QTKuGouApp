@@ -237,7 +237,8 @@ void Channel::initUi()
                                             for (int i = 1; i <= 210; ++i) {
                                                 this->m_pixPathVector.emplace_back(
                                                     QString(
-                                                        ":/BlockCover/Res/blockcover/music-block-cover%1.jpg")
+                                                        QString(RESOURCE_DIR) +
+                                                        "/blockcover/music-block-cover%1.jpg")
                                                     .arg(i));
                                                 ///< 添加封面图片路径
                                             }

@@ -349,7 +349,7 @@ void MVWidget::initUi()
 
     this->m_searchAction = new QAction(this); ///< 创建搜索动作
     this->m_searchAction->
-          setIcon(QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/search-black.svg"))); ///< 设置图标
+          setIcon(QIcon(QString(RESOURCE_DIR) + "/menuIcon/search-black.svg")); ///< 设置图标
     this->m_searchAction->setIconVisibleInMenu(false);
     connect(this->m_searchAction,
             &QAction::triggered,
@@ -369,7 +369,7 @@ void MVWidget::initUi()
     ui->search_lineEdit->setFont(font);
 
     QToolButton *searchButton = nullptr;
-    foreach(QToolButton *btn, ui->search_lineEdit->findChildren<QToolButton*>()) {
+    foreach(QToolButton * btn, ui->search_lineEdit->findChildren<QToolButton*>()) {
         if (btn->defaultAction() == this->m_searchAction) {
             searchButton = btn;
             auto search_lineEdit_toolTip = new ElaToolTip(searchButton); ///< 创建提示
@@ -460,10 +460,12 @@ bool MVWidget::eventFilter(QObject *watched, QEvent *event)
     if (button && button->defaultAction() == this->m_searchAction) {
         if (event->type() == QEvent::Enter) {
             this->m_searchAction->setIcon(
-                QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/search-blue.svg"))); ///< 悬停图标
+                QIcon(QString(RESOURCE_DIR) + "/menuIcon/search-blue.svg"));
+            ///< 悬停图标
         } else if (event->type() == QEvent::Leave) {
             this->m_searchAction->setIcon(
-                QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/search-black.svg"))); ///< 默认图标
+                QIcon(QString(RESOURCE_DIR) + "/menuIcon/search-black.svg"));
+            ///< 默认图标
         }
     }
     return QObject::eventFilter(watched, event);
