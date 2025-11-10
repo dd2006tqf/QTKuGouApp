@@ -28,7 +28,10 @@ Downloading::Downloading(QWidget *parent)
     ui->setupUi(this);                                                ///< 初始化 UI
     QFile file(GET_CURRENT_DIR + QStringLiteral("/downloading.css")); ///< 加载样式表
     if (file.open(QIODevice::ReadOnly)) {
-        this->setStyleSheet(file.readAll()); ///< 应用样式表
+        QString css = QString::fromUtf8(file.readAll());
+        // 替换 RESOURCE_DIR 为实际路径
+        css.replace("RESOURCE_DIR", RESOURCE_DIR); // RESOURCE_DIR 是 C++ 宏
+        this->setStyleSheet(css);
     } else {
         qDebug() << "样式表打开失败QAQ";
         STREAM_ERROR() << "样式表打开失败QAQ"; ///< 记录错误日志

@@ -28,15 +28,18 @@
  * @brief 构造函数，初始化直播音乐部分控件
  * @param parent 父控件指针，默认为 nullptr
  */
-LiveMusicPartWidget::LiveMusicPartWidget(QWidget *parent)
+LiveMusicPartWidget::LiveMusicPartWidget(QWidget* parent)
     : QWidget(parent)
       , ui(new Ui::LiveMusicPartWidget)
 {
     ui->setupUi(this);                                          ///< 初始化 UI
     QFile file(GET_CURRENT_DIR + QStringLiteral("/music.css")); ///< 加载样式表
-    if (file.open(QIODevice::ReadOnly)) {
+    if (file.open(QIODevice::ReadOnly))
+    {
         this->setStyleSheet(file.readAll()); ///< 应用样式表
-    } else {
+    }
+    else
+    {
         qDebug() << "样式表打开失败QAQ";
         STREAM_ERROR() << "样式表打开失败QAQ"; ///< 记录错误日志
         return;
@@ -56,7 +59,7 @@ LiveMusicPartWidget::~LiveMusicPartWidget()
  * @brief 设置标题
  * @param name 标题文本
  */
-void LiveMusicPartWidget::setTitleName(const QString &name) const
+void LiveMusicPartWidget::setTitleName(const QString& name) const
 {
     ui->title_label->setText(name); ///< 设置标题文本
 }
@@ -99,15 +102,17 @@ void LiveMusicPartWidget::initUi()
                                         jsonPath); ///< 异步解析 JSON
     Async::onResultReady(future,
                          this,
-                         [=](const QList<QString> &texts) {
-                             if (texts.isEmpty()) {
+                         [=](const QList<QString>& texts)
+                         {
+                             if (texts.isEmpty())
+                             {
                                  qWarning() << "No valid data parsed from JSON";
                                  STREAM_WARN() << "No valid data parsed from JSON"; ///< 记录警告日志
                                  return;
                              }
                              this->m_leftBottomTextVec = texts; ///< 更新文本列表
                              unsigned seed = std::chrono::system_clock::now().time_since_epoch().
-                                 count();
+                                                                              count();
                              std::shuffle(this->m_leftBottomTextVec.begin(),
                                           this->m_leftBottomTextVec.end(),
                                           std::default_random_engine(seed)); ///< 打乱文本顺序
@@ -130,24 +135,27 @@ void LiveMusicPartWidget::initUi()
  * @param filePath 文件路径
  * @return 文本列表
  */
-QList<QString> LiveMusicPartWidget::parseJsonFile(const QString &filePath)
+QList<QString> LiveMusicPartWidget::parseJsonFile(const QString& filePath)
 {
     QList<QString> texts; ///< 文本列表
     QFile file(filePath); ///< 打开 JSON 文件
-    if (!file.open(QIODevice::ReadOnly)) {
+    if (!file.open(QIODevice::ReadOnly))
+    {
         qWarning() << "Failed to open JSON file:" << filePath;
         STREAM_WARN() << "Failed to open JSON file:" << filePath.toStdString(); ///< 记录警告日志
         return texts;
     }
     QJsonParseError parseError;
     const QJsonDocument doc = QJsonDocument::fromJson(file.readAll(), &parseError); ///< 解析 JSON
-    if (parseError.error != QJsonParseError::NoError) {
+    if (parseError.error != QJsonParseError::NoError)
+    {
         qWarning() << "JSON parse error:" << parseError.errorString();
         STREAM_WARN() << "JSON parse error:" << parseError.errorString().toStdString(); ///< 记录错误日志
         return texts;
     }
     QJsonArray arr = doc.array();
-    for (const auto &item : arr) {
+    for (const auto& item : arr)
+    {
         QString text = item.toObject().value("text").toString();
         texts.append(text); ///< 添加文本
     }
@@ -170,7 +178,7 @@ void LiveMusicPartWidget::initBlockWidget()
     ui->left_block_widget_1->setTipLabText(
         QString::number(QRandomGenerator::global()->bounded(5000))); ///< 设置左块1提示
     ui->left_block_widget_1->setCoverPix(
-        QString(":/StandCover/Res/standcover/music-stand-cover%1.jpg")
+        QString(QString(RESOURCE_DIR) + "/standcover/music-stand-cover%1.jpg")
         .arg(QString::number(QRandomGenerator::global()->bounded(
             1,
             getFileCount(GET_CURRENT_DIR + "/../../../Res_Qrc/Res/standcover"))))); ///< 设置左块1封面
@@ -178,7 +186,7 @@ void LiveMusicPartWidget::initBlockWidget()
     ui->right_block_widget_1->setTipLabText(
         QString::number(QRandomGenerator::global()->bounded(5000))); ///< 设置右块1提示
     ui->right_block_widget_1->setCoverPix(
-        QString(":/StandCover/Res/standcover/music-stand-cover%1.jpg")
+        QString(QString(RESOURCE_DIR) + "/standcover/music-stand-cover%1.jpg")
         .arg(QString::number(QRandomGenerator::global()->bounded(
             1,
             getFileCount(GET_CURRENT_DIR + "/../../../Res_Qrc/Res/standcover"))))); ///< 设置右块1封面
@@ -191,7 +199,7 @@ void LiveMusicPartWidget::initBlockWidget()
     ui->left_block_widget_2->setTipLabText(
         QString::number(QRandomGenerator::global()->bounded(5000))); ///< 设置左块2提示
     ui->left_block_widget_2->setCoverPix(
-        QString(":/StandCover/Res/standcover/music-stand-cover%1.jpg")
+        QString(QString(RESOURCE_DIR) + "/standcover/music-stand-cover%1.jpg")
         .arg(QString::number(QRandomGenerator::global()->bounded(
             1,
             getFileCount(GET_CURRENT_DIR + "/../../../Res_Qrc/Res/standcover"))))); ///< 设置左块2封面
@@ -199,7 +207,7 @@ void LiveMusicPartWidget::initBlockWidget()
     ui->right_block_widget_2->setTipLabText(
         QString::number(QRandomGenerator::global()->bounded(5000))); ///< 设置右块2提示
     ui->right_block_widget_2->setCoverPix(
-        QString(":/StandCover/Res/standcover/music-stand-cover%1.jpg")
+        QString(QString(RESOURCE_DIR) + "/standcover/music-stand-cover%1.jpg")
         .arg(QString::number(QRandomGenerator::global()->bounded(
             1,
             getFileCount(GET_CURRENT_DIR + "/../../../Res_Qrc/Res/standcover"))))); ///< 设置右块2封面
@@ -212,7 +220,7 @@ void LiveMusicPartWidget::initBlockWidget()
     ui->left_block_widget_3->setTipLabText(
         QString::number(QRandomGenerator::global()->bounded(5000))); ///< 设置左块3提示
     ui->left_block_widget_3->setCoverPix(
-        QString(":/StandCover/Res/standcover/music-stand-cover%1.jpg")
+        QString(QString(RESOURCE_DIR) + "/standcover/music-stand-cover%1.jpg")
         .arg(QString::number(QRandomGenerator::global()->bounded(
             1,
             getFileCount(GET_CURRENT_DIR + "/../../../Res_Qrc/Res/standcover"))))); ///< 设置左块3封面
@@ -220,7 +228,7 @@ void LiveMusicPartWidget::initBlockWidget()
     ui->right_block_widget_3->setTipLabText(
         QString::number(QRandomGenerator::global()->bounded(5000))); ///< 设置右块3提示
     ui->right_block_widget_3->setCoverPix(
-        QString(":/StandCover/Res/standcover/music-stand-cover%1.jpg")
+        QString(QString(RESOURCE_DIR) + "/standcover/music-stand-cover%1.jpg")
         .arg(QString::number(QRandomGenerator::global()->bounded(
             1,
             getFileCount(GET_CURRENT_DIR + "/../../../Res_Qrc/Res/standcover"))))); ///< 设置右块3封面
@@ -233,7 +241,7 @@ void LiveMusicPartWidget::initBlockWidget()
     ui->left_block_widget_4->setTipLabText(
         QString::number(QRandomGenerator::global()->bounded(5000))); ///< 设置左块4提示
     ui->left_block_widget_4->setCoverPix(
-        QString(":/StandCover/Res/standcover/music-stand-cover%1.jpg")
+        QString(QString(RESOURCE_DIR) + "/standcover/music-stand-cover%1.jpg")
         .arg(QString::number(QRandomGenerator::global()->bounded(
             1,
             getFileCount(GET_CURRENT_DIR + "/../../../Res_Qrc/Res/standcover"))))); ///< 设置左块4封面
@@ -241,7 +249,7 @@ void LiveMusicPartWidget::initBlockWidget()
     ui->right_block_widget_4->setTipLabText(
         QString::number(QRandomGenerator::global()->bounded(5000))); ///< 设置右块4提示
     ui->right_block_widget_4->setCoverPix(
-        QString(":/StandCover/Res/standcover/music-stand-cover%1.jpg")
+        QString(QString(RESOURCE_DIR) + "/standcover/music-stand-cover%1.jpg")
         .arg(QString::number(QRandomGenerator::global()->bounded(
             1,
             getFileCount(GET_CURRENT_DIR + "/../../../Res_Qrc/Res/standcover"))))); ///< 设置右块4封面
@@ -252,10 +260,11 @@ void LiveMusicPartWidget::initBlockWidget()
  * @param folderPath 目录路径
  * @return 文件数量
  */
-int LiveMusicPartWidget::getFileCount(const QString &folderPath)
+int LiveMusicPartWidget::getFileCount(const QString& folderPath)
 {
     QDir dir(folderPath); ///< 创建目录对象
-    if (!dir.exists()) {
+    if (!dir.exists())
+    {
         qWarning("目录不存在: %s", qPrintable(folderPath));
         PRINT_WARN("目录不存在: %s", folderPath.toStdString()); ///< 记录警告日志
         return 0;
@@ -283,12 +292,15 @@ void LiveMusicPartWidget::on_all_pushButton_clicked()
  * @param event 调整大小事件
  * @note 动态显示或隐藏控件
  */
-void LiveMusicPartWidget::resizeEvent(QResizeEvent *event)
+void LiveMusicPartWidget::resizeEvent(QResizeEvent* event)
 {
     QWidget::resizeEvent(event); ///< 调用父类事件
-    if (this->width() > 1200) {
+    if (this->width() > 1200)
+    {
         ui->widget_4->show(); ///< 显示控件4
-    } else {
+    }
+    else
+    {
         ui->widget_4->hide(); ///< 隐藏控件4
     }
 }
@@ -301,10 +313,12 @@ void LiveMusicPartWidget::resizeEvent(QResizeEvent *event)
  * @note 处理左右按钮点击事件
  */
 
-bool LiveMusicPartWidget::eventFilter(QObject *watched, QEvent *event)
+bool LiveMusicPartWidget::eventFilter(QObject* watched, QEvent* event)
 {
-    if (watched == ui->left_label) {
-        if (event->type() == QEvent::MouseButtonPress) {
+    if (watched == ui->left_label)
+    {
+        if (event->type() == QEvent::MouseButtonPress)
+        {
             ElaMessageBar::information(ElaMessageBarType::BottomRight,
                                        "Info",
                                        QString("暂无更多 %1").arg(ui->title_label->text()),
@@ -312,8 +326,10 @@ bool LiveMusicPartWidget::eventFilter(QObject *watched, QEvent *event)
                                        this->window()); ///< 显示左按钮提示
         }
     }
-    if (watched == ui->right_label) {
-        if (event->type() == QEvent::MouseButtonPress) {
+    if (watched == ui->right_label)
+    {
+        if (event->type() == QEvent::MouseButtonPress)
+        {
             ElaMessageBar::information(ElaMessageBarType::BottomRight,
                                        "Info",
                                        QString("暂无更多 %1").arg(ui->title_label->text()),

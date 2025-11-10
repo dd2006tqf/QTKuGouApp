@@ -303,7 +303,8 @@ void MVWidget::initUi()
                                             for (int i = 1; i <= 100; i++) {
                                                 this->m_total.emplace_back(
                                                     QString(
-                                                        ":/RectCover/Res/rectcover/music-rect-cover%1.jpg")
+                                                        QString(RESOURCE_DIR) +
+                                                        "/rectcover/music-rect-cover%1.jpg")
                                                     .arg(i),
                                                     m_titleAndDesc[i].first,
                                                     m_titleAndDesc[i].second); ///< 添加音乐信息
@@ -397,13 +398,13 @@ void MVWidget::initUi()
 
 void MVWidget::initAdvertiseWidget() const
 {
-    ui->advertise_widget->addImage(QPixmap(QStringLiteral(":/MVPoster/Res/mvposter/1.png")));
+    ui->advertise_widget->addImage(QPixmap(QString(RESOURCE_DIR) + "/mvposter/1.png"));
     ///< 添加广告图片
-    ui->advertise_widget->addImage(QPixmap(QStringLiteral(":/MVPoster/Res/mvposter/2.png")));
-    ui->advertise_widget->addImage(QPixmap(QStringLiteral(":/MVPoster/Res/mvposter/3.png")));
-    ui->advertise_widget->addImage(QPixmap(QStringLiteral(":/MVPoster/Res/mvposter/4.png")));
-    ui->advertise_widget->addImage(QPixmap(QStringLiteral(":/MVPoster/Res/mvposter/5.png")));
-    ui->advertise_widget->addImage(QPixmap(QStringLiteral(":/MVPoster/Res/mvposter/6.png")));
+    ui->advertise_widget->addImage(QPixmap(QString(RESOURCE_DIR) + "/mvposter/2.png"));
+    ui->advertise_widget->addImage(QPixmap(QString(RESOURCE_DIR) + "/mvposter/3.png"));
+    ui->advertise_widget->addImage(QPixmap(QString(RESOURCE_DIR) + "/mvposter/4.png"));
+    ui->advertise_widget->addImage(QPixmap(QString(RESOURCE_DIR) + "/mvposter/5.png"));
+    ui->advertise_widget->addImage(QPixmap(QString(RESOURCE_DIR) + "/mvposter/6.png"));
 
     ui->advertise_widget->setCurrentIndex(0);             ///< 设置初始索引
     ui->advertise_widget->adjustSize();                   ///< 调整大小

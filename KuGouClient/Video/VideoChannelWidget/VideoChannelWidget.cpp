@@ -200,7 +200,8 @@ void VideoChannelWidget::initUi()
                                             for (int i = 1; i <= 120; ++i) {
                                                 this->m_pixPathVector.emplace_back(
                                                     QString(
-                                                        ":/RectCover/Res/rectcover/music-rect-cover%1.jpg")
+                                                        QString(RESOURCE_DIR) +
+                                                        "/rectcover/music-rect-cover%1.jpg")
                                                     .arg(i)); ///< 添加图片路径
                                             }
                                             unsigned seed = std::chrono::system_clock::now().

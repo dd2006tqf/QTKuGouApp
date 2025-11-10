@@ -99,7 +99,8 @@ void RecommendForYou::initAdvertiseBoard() const
     // @note 未使用，保留用于调试
     // qDebug() << "共有: " << s << " 条数据";
     for (auto i = 1; i <= s; ++i) {
-        QString path = QString(":/RecommendForYou/Res/recommend/poster/%1.jpg").arg(i); ///< 构造海报路径
+        QString path = QString(QString(RESOURCE_DIR) + "/recommend/poster/%1.jpg").arg(i);
+        ///< 构造海报路径
         // @note 未使用，保留用于调试
         // qDebug() << "图片路径为：" << path;
         // const QPixmap pix(path);
@@ -127,31 +128,31 @@ void RecommendForYou::initClassifyWidget() const
     ui->music_quality_toolButton->setChangeSize(true); ///< 设置音乐品质按钮可变大小
 
     ui->recommend_toolButton->setIcon(
-        QIcon(QStringLiteral(":/RecommendForYou/Res/recommend/tabIcon/rili.svg"))); ///< 设置推荐按钮图标
-    ui->recommend_toolButton->setEnterIconSize(QSize(35, 35));                      ///< 设置悬停图标大小
-    ui->recommend_toolButton->setLeaveIconSize(QSize(30, 30));                      ///< 设置离开图标大小
+        QIcon(QString(RESOURCE_DIR) + "/recommend/tabIcon/rili.svg")); ///< 设置推荐按钮图标
+    ui->recommend_toolButton->setEnterIconSize(QSize(35, 35));         ///< 设置悬停图标大小
+    ui->recommend_toolButton->setLeaveIconSize(QSize(30, 30));         ///< 设置离开图标大小
 
     ui->ranking_list_toolButton->setIcon(
-        QIcon(QStringLiteral(":/RecommendForYou/Res/recommend/tabIcon/rank.svg"))); ///< 设置排行榜按钮图标
-    ui->ranking_list_toolButton->setEnterIconSize(QSize(40, 40));                   ///< 设置悬停图标大小
-    ui->ranking_list_toolButton->setLeaveIconSize(QSize(35, 35));                   ///< 设置离开图标大小
+        QIcon(QString(RESOURCE_DIR) + "/recommend/tabIcon/rank.svg")); ///< 设置排行榜按钮图标
+    ui->ranking_list_toolButton->setEnterIconSize(QSize(40, 40));      ///< 设置悬停图标大小
+    ui->ranking_list_toolButton->setLeaveIconSize(QSize(35, 35));      ///< 设置离开图标大小
 
     ui->classify_toolButton->setIcon(
-        QIcon(QStringLiteral(":/RecommendForYou/Res/recommend/tabIcon/classification.svg")));
+        QIcon(QString(RESOURCE_DIR) + "/recommend/tabIcon/classification.svg"));
     ///< 设置分类按钮图标
     ui->classify_toolButton->setEnterIconSize(QSize(40, 40)); ///< 设置悬停图标大小
     ui->classify_toolButton->setLeaveIconSize(QSize(35, 35)); ///< 设置离开图标大小
 
     ui->scene_music_toolButton->setIcon(
-        QIcon(QStringLiteral(":/RecommendForYou/Res/recommend/tabIcon/shafa.svg"))); ///< 设置场景音乐按钮图标
-    ui->scene_music_toolButton->setEnterIconSize(QSize(45, 45));                     ///< 设置悬停图标大小
-    ui->scene_music_toolButton->setLeaveIconSize(QSize(40, 40));                     ///< 设置离开图标大小
-    ui->scene_music_toolButton->setEnterFontSize(13);                                ///< 设置悬停字体大小
+        QIcon(QString(RESOURCE_DIR) + "/recommend/tabIcon/shafa.svg")); ///< 设置场景音乐按钮图标
+    ui->scene_music_toolButton->setEnterIconSize(QSize(45, 45));        ///< 设置悬停图标大小
+    ui->scene_music_toolButton->setLeaveIconSize(QSize(40, 40));        ///< 设置离开图标大小
+    ui->scene_music_toolButton->setEnterFontSize(13);                   ///< 设置悬停字体大小
 
     ui->music_quality_toolButton->setIcon(
-        QIcon(QStringLiteral(":/RecommendForYou/Res/recommend/tabIcon/dish.svg"))); ///< 设置音乐品质按钮图标
-    ui->music_quality_toolButton->setEnterIconSize(QSize(40, 40));                  ///< 设置悬停图标大小
-    ui->music_quality_toolButton->setLeaveIconSize(QSize(35, 35));                  ///< 设置离开图标大小
+        QIcon(QString(RESOURCE_DIR) + "/recommend/tabIcon/dish.svg")); ///< 设置音乐品质按钮图标
+    ui->music_quality_toolButton->setEnterIconSize(QSize(40, 40));     ///< 设置悬停图标大小
+    ui->music_quality_toolButton->setLeaveIconSize(QSize(35, 35));     ///< 设置离开图标大小
 }
 
 /**

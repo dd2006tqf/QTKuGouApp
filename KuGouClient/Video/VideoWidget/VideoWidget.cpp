@@ -35,7 +35,7 @@ int offY = 297;
  * @brief 构造函数，初始化视频界面
  * @param parent 父控件指针，默认为 nullptr
  */
-VideoWidget::VideoWidget(QWidget *parent)
+VideoWidget::VideoWidget(QWidget* parent)
     : QWidget(parent)
       , ui(new Ui::VideoWidget)
       , m_buttonGroup(std::make_unique<QButtonGroup>(this)) ///< 初始化按钮组
@@ -43,9 +43,12 @@ VideoWidget::VideoWidget(QWidget *parent)
 {
     ui->setupUi(this);                                          ///< 设置 UI 布局
     QFile file(GET_CURRENT_DIR + QStringLiteral("/video.css")); ///< 加载样式表
-    if (file.open(QIODevice::ReadOnly)) {
+    if (file.open(QIODevice::ReadOnly))
+    {
         this->setStyleSheet(file.readAll()); ///< 应用样式表
-    } else {
+    }
+    else
+    {
         // @note 未使用，保留用于调试
         // qDebug() << "样式表打开失败QAQ";
         STREAM_ERROR() << "样式表打开失败QAQ"; ///< 记录错误日志
@@ -87,7 +90,7 @@ void VideoWidget::initButtonGroup()
     m_American_pushButton = new QPushButton(tr("欧美"));
 
     // 设置按钮通用属性
-    QList<QPushButton *> buttons =
+    QList<QPushButton*> buttons =
     {
         m_recommend_pushButton, m_video_rank_pushButton, m_MV_pushButton,
         m_site_pushButton, m_cover_pushButton, m_dance_pushButton,
@@ -96,7 +99,8 @@ void VideoWidget::initButtonGroup()
         m_Japan_pushButton, m_American_pushButton
     };
 
-    for (auto btn : buttons) {
+    for (auto btn : buttons)
+    {
         btn->setCheckable(true);
         btn->setCursor(Qt::PointingHandCursor);
         btn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -112,7 +116,8 @@ void VideoWidget::initButtonGroup()
     lay->setIsAnimation(true);
 
     // 将所有按钮加入布局
-    for (auto btn : buttons) {
+    for (auto btn : buttons)
+    {
         lay->addWidget(btn);
     }
 
@@ -163,47 +168,49 @@ void VideoWidget::initUi()
 {
     m_refreshMask->keepLoading();
     // 加入布局
-    auto lay = dynamic_cast<QVBoxLayout *>(ui->table_widget->layout()); ///< 获取垂直布局
-    lay->setSpacing(0);                                                 ///< 设置间距
-    lay->insertWidget(lay->count(), m_recommendWidget.get());           ///< 添加推荐分区
-    lay->insertWidget(lay->count(), m_videoRankWidget.get());           ///< 添加视频榜分区
-    lay->insertWidget(lay->count(), m_MVWidget.get());                  ///< 添加 MV 分区
-    lay->insertWidget(lay->count(), m_siteWidget.get());                ///< 添加现场分区
-    lay->insertWidget(lay->count(), m_coverWidget.get());               ///< 添加翻唱分区
-    lay->insertWidget(lay->count(), m_danceWidget.get());               ///< 添加舞蹈分区
-    lay->insertWidget(lay->count(), m_childrenWidget.get());            ///< 添加儿童分区
-    lay->insertWidget(lay->count(), m_liveWidget.get());                ///< 添加 TME LIVE 分区
-    lay->insertWidget(lay->count(), m_firstConcertWidget.get());        ///< 添加首唱会分区
-    lay->insertWidget(lay->count(), m_chineseLanguageWidget.get());     ///< 添加华语分区
-    lay->insertWidget(lay->count(), m_southKoreaWidget.get());          ///< 添加韩国分区
-    lay->insertWidget(lay->count(), m_japanWidget.get());               ///< 添加日本分区
-    lay->insertWidget(lay->count(), m_americanWidget.get());            ///< 添加欧美分区
+    auto lay = dynamic_cast<QVBoxLayout*>(ui->table_widget->layout()); ///< 获取垂直布局
+    lay->setSpacing(0);                                                ///< 设置间距
+    lay->insertWidget(lay->count(), m_recommendWidget.get());          ///< 添加推荐分区
+    lay->insertWidget(lay->count(), m_videoRankWidget.get());          ///< 添加视频榜分区
+    lay->insertWidget(lay->count(), m_MVWidget.get());                 ///< 添加 MV 分区
+    lay->insertWidget(lay->count(), m_siteWidget.get());               ///< 添加现场分区
+    lay->insertWidget(lay->count(), m_coverWidget.get());              ///< 添加翻唱分区
+    lay->insertWidget(lay->count(), m_danceWidget.get());              ///< 添加舞蹈分区
+    lay->insertWidget(lay->count(), m_childrenWidget.get());           ///< 添加儿童分区
+    lay->insertWidget(lay->count(), m_liveWidget.get());               ///< 添加 TME LIVE 分区
+    lay->insertWidget(lay->count(), m_firstConcertWidget.get());       ///< 添加首唱会分区
+    lay->insertWidget(lay->count(), m_chineseLanguageWidget.get());    ///< 添加华语分区
+    lay->insertWidget(lay->count(), m_southKoreaWidget.get());         ///< 添加韩国分区
+    lay->insertWidget(lay->count(), m_japanWidget.get());              ///< 添加日本分区
+    lay->insertWidget(lay->count(), m_americanWidget.get());           ///< 添加欧美分区
 
     // 处理信号
     auto vScrollBar = ui->scrollArea->verticalScrollBar(); ///< 获取垂直滚动条
-    auto connectButton = [this](const QPushButton *button, QWidget *targetWidget) {
+    auto connectButton = [this](const QPushButton* button, QWidget* targetWidget)
+    {
         connect(button,
                 &QPushButton::clicked,
                 this,
-                [this, targetWidget] {
+                [this, targetWidget]
+                {
                     ui->scrollArea->smoothScrollTo(targetWidget->mapToParent(QPoint(0, 0)).y());
                     ///< 平滑滚动到目标分区
                 });
     };
 
-    connectButton(m_recommend_pushButton, this->m_recommendWidget.get()); ///< 连接推荐按钮
-    connectButton(m_video_rank_pushButton, this->m_videoRankWidget.get()); ///< 连接视频榜按钮
-    connectButton(m_MV_pushButton, this->m_MVWidget.get()); ///< 连接 MV 按钮
-    connectButton(m_site_pushButton, this->m_siteWidget.get()); ///< 连接现场按钮
-    connectButton(m_cover_pushButton, this->m_coverWidget.get()); ///< 连接翻唱按钮
-    connectButton(m_dance_pushButton, this->m_danceWidget.get()); ///< 连接舞蹈按钮
-    connectButton(m_children_pushButton, this->m_childrenWidget.get()); ///< 连接儿童按钮
-    connectButton(m_live_pushButton, this->m_liveWidget.get()); ///< 连接 TME LIVE 按钮
-    connectButton(m_first_concert_pushButton, this->m_firstConcertWidget.get()); ///< 连接首唱会按钮
+    connectButton(m_recommend_pushButton, this->m_recommendWidget.get());              ///< 连接推荐按钮
+    connectButton(m_video_rank_pushButton, this->m_videoRankWidget.get());             ///< 连接视频榜按钮
+    connectButton(m_MV_pushButton, this->m_MVWidget.get());                            ///< 连接 MV 按钮
+    connectButton(m_site_pushButton, this->m_siteWidget.get());                        ///< 连接现场按钮
+    connectButton(m_cover_pushButton, this->m_coverWidget.get());                      ///< 连接翻唱按钮
+    connectButton(m_dance_pushButton, this->m_danceWidget.get());                      ///< 连接舞蹈按钮
+    connectButton(m_children_pushButton, this->m_childrenWidget.get());                ///< 连接儿童按钮
+    connectButton(m_live_pushButton, this->m_liveWidget.get());                        ///< 连接 TME LIVE 按钮
+    connectButton(m_first_concert_pushButton, this->m_firstConcertWidget.get());       ///< 连接首唱会按钮
     connectButton(m_chinese_language_pushButton, this->m_chineseLanguageWidget.get()); ///< 连接华语按钮
-    connectButton(m_South_Korea_pushButton, this->m_southKoreaWidget.get()); ///< 连接韩国按钮
-    connectButton(m_Japan_pushButton, this->m_japanWidget.get()); ///< 连接日本按钮
-    connectButton(m_American_pushButton, this->m_americanWidget.get()); ///< 连接欧美按钮
+    connectButton(m_South_Korea_pushButton, this->m_southKoreaWidget.get());           ///< 连接韩国按钮
+    connectButton(m_Japan_pushButton, this->m_japanWidget.get());                      ///< 连接日本按钮
+    connectButton(m_American_pushButton, this->m_americanWidget.get());                ///< 连接欧美按钮
 
     // 连接滚轮信号
     connect(ui->scrollArea, &MyScrollArea::wheelValue, this, &VideoWidget::handleWheelValue);
@@ -213,11 +220,13 @@ void VideoWidget::initUi()
 
     // 异步加载 JSON 文本
     const auto future = Async::runAsync(QThreadPool::globalInstance(),
-                                        [this] {
+                                        [this]
+                                        {
                                             QFile file(
                                                 GET_CURRENT_DIR + QStringLiteral("/video.json"));
                                             ///< 加载 JSON 文件
-                                            if (!file.open(QIODevice::ReadOnly)) {
+                                            if (!file.open(QIODevice::ReadOnly))
+                                            {
                                                 qWarning() <<
                                                     "Could not open file for reading video.json";
                                                 STREAM_WARN() <<
@@ -229,7 +238,8 @@ void VideoWidget::initUi()
                                                 QJsonDocument::fromJson(file.readAll());
                                             ///< 解析 JSON
                                             auto arr = obj.array();
-                                            for (const auto &item : arr) {
+                                            for (const auto& item : arr)
+                                            {
                                                 auto obj = item.toObject();
                                                 this->m_videoAuthorVector.emplace_back(
                                                     obj.value(QStringLiteral("videoName")).
@@ -239,10 +249,11 @@ void VideoWidget::initUi()
                                             file.close();
 
                                             /// 初始化图片路径
-                                            for (int i = 1; i <= 120; ++i) {
+                                            for (int i = 1; i <= 120; ++i)
+                                            {
                                                 this->m_pixPathVector.emplace_back(
                                                     QString(
-                                                        ":/RectCover/Res/rectcover/music-rect-cover%1.jpg")
+                                                        QString(RESOURCE_DIR) + "/rectcover/music-rect-cover%1.jpg")
                                                     .arg(i));
                                                 ///< 添加封面图片
                                             }
@@ -262,17 +273,21 @@ void VideoWidget::initUi()
 
     Async::onResultReady(future,
                          this,
-                         [this](bool flag) {
+                         [this](bool flag)
+                         {
                              using Task = std::function<void()>;
                              QVector<Task> tasks;
 
                              // 1. 初始化推荐分区块（固定结构的双重循环）
-                             tasks << [this] {
+                             tasks << [this]
+                             {
                                  const QString tipText[] = {
                                      "", "音乐现场", "综艺制作形式", "舞蹈", "创意", "演奏", "舞蹈"
                                  };
-                                 for (int i = 0; i < 2; ++i) {
-                                     for (int j = 1; j <= 3; ++j) {
+                                 for (int i = 0; i < 2; ++i)
+                                 {
+                                     for (int j = 1; j <= 3; ++j)
+                                     {
                                          int idx = i * 3 + j;
                                          auto block = new VideoBlockWidget(this);
                                          block->setCoverPix(m_pixPathVector[idx]);
@@ -295,29 +310,33 @@ void VideoWidget::initUi()
                              tasks << [this] { loadSectionBlocks(m_childrenWidget.get(), 6); };
                              tasks << [this] { loadSectionBlocks(m_liveWidget.get(), 7); };
                              tasks << [this] { loadSectionBlocks(m_firstConcertWidget.get(), 8); };
-                             tasks << [this] {
+                             tasks << [this]
+                             {
                                  loadSectionBlocks(m_chineseLanguageWidget.get(), 9);
                              };
                              tasks << [this] { loadSectionBlocks(m_southKoreaWidget.get(), 10); };
                              tasks << [this] { loadSectionBlocks(m_japanWidget.get(), 11); };
-                             tasks << [this] {
+                             tasks << [this]
+                             {
                                  loadSectionBlocks(m_americanWidget.get(), 12);
                                  m_refreshMask->hideLoading(); // 所有加载完成后再隐藏遮罩
                              };
 
                              // 3. 串行执行器
                              auto queue = std::make_shared<QQueue<Task>>();
-                             for (const auto &task : tasks)
+                             for (const auto& task : tasks)
                                  queue->enqueue(task);
 
                              auto runner = std::make_shared<std::function<void()>>();
-                             *runner = [queue, runner]() {
+                             *runner = [queue, runner]()
+                             {
                                  if (queue->isEmpty())
                                      return;
                                  auto task = queue->dequeue();
                                  QTimer::singleShot(0,
                                                     nullptr,
-                                                    [task, runner]() {
+                                                    [task, runner]()
+                                                    {
                                                         task();
                                                         (*runner)();
                                                     });
@@ -327,10 +346,12 @@ void VideoWidget::initUi()
                          });
 }
 
-void VideoWidget::loadSectionBlocks(VideoPartWidget *section, const int idx)
+void VideoWidget::loadSectionBlocks(VideoPartWidget* section, const int idx)
 {
-    for (int i = 0; i < 2; ++i) {
-        for (int j = 1; j <= 3; ++j) {
+    for (int i = 0; i < 2; ++i)
+    {
+        for (int j = 1; j <= 3; ++j)
+        {
             int index = i * 3 + j + idx * 6;
             if (index >= m_videoAuthorVector.size() || index >= m_pixPathVector.size())
                 return;
@@ -354,9 +375,9 @@ void VideoWidget::loadSectionBlocks(VideoPartWidget *section, const int idx)
  * @param value 滚动条值
  * @note 根据滚动位置切换按钮选中状态
  */
-void VideoWidget::handleWheelValue(const int &value)
+void VideoWidget::handleWheelValue(const int& value)
 {
-    const QVector<QPair<QWidget *, QPushButton *>> sectionMappings =
+    const QVector<QPair<QWidget*, QPushButton*>> sectionMappings =
     {
         {m_recommendWidget.get(), m_recommend_pushButton},
         {m_videoRankWidget.get(), m_video_rank_pushButton},
@@ -373,30 +394,32 @@ void VideoWidget::handleWheelValue(const int &value)
         {m_americanWidget.get(), m_American_pushButton}
     };
 
-    for (int i = 0; i < sectionMappings.size(); ++i) {
-        QWidget *currentWidget = sectionMappings[i].first;
-        QWidget *nextWidget = (i + 1 < sectionMappings.size())
+    for (int i = 0; i < sectionMappings.size(); ++i)
+    {
+        QWidget* currentWidget = sectionMappings[i].first;
+        QWidget* nextWidget = (i + 1 < sectionMappings.size())
                                   ? sectionMappings[i + 1].first
                                   : nullptr;
 
         int currentY = currentWidget->mapToParent(QPoint(0, 0)).y();
         int nextY = nextWidget ? nextWidget->mapToParent(QPoint(0, 0)).y() : INT_MAX;
 
-        if (value >= currentY && value < nextY) {
+        if (value >= currentY && value < nextY)
+        {
             sectionMappings[i].second->setChecked(true);
             break;
         }
     }
 }
 
-void VideoWidget::showEvent(QShowEvent *event)
+void VideoWidget::showEvent(QShowEvent* event)
 {
     QWidget::showEvent(event);
     m_refreshMask->setGeometry(rect());
     m_refreshMask->raise(); // 确保遮罩在最上层
 }
 
-void VideoWidget::resizeEvent(QResizeEvent *event)
+void VideoWidget::resizeEvent(QResizeEvent* event)
 {
     QWidget::resizeEvent(event);
     // qDebug() << "当前宽度：" << width();

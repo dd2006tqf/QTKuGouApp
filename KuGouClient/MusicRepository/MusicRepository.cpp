@@ -31,7 +31,7 @@
  * @brief 构造函数，初始化音乐仓库界面
  * @param parent 父控件指针，默认为 nullptr
  */
-MusicRepository::MusicRepository(QWidget* parent)
+MusicRepository::MusicRepository(QWidget *parent)
     : QWidget(parent)
       , ui(new Ui::MusicRepository)
       , m_buttonGroup(std::make_unique<QButtonGroup>(this))
@@ -39,21 +39,22 @@ MusicRepository::MusicRepository(QWidget* parent)
 {
     ui->setupUi(this);
     QFile file(GET_CURRENT_DIR + QStringLiteral("/musicrepo.css")); ///< 加载样式表
-    if (file.open(QIODevice::ReadOnly))
-    {
-        this->setStyleSheet(file.readAll()); ///< 应用样式表
-    }
-    else
-    {
+    if (file.open(QIODevice::ReadOnly)) {
+        QString css = QString::fromUtf8(file.readAll());
+        // 替换 RESOURCE_DIR 为实际路径
+        css.replace("RESOURCE_DIR", RESOURCE_DIR);
+        this->setStyleSheet(css);
+    } else {
         qDebug() << "样式表打开失败QAQ";
         STREAM_ERROR() << "样式表打开失败QAQ"; ///< 记录错误日志
         return;
     }
     initUi(); ///< 初始化界面
-    connect(ui->stackedWidget, &SlidingStackedWidget::animationFinished, [this]
-    {
-        enableButton(true); ///< 动画结束时启用按钮
-    });
+    connect(ui->stackedWidget,
+            &SlidingStackedWidget::animationFinished,
+            [this] {
+                enableButton(true); ///< 动画结束时启用按钮
+            });
     enableButton(true); ///< 初始启用按钮
 }
 
@@ -65,19 +66,17 @@ MusicRepository::~MusicRepository()
     delete ui; ///< 删除 UI
 }
 
-QWidget* MusicRepository::createRepoPage(const int& beg)
+QWidget *MusicRepository::createRepoPage(const int &beg)
 {
     auto pageWidget = new QWidget;
     auto mainLayout = new QVBoxLayout(pageWidget);
     mainLayout->setSpacing(10);
     mainLayout->setContentsMargins(10, 0, 10, 0);
 
-    for (int row = 0; row < 3; ++row)
-    {
+    for (int row = 0; row < 3; ++row) {
         auto rowLayout = new QHBoxLayout;
         rowLayout->setSpacing(10);
-        for (int col = 0; col < 3; ++col)
-        {
+        for (int col = 0; col < 3; ++col) {
             int index = row * 3 + col + beg;
             if (index >= 9 + beg)
                 break;
@@ -101,7 +100,9 @@ QWidget* MusicRepository::createRepoPage(const int& beg)
 void MusicRepository::initButtonGroup()
 {
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    std::shuffle(this->m_musicData.begin(), this->m_musicData.end(), std::default_random_engine(seed)); ///< 随机打乱
+    std::shuffle(this->m_musicData.begin(),
+                 this->m_musicData.end(),
+                 std::default_random_engine(seed)); ///< 随机打乱
 
     // 设置按钮组（互斥）
     this->m_buttonGroup->addButton(ui->chinese_pushButton, 0);
@@ -111,10 +112,9 @@ void MusicRepository::initButtonGroup()
     this->m_buttonGroup->setExclusive(true);
 
     // 初始化占位页面
-    for (int i = 0; i < 4; ++i)
-    {
-        auto* placeholder = new QWidget;
-        auto* layout = new QVBoxLayout(placeholder);
+    for (int i = 0; i < 4; ++i) {
+        auto *placeholder = new QWidget;
+        auto *layout = new QVBoxLayout(placeholder);
         layout->setContentsMargins(0, 0, 0, 0);
         layout->setSpacing(0);
         m_repoPages[i] = placeholder;
@@ -127,70 +127,62 @@ void MusicRepository::initButtonGroup()
     ui->chinese_pushButton->click(); ///< 默认点击华语按钮
 
     // 响应按钮点击事件
-    connect(m_buttonGroup.get(), &QButtonGroup::idClicked, this, [this](const int& id)
-    {
-        // qDebug() << "[DEBUG] Current stack index:" << m_currentIdx;
-        // qDebug() << "[DEBUG] Clicked page ID:" << id;
+    connect(m_buttonGroup.get(),
+            &QButtonGroup::idClicked,
+            this,
+            [this](const int &id) {
+                // qDebug() << "[DEBUG] Current stack index:" << m_currentIdx;
+                // qDebug() << "[DEBUG] Clicked page ID:" << id;
 
-        if (m_currentIdx == id)
-        {
-            // qDebug() << "[DEBUG] Already on the selected page. No action taken.";
-            // qDebug() << "[DEBUG] -------------------------------------------------------- ";
-            return;
-        }
-
-        enableButton(false);
-
-        QWidget* placeholder = m_repoPages[m_currentIdx];
-        if (!placeholder)
-        {
-            qWarning() << "[WARNING] No placeholder for page ID:" << m_currentIdx;
-            enableButton(true);
-            return;
-        }
-
-        // 清理目标 placeholder 内旧的控件
-        QLayout* layout = placeholder->layout();
-        if (!layout)
-        {
-            layout = new QVBoxLayout(placeholder);
-            layout->setContentsMargins(0, 0, 0, 0);
-            layout->setSpacing(0);
-        }
-        else
-        {
-            while (QLayoutItem* item = layout->takeAt(0))
-            {
-                if (QWidget* widget = item->widget())
-                {
-                    // qDebug()<<"**********删除控件*********";
-                    widget->deleteLater();
+                if (m_currentIdx == id) {
+                    // qDebug() << "[DEBUG] Already on the selected page. No action taken.";
+                    // qDebug() << "[DEBUG] -------------------------------------------------------- ";
+                    return;
                 }
-                delete item;
-            }
-        }
-        placeholder = m_repoPages[id];
-        layout = placeholder->layout();
-        // 创建新页面
-        int beginIndex = id * 10 + 1;
-        // qDebug() << "[DEBUG] Creating new repo page. Begin index:" << beginIndex;
-        QWidget* realPage = createRepoPage(beginIndex);
-        if (!realPage)
-        {
-            qWarning() << "[WARNING] Failed to create repo page at index:" << id;
-        }
-        else
-        {
-            layout->addWidget(realPage);
-            // qDebug() << "[DEBUG] Repo page added to placeholder layout";
-        }
 
-        ui->stackedWidget->slideInIdx(id);
-        m_currentIdx = id;
+                enableButton(false);
 
-        // qDebug() << "[DEBUG] -------------------------------------------------------- ";
-        STREAM_INFO() << "切换到 " << m_buttonGroup->button(id)->text().toStdString();
-    });
+                QWidget *placeholder = m_repoPages[m_currentIdx];
+                if (!placeholder) {
+                    qWarning() << "[WARNING] No placeholder for page ID:" << m_currentIdx;
+                    enableButton(true);
+                    return;
+                }
+
+                // 清理目标 placeholder 内旧的控件
+                QLayout *layout = placeholder->layout();
+                if (!layout) {
+                    layout = new QVBoxLayout(placeholder);
+                    layout->setContentsMargins(0, 0, 0, 0);
+                    layout->setSpacing(0);
+                } else {
+                    while (QLayoutItem *item = layout->takeAt(0)) {
+                        if (QWidget *widget = item->widget()) {
+                            // qDebug()<<"**********删除控件*********";
+                            widget->deleteLater();
+                        }
+                        delete item;
+                    }
+                }
+                placeholder = m_repoPages[id];
+                layout = placeholder->layout();
+                // 创建新页面
+                int beginIndex = id * 10 + 1;
+                // qDebug() << "[DEBUG] Creating new repo page. Begin index:" << beginIndex;
+                QWidget *realPage = createRepoPage(beginIndex);
+                if (!realPage) {
+                    qWarning() << "[WARNING] Failed to create repo page at index:" << id;
+                } else {
+                    layout->addWidget(realPage);
+                    // qDebug() << "[DEBUG] Repo page added to placeholder layout";
+                }
+
+                ui->stackedWidget->slideInIdx(id);
+                m_currentIdx = id;
+
+                // qDebug() << "[DEBUG] -------------------------------------------------------- ";
+                STREAM_INFO() << "切换到 " << m_buttonGroup->button(id)->text().toStdString();
+            });
 }
 
 /**
@@ -207,82 +199,91 @@ void MusicRepository::initUi()
     ui->title_widget_2->setStyleSheet("font-family: 'TaiwanPearl';");
     ui->title_widget_3->setStyleSheet("font-family: 'TaiwanPearl';");
 
-    const auto future = Async::runAsync(QThreadPool::globalInstance(), [this]()
-    {
-        QList<QJsonObject> data;                                         ///< 数据列表
-        QFile file(GET_CURRENT_DIR + QStringLiteral("/musicrepo.json")); ///< 加载 JSON 文件
-        if (!file.open(QIODevice::ReadOnly))
-        {
-            qWarning() << "Could not open file for reading musicrepo.json";
-            STREAM_WARN() << "Could not open file for reading musicrepo.json"; ///< 记录警告日志
-            return data;
-        }
-        const auto obj = QJsonDocument::fromJson(file.readAll()); ///< 解析 JSON
-        auto arr = obj.array();
-        for (const auto& item : arr)
-        {
-            data.append(item.toObject()); ///< 添加数据项
-        }
-        file.close();
-        return data;
-    });
+    const auto future = Async::runAsync(QThreadPool::globalInstance(),
+                                        [this]() {
+                                            QList<QJsonObject> data; ///< 数据列表
+                                            QFile file(
+                                                GET_CURRENT_DIR + QStringLiteral(
+                                                    "/musicrepo.json")); ///< 加载 JSON 文件
+                                            if (!file.open(QIODevice::ReadOnly)) {
+                                                qWarning() <<
+                                                    "Could not open file for reading musicrepo.json";
+                                                STREAM_WARN() <<
+                                                    "Could not open file for reading musicrepo.json";
+                                                ///< 记录警告日志
+                                                return data;
+                                            }
+                                            const auto obj =
+                                                QJsonDocument::fromJson(file.readAll());
+                                            ///< 解析 JSON
+                                            auto arr = obj.array();
+                                            for (const auto &item : arr) {
+                                                data.append(item.toObject()); ///< 添加数据项
+                                            }
+                                            file.close();
+                                            return data;
+                                        });
 
-    Async::onResultReady(future, this, [this](const QList<QJsonObject>& datas)
-    {
-        if (datas.isEmpty())
-        {
-            qWarning() << "musicrepo.json is empty or failed to parse";
-            STREAM_WARN() << "musicrepo.json is empty or failed to parse";
-            return;
-        }
+    Async::onResultReady(future,
+                         this,
+                         [this](const QList<QJsonObject> &datas) {
+                             if (datas.isEmpty()) {
+                                 qWarning() << "musicrepo.json is empty or failed to parse";
+                                 STREAM_WARN() << "musicrepo.json is empty or failed to parse";
+                                 return;
+                             }
 
-        for (int i = 1; i <= std::min(60, static_cast<int>(datas.size())); ++i)
-        {
-            this->m_musicData.emplace_back(
-                QString(QString(RESOURCE_DIR) + "/blockcover/music-block-cover%1.jpg").arg(i),
-                datas[i].value("song").toString(),
-                datas[i].value("singer").toString());
-        }
+                             for (int i = 1; i <= std::min(60, static_cast<int>(datas.size())); ++
+                                  i) {
+                                 this->m_musicData.emplace_back(
+                                     QString(
+                                         QString(RESOURCE_DIR) +
+                                         "/blockcover/music-block-cover%1.jpg").arg(i),
+                                     datas[i].value("song").toString(),
+                                     datas[i].value("singer").toString());
+                             }
 
-        for (int i = 1; i <= 40; ++i)
-        {
-            this->m_videoVector.emplace_back(
-                QString(":/RectCover/Res/rectcover/music-rect-cover%1.jpg").arg(i),
-                m_musicData[i + 10].song,
-                m_musicData[i + 10].singer);
-        }
+                             for (int i = 1; i <= 40; ++i) {
+                                 this->m_videoVector.emplace_back(
+                                     QString(
+                                         QString(RESOURCE_DIR) +
+                                         "/rectcover/music-rect-cover%1.jpg").arg(i),
+                                     m_musicData[i + 10].song,
+                                     m_musicData[i + 10].singer);
+                             }
 
-        using Task = std::function<void()>;
-        QVector<Task> tasks;
+                             using Task = std::function<void()>;
+                             QVector<Task> tasks;
 
-        tasks << [this] { initButtonGroup(); };
-        tasks << [this] { initNewDiskWidget(); };
-        tasks << [this]
-        {
-            initSelectWidget();
-            QMetaObject::invokeMethod(this, "emitInitialized", Qt::QueuedConnection);
-        };
+                             tasks << [this] { initButtonGroup(); };
+                             tasks << [this] { initNewDiskWidget(); };
+                             tasks << [this] {
+                                 initSelectWidget();
+                                 QMetaObject::invokeMethod(this,
+                                                           "emitInitialized",
+                                                           Qt::QueuedConnection);
+                             };
 
-        auto queue = std::make_shared<QQueue<Task>>();
-        for (const auto& task : tasks)
-            queue->enqueue(task);
+                             auto queue = std::make_shared<QQueue<Task>>();
+                             for (const auto &task : tasks)
+                                 queue->enqueue(task);
 
-        auto runner = std::make_shared<std::function<void()>>();
-        *runner = [queue, runner]()
-        {
-            if (queue->isEmpty())
-                return;
+                             auto runner = std::make_shared<std::function<void()>>();
+                             *runner = [queue, runner]() {
+                                 if (queue->isEmpty())
+                                     return;
 
-            auto task = queue->dequeue();
-            QTimer::singleShot(0, nullptr, [task, runner]()
-            {
-                task();
-                (*runner)();
-            });
-        };
+                                 auto task = queue->dequeue();
+                                 QTimer::singleShot(0,
+                                                    nullptr,
+                                                    [task, runner]() {
+                                                        task();
+                                                        (*runner)();
+                                                    });
+                             };
 
-        (*runner)();
-    });
+                             (*runner)();
+                         });
 }
 
 /**
@@ -291,12 +292,14 @@ void MusicRepository::initUi()
  */
 void MusicRepository::initNewDiskWidget()
 {
-    ui->block_widget6->hide();                                                                          ///< 隐藏块 6
-    ui->block_widget7->hide();                                                                          ///< 隐藏块 7
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();                        ///< 获取时间种子
-    std::shuffle(this->m_musicData.begin(), this->m_musicData.end(), std::default_random_engine(seed)); ///< 随机打乱
+    ui->block_widget6->hide();                                                   ///< 隐藏块 6
+    ui->block_widget7->hide();                                                   ///< 隐藏块 7
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count(); ///< 获取时间种子
+    std::shuffle(this->m_musicData.begin(),
+                 this->m_musicData.end(),
+                 std::default_random_engine(seed)); ///< 随机打乱
     // 控件数组，便于循环处理
-    MusicRepoBlock* blockWidgets[] =
+    MusicRepoBlock *blockWidgets[] =
     {
         ui->block_widget1,
         ui->block_widget2,
@@ -308,10 +311,8 @@ void MusicRepository::initNewDiskWidget()
     };
 
     // 使用 lambda 设置控件属性
-    auto setupWidget = [](MusicRepoBlock* widget, const auto& block)
-    {
-        if (!widget)
-        {
+    auto setupWidget = [](MusicRepoBlock *widget, const auto &block) {
+        if (!widget) {
             qWarning() << "Widget is null";
             return;
         }
@@ -321,8 +322,7 @@ void MusicRepository::initNewDiskWidget()
     };
 
     // 循环设置每个控件
-    for (int i = 0; i < 7; ++i)
-    {
+    for (int i = 0; i < 7; ++i) {
         setupWidget(blockWidgets[i], m_musicData[i + 1]);
     }
 }
@@ -333,14 +333,16 @@ void MusicRepository::initNewDiskWidget()
  */
 void MusicRepository::initSelectWidget()
 {
-    ui->video_widget4->hide();                                                                              ///< 隐藏视频 4
-    ui->video_widget5->hide();                                                                              ///< 隐藏视频 5
-    ui->video_widget9->hide();                                                                              ///< 隐藏视频 9
-    ui->video_widget10->hide();                                                                             ///< 隐藏视频 10
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();                            ///< 获取时间种子
-    std::shuffle(this->m_videoVector.begin(), this->m_videoVector.end(), std::default_random_engine(seed)); ///< 随机打乱
+    ui->video_widget4->hide();                                                   ///< 隐藏视频 4
+    ui->video_widget5->hide();                                                   ///< 隐藏视频 5
+    ui->video_widget9->hide();                                                   ///< 隐藏视频 9
+    ui->video_widget10->hide();                                                  ///< 隐藏视频 10
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count(); ///< 获取时间种子
+    std::shuffle(this->m_videoVector.begin(),
+                 this->m_videoVector.end(),
+                 std::default_random_engine(seed)); ///< 随机打乱
     // 控件数组，便于循环处理
-    MusicRepoVideo* videoWidgets[] =
+    MusicRepoVideo *videoWidgets[] =
     {
         ui->video_widget1,
         ui->video_widget2,
@@ -355,10 +357,8 @@ void MusicRepository::initSelectWidget()
     };
 
     // 使用 lambda 设置控件属性
-    auto setupWidget = [](MusicRepoVideo* widget, const auto& video)
-    {
-        if (!widget)
-        {
+    auto setupWidget = [](MusicRepoVideo *widget, const auto &video) {
+        if (!widget) {
             qWarning() << "Widget is null";
             return;
         }
@@ -369,13 +369,12 @@ void MusicRepository::initSelectWidget()
     };
 
     // 循环设置每个控件
-    for (int i = 0; i < 10; ++i)
-    {
+    for (int i = 0; i < 10; ++i) {
         setupWidget(videoWidgets[i], m_videoVector[i + 1]);
     }
 }
 
-void MusicRepository::enableButton(const bool& flag) const
+void MusicRepository::enableButton(const bool &flag) const
 {
     ui->chinese_pushButton->setEnabled(flag);
     ui->west_pushButton->setEnabled(flag);
@@ -388,7 +387,7 @@ void MusicRepository::enableButton(const bool& flag) const
  * @param event 调整大小事件
  * @note 动态调整控件高度/宽度和显示/隐藏块
  */
-void MusicRepository::resizeEvent(QResizeEvent* event)
+void MusicRepository::resizeEvent(QResizeEvent *event)
 {
     QWidget::resizeEvent(event);
     int average = static_cast<int>(160 + (event->size().width() - 900) * 0.15); ///< 计算控件高度
@@ -399,48 +398,37 @@ void MusicRepository::resizeEvent(QResizeEvent* event)
     static int lastVisibleState = -1;       ///< 记录上一次可见状态
     const int currentWidth = this->width(); ///< 获取当前宽度
     int newVisibleState;
-    if (currentWidth < 1045)
-    {
+    if (currentWidth < 1045) {
         newVisibleState = 0; ///< 状态 0：隐藏较多块
-    }
-    else if (currentWidth < 1250)
-    {
+    } else if (currentWidth < 1250) {
         newVisibleState = 1; ///< 状态 1：显示部分块
-    }
-    else
-    {
+    } else {
         newVisibleState = 2; ///< 状态 2：显示全部块
     }
-    if (newVisibleState != lastVisibleState)
-    {
-        switch (newVisibleState)
-        {
-        case 0:
-            ui->block_widget6->hide();  ///< 隐藏块 6
-            ui->block_widget7->hide();  ///< 隐藏块 7
-            ui->video_widget4->hide();  ///< 隐藏视频 4
-            ui->video_widget5->hide();  ///< 隐藏视频 5
-            ui->video_widget9->hide();  ///< 隐藏视频 9
-            ui->video_widget10->hide(); ///< 隐藏视频 10
+    if (newVisibleState != lastVisibleState) {
+        switch (newVisibleState) {
+        case 0: ui->block_widget6->hide(); ///< 隐藏块 6
+            ui->block_widget7->hide();     ///< 隐藏块 7
+            ui->video_widget4->hide();     ///< 隐藏视频 4
+            ui->video_widget5->hide();     ///< 隐藏视频 5
+            ui->video_widget9->hide();     ///< 隐藏视频 9
+            ui->video_widget10->hide();    ///< 隐藏视频 10
             break;
-        case 1:
-            ui->block_widget6->show(); ///< 显示块 6
+        case 1: ui->block_widget6->show(); ///< 显示块 6
             ui->block_widget7->hide();
             ui->video_widget4->show(); ///< 显示视频 4
             ui->video_widget5->hide();
             ui->video_widget9->show(); ///< 显示视频 9
             ui->video_widget10->hide();
             break;
-        case 2:
-            ui->block_widget6->show();  ///< 显示块 6
-            ui->block_widget7->show();  ///< 显示块 7
-            ui->video_widget4->show();  ///< 显示视频 4
-            ui->video_widget5->show();  ///< 显示视频 5
-            ui->video_widget9->show();  ///< 显示视频 9
-            ui->video_widget10->show(); ///< 显示视频 10
+        case 2: ui->block_widget6->show(); ///< 显示块 6
+            ui->block_widget7->show();     ///< 显示块 7
+            ui->video_widget4->show();     ///< 显示视频 4
+            ui->video_widget5->show();     ///< 显示视频 5
+            ui->video_widget9->show();     ///< 显示视频 9
+            ui->video_widget10->show();    ///< 显示视频 10
             break;
-        default:
-            break;
+        default: break;
         }
         lastVisibleState = newVisibleState; ///< 更新可见状态
     }
@@ -452,10 +440,13 @@ void MusicRepository::resizeEvent(QResizeEvent* event)
  */
 void MusicRepository::on_more_pushButton1_clicked()
 {
-    ElaMessageBar::information(ElaMessageBarType::BottomRight, "Info",
+    ElaMessageBar::information(ElaMessageBarType::BottomRight,
+                               "Info",
                                QString("%1 功能未实现 敬请期待").arg(
-                                   ui->more_pushButton1->text().left(ui->more_pushButton1->text().size() - 2)),
-                               1000, this->window()); ///< 显示提示
+                                   ui->more_pushButton1->text().left(
+                                       ui->more_pushButton1->text().size() - 2)),
+                               1000,
+                               this->window()); ///< 显示提示
 }
 
 /**
@@ -464,10 +455,13 @@ void MusicRepository::on_more_pushButton1_clicked()
  */
 void MusicRepository::on_more_pushButton2_clicked()
 {
-    ElaMessageBar::information(ElaMessageBarType::BottomRight, "Info",
+    ElaMessageBar::information(ElaMessageBarType::BottomRight,
+                               "Info",
                                QString("%1 功能未实现 敬请期待").arg(
-                                   ui->more_pushButton2->text().left(ui->more_pushButton2->text().size() - 2)),
-                               1000, this->window()); ///< 显示提示
+                                   ui->more_pushButton2->text().left(
+                                       ui->more_pushButton2->text().size() - 2)),
+                               1000,
+                               this->window()); ///< 显示提示
 }
 
 /**
@@ -476,8 +470,11 @@ void MusicRepository::on_more_pushButton2_clicked()
  */
 void MusicRepository::on_more_pushButton3_clicked()
 {
-    ElaMessageBar::information(ElaMessageBarType::BottomRight, "Info",
+    ElaMessageBar::information(ElaMessageBarType::BottomRight,
+                               "Info",
                                QString("%1 功能未实现 敬请期待").arg(
-                                   ui->more_pushButton3->text().left(ui->more_pushButton3->text().size() - 2)),
-                               1000, this->window()); ///< 显示提示
+                                   ui->more_pushButton3->text().left(
+                                       ui->more_pushButton3->text().size() - 2)),
+                               1000,
+                               this->window()); ///< 显示提示
 }

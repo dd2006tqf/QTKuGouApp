@@ -4,17 +4,17 @@
 QWidget#ranking_list_widget{
     border:none;
     border-radius: 6px;
-    border-image: url(:/MusicRepository/Res/musicrepo/rank.png);
+    border-image: url(RESOURCE_DIR/musicrepo/rank.png);
 }
 QWidget#singer_widget{
     border:none;
     border-radius: 6px;
-    border-image: url(:/MusicRepository/Res/musicrepo/singer.png);
+    border-image: url(RESOURCE_DIR/musicrepo/singer.png);
 }
 QWidget#classify_widget{
     border:none;
     border-radius: 6px;
-    border-image: url(:/MusicRepository/Res/musicrepo/classify.png);
+    border-image: url(RESOURCE_DIR/musicrepo/classify.png);
 }
 QPushButton{
     background-color: transparent;

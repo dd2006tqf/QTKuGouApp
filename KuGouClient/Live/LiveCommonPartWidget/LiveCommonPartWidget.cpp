@@ -28,15 +28,18 @@
  * @param parent 父控件指针，默认为 nullptr
  * @param lines 行数，默认为 1
  */
-LiveCommonPartWidget::LiveCommonPartWidget(QWidget *parent, const int lines)
+LiveCommonPartWidget::LiveCommonPartWidget(QWidget* parent, const int lines)
     : QWidget(parent)
       , ui(new Ui::LiveCommonPartWidget)
 {
     ui->setupUi(this);                                           ///< 初始化 UI
     QFile file(GET_CURRENT_DIR + QStringLiteral("/common.css")); ///< 加载样式表
-    if (file.open(QIODevice::ReadOnly)) {
+    if (file.open(QIODevice::ReadOnly))
+    {
         this->setStyleSheet(file.readAll()); ///< 应用样式表
-    } else {
+    }
+    else
+    {
         qDebug() << "样式表打开失败QAQ";
         STREAM_ERROR() << "样式表打开失败QAQ"; ///< 记录错误日志
         return;
@@ -56,7 +59,7 @@ LiveCommonPartWidget::~LiveCommonPartWidget()
  * @brief 设置标题
  * @param name 标题文本
  */
-void LiveCommonPartWidget::setTitleName(const QString &name) const
+void LiveCommonPartWidget::setTitleName(const QString& name) const
 {
     ui->title_label->setText(name); ///< 设置标题文本
 }
@@ -70,9 +73,12 @@ void LiveCommonPartWidget::setNoTipLab()
     connect(this,
             &LiveCommonPartWidget::initOK,
             this,
-            [this] {
-                for (const auto &val : this->m_blockArr) {
-                    if (val) {
+            [this]
+            {
+                for (const auto& val : this->m_blockArr)
+                {
+                    if (val)
+                    {
                         val->setNoTipLab(); ///< 隐藏提示标签
                     }
                 }
@@ -84,10 +90,11 @@ void LiveCommonPartWidget::setNoTipLab()
  * @param folderPath 目录路径
  * @return 文件数量
  */
-int LiveCommonPartWidget::getFileCount(const QString &folderPath)
+int LiveCommonPartWidget::getFileCount(const QString& folderPath)
 {
     QDir dir(folderPath); ///< 创建目录对象
-    if (!dir.exists()) {
+    if (!dir.exists())
+    {
         qWarning("目录不存在: %s", qPrintable(folderPath));
         PRINT_WARN("目录不存在: %s", folderPath.toStdString()); ///< 记录警告日志
         return 0;
@@ -115,7 +122,7 @@ void LiveCommonPartWidget::on_all_pushButton_clicked()
  * @param lines 行数
  * @note 设置按钮图标并异步加载 JSON 数据
  */
-void LiveCommonPartWidget::initUi(const int &lines)
+void LiveCommonPartWidget::initUi(const int& lines)
 {
     const auto leftLabImgPath = ":/Live/Res/live/left.svg"; ///< 左按钮图标
     ui->left_label->setStyleSheet(QString("border-image:url('%1');").arg(leftLabImgPath));
@@ -127,10 +134,12 @@ void LiveCommonPartWidget::initUi(const int &lines)
     ui->right_label->installEventFilter(this);                            ///< 安装右按钮事件过滤器
     QString jsonPath = GET_CURRENT_DIR + QStringLiteral("/../text.json"); ///< JSON 文件路径
     const auto future = Async::runAsync(QThreadPool::globalInstance(),
-                                        [jsonPath] {
+                                        [jsonPath]
+                                        {
                                             QList<QString> texts; ///< 文本列表
                                             QFile file(jsonPath); ///< 打开 JSON 文件
-                                            if (!file.open(QIODevice::ReadOnly)) {
+                                            if (!file.open(QIODevice::ReadOnly))
+                                            {
                                                 qWarning() << "Failed to open JSON file:" <<
                                                     jsonPath;
                                                 STREAM_WARN() << "Failed to open JSON file:" <<
@@ -141,7 +150,8 @@ void LiveCommonPartWidget::initUi(const int &lines)
                                             const QJsonDocument doc = QJsonDocument::fromJson(
                                                 file.readAll(),
                                                 &parseError); ///< 解析 JSON
-                                            if (parseError.error != QJsonParseError::NoError) {
+                                            if (parseError.error != QJsonParseError::NoError)
+                                            {
                                                 qWarning() << "JSON parse error:" << parseError.
                                                     errorString();
                                                 STREAM_WARN() << "JSON parse error:" << parseError.
@@ -149,9 +159,10 @@ void LiveCommonPartWidget::initUi(const int &lines)
                                                 return texts;
                                             }
                                             QJsonArray arr = doc.array();
-                                            for (const auto &item : arr) {
+                                            for (const auto& item : arr)
+                                            {
                                                 QString text = item.toObject().value("text").
-                                                    toString();
+                                                                    toString();
                                                 texts.append(text); ///< 添加文本
                                             }
                                             file.close();
@@ -159,15 +170,17 @@ void LiveCommonPartWidget::initUi(const int &lines)
                                         });
     Async::onResultReady(future,
                          this,
-                         [=](const QList<QString> &texts) {
-                             if (texts.isEmpty()) {
+                         [=](const QList<QString>& texts)
+                         {
+                             if (texts.isEmpty())
+                             {
                                  qWarning() << "No valid data parsed from JSON";
                                  STREAM_WARN() << "No valid data parsed from JSON"; ///< 记录警告日志
                                  return;
                              }
                              this->m_leftBottomTextVec = texts; ///< 更新文本列表
                              unsigned seed = std::chrono::system_clock::now().time_since_epoch().
-                                 count();
+                                                                              count();
                              std::shuffle(this->m_leftBottomTextVec.begin(),
                                           this->m_leftBottomTextVec.end(),
                                           std::default_random_engine(seed)); ///< 打乱文本顺序
@@ -185,9 +198,10 @@ void LiveCommonPartWidget::initLineOne()
 {
     const auto lay1 = new QHBoxLayout(ui->line_widget_1); ///< 创建水平布局
     lay1->setContentsMargins(0, 0, 0, 0);                 ///< 设置边距
-    for (int i = 0; i < 6; ++i) {
+    for (int i = 0; i < 6; ++i)
+    {
         const auto w = new LiveBlockWidget(ui->line_widget_1); ///< 创建块控件
-        w->setCoverPix(QString(":/StandCover/Res/standcover/music-stand-cover%1.jpg")
+        w->setCoverPix(QString(QString(RESOURCE_DIR) + "/standcover/music-stand-cover%1.jpg")
             .arg(QString::number(QRandomGenerator::global()->bounded(
                 1,
                 getFileCount(GET_CURRENT_DIR + "/../../../Res_Qrc/Res/standcover"))))); ///< 设置随机封面
@@ -210,9 +224,10 @@ void LiveCommonPartWidget::initLineTwo()
 {
     const auto lay2 = new QHBoxLayout(ui->line_widget_2); ///< 创建水平布局
     lay2->setContentsMargins(0, 0, 0, 0);                 ///< 设置边距
-    for (int i = 6; i < 12; ++i) {
+    for (int i = 6; i < 12; ++i)
+    {
         const auto w = new LiveBlockWidget(ui->line_widget_2); ///< 创建块控件
-        w->setCoverPix(QString(":/StandCover/Res/standcover/music-stand-cover%1.jpg")
+        w->setCoverPix(QString(QString(RESOURCE_DIR) + "/standcover/music-stand-cover%1.jpg")
             .arg(QString::number(QRandomGenerator::global()->bounded(
                 1,
                 getFileCount(GET_CURRENT_DIR + "/../../../Res_Qrc/Res/standcover"))))); ///< 设置随机封面
@@ -232,15 +247,18 @@ void LiveCommonPartWidget::initLineTwo()
  * @param event 调整大小事件
  * @note 动态显示或隐藏块控件
  */
-void LiveCommonPartWidget::resizeEvent(QResizeEvent *event)
+void LiveCommonPartWidget::resizeEvent(QResizeEvent* event)
 {
     QWidget::resizeEvent(event); ///< 调用父类事件
-    if (this->width() < 1200) {
+    if (this->width() < 1200)
+    {
         if (this->m_blockArr[5])
             this->m_blockArr[5]->hide(); ///< 隐藏第一行最后一个控件
         if (this->m_blockArr[11])
             this->m_blockArr[11]->hide(); ///< 隐藏第二行最后一个控件
-    } else {
+    }
+    else
+    {
         if (this->m_blockArr[5])
             this->m_blockArr[5]->show(); ///< 显示第一行最后一个控件
         if (this->m_blockArr[11])
@@ -255,10 +273,12 @@ void LiveCommonPartWidget::resizeEvent(QResizeEvent *event)
  * @return 是否处理事件
  * @note 处理左右按钮点击事件
  */
-bool LiveCommonPartWidget::eventFilter(QObject *watched, QEvent *event)
+bool LiveCommonPartWidget::eventFilter(QObject* watched, QEvent* event)
 {
-    if (watched == ui->left_label) {
-        if (event->type() == QEvent::MouseButtonPress) {
+    if (watched == ui->left_label)
+    {
+        if (event->type() == QEvent::MouseButtonPress)
+        {
             ElaMessageBar::information(ElaMessageBarType::BottomRight,
                                        "Info",
                                        QString("暂无更多 %1").arg(ui->title_label->text()),
@@ -266,8 +286,10 @@ bool LiveCommonPartWidget::eventFilter(QObject *watched, QEvent *event)
                                        this->window()); ///< 显示左按钮提示
         }
     }
-    if (watched == ui->right_label) {
-        if (event->type() == QEvent::MouseButtonPress) {
+    if (watched == ui->right_label)
+    {
+        if (event->type() == QEvent::MouseButtonPress)
+        {
             ElaMessageBar::information(ElaMessageBarType::BottomRight,
                                        "Info",
                                        QString("暂无更多 %1").arg(ui->title_label->text()),
