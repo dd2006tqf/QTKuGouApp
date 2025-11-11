@@ -26,19 +26,19 @@ QWidget#small_widget > QToolButton {
 }
 
 QToolButton#local_batch_toolButton {
-    border-image: url(":/Res/titlebar/batch-gray.svg");
+    border-image: url("RESOURCE_DIR/titlebar/batch-gray.svg");
 }
 
 QToolButton#local_batch_toolButton:hover {
-    border-image: url(":/Res/titlebar/batch-blue.svg");
+    border-image: url("RESOURCE_DIR/titlebar/batch-blue.svg");
 }
 
 QToolButton#local_sort_toolButton {
-    border-image: url(":/Res/titlebar/sort-gray.svg");
+    border-image: url("RESOURCE_DIR/titlebar/sort-gray.svg");
 }
 
 QToolButton#local_sort_toolButton:hover {
-    border-image: url(":/Res/titlebar/sort-blue.svg");
+    border-image: url("RESOURCE_DIR/titlebar/sort-blue.svg");
 }
 
 /*--------------------QLineEdit------------------------------*/

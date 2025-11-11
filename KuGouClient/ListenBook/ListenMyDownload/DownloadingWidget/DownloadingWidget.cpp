@@ -60,9 +60,11 @@ void DownloadingWidget::initUi()
     downloading_setting_toolButton_toolTip->setToolTip(ui->downloading_setting_toolButton->text());
     ///< 设置工具提示内容
     ui->downloading_play_toolButton->setIcon(
-        QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/play3-white.svg"))); ///< 设置播放按钮图标
+        QIcon(QString(RESOURCE_DIR) + "/tabIcon/play3-white.svg")
+        ); ///< 设置播放按钮图标
     ui->downloading_pause_toolButton->setIcon(
-        QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/stop-gray.svg"))); ///< 设置暂停按钮图标
+        QIcon(QString(RESOURCE_DIR) + "/tabIcon/stop-gray.svg")
+        ); ///< 设置暂停按钮图标
     ui->downloading_clear_toolButton->setIcon(
         QIcon(QString(RESOURCE_DIR) + "/menuIcon/delete-black.svg")); ///< 设置清除按钮图标
 }

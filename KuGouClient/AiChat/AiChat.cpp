@@ -28,18 +28,21 @@
  * @brief 构造函数，初始化 AI 聊天界面
  * @param parent 父控件指针，默认为 nullptr
  */
-AiChat::AiChat(QWidget *parent)
+AiChat::AiChat(QWidget* parent)
     : QWidget(parent)
       , ui(new Ui::AiChat)
-      , m_sendBtn(new QtMaterialFloatingActionButton(QIcon(":/Res/window/send.svg")))
+      , m_sendBtn(new QtMaterialFloatingActionButton(QIcon(QString(RESOURCE_DIR) + "/window/send.svg")))
       , m_snackbar(std::make_unique<QtMaterialSnackbar>())
 {
     ui->setupUi(this);
     this->setObjectName("AiChat");             ///< 设置对象名称
     QFile file(GET_CURRENT_DIR + "/chat.css"); ///< 加载样式表
-    if (file.open(QIODevice::ReadOnly)) {
+    if (file.open(QIODevice::ReadOnly))
+    {
         this->setStyleSheet(file.readAll()); ///< 应用样式表
-    } else {
+    }
+    else
+    {
         qDebug() << "样式表打开失败QAQ";
         return;
     }
@@ -51,12 +54,13 @@ AiChat::AiChat(QWidget *parent)
     connect(&m_deepSeek,
             &Chat::errorOccurred,
             this,
-            [this](const QString &err) {
+            [this](const QString& err)
+            {
                 ui->chatView->removeLastItem();                            ///< 删除上一个回答
                 m_currentResponseItem = new ChatItemBase(ChatRole::Other); ///< 创建新回答项
                 m_currentResponseItem->setUserName("DeepSeek");            ///< 设置用户名
                 m_currentResponseItem->setUserIcon(getRoundedPixmap(
-                    QPixmap(":/Res/window/deepseek.png").scaled(46, 46),
+                    QPixmap(QString(RESOURCE_DIR) + "/window/deepseek.png").scaled(46, 46),
                     {46, 46},
                     23));                                                       ///< 设置头像
                 m_currentResponseBubble = new TextBubble(ChatRole::Other, err); ///< 创建错误气泡
@@ -68,8 +72,10 @@ AiChat::AiChat(QWidget *parent)
     connect(ui->clear_toolButton,
             &QToolButton::clicked,
             ui->chatView,
-            [this] {
-                if (this->m_sendBtn->isEnabled()) {
+            [this]
+            {
+                if (this->m_sendBtn->isEnabled())
+                {
                     // qDebug() << "当前count " << ui->chatView->getLayout()->count();
                     ui->chatView->removeAllItem(); ///< 清除历史对话
                     if (ui->chatView->getLayout()->count() <= 1)
@@ -78,7 +84,9 @@ AiChat::AiChat(QWidget *parent)
                                                    "历史对话已清除",
                                                    1000,
                                                    this->window()); ///< 提示当前无需清除
-                } else {
+                }
+                else
+                {
                     ElaMessageBar::warning(ElaMessageBarType::BottomRight,
                                            "Warning",
                                            "请等待当前问题回答完毕",
@@ -102,28 +110,28 @@ AiChat::~AiChat()
 void AiChat::initUi()
 {
     ui->clear_toolButton->setFont(QFont("TaiwanPearl"));
-    ui->clear_toolButton->setCursor(Qt::PointingHandCursor);                          ///< 设置清除按钮光标
-    ui->clear_toolButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);           ///< 设置按钮样式
-    ui->clear_toolButton->setIcon(QIcon(":/Res/window/clear-black.svg"));             ///< 设置清除图标
-    ui->clear_toolButton->setText("清除历史对话");                                          ///< 设置清除文本
-    auto font = QFont("AaSongLiuKaiTi");                                              ///< 设置字体
-    font.setPointSize(14);                                                            ///< 设置字号
-    font.setWeight(QFont::Medium);                                                    ///< 设置字重
-    ui->question_textEdit->setFont(font);                                             ///< 设置问题输入框字体
-    ui->question_textEdit->setCursor(Qt::IBeamCursor);                                ///< 设置输入框光标
-    ui->question_textEdit->setPlaceholderText("请输入问题");                               ///< 设置占位文本
-    ui->question_textEdit->installEventFilter(this);                                  ///< 安装事件过滤器
-    this->m_sendBtn->setParent(ui->button_widget);                                    ///< 设置发送按钮父对象
-    this->m_sendBtn->setCursor(Qt::PointingHandCursor);                               ///< 设置发送按钮光标
-    this->m_sendBtn->setRippleStyle(Material::PositionedRipple);                      ///< 设置涟漪效果
-    this->m_sendBtn->setCorner(Qt::BottomRightCorner);                                ///< 设置按钮位置
-    this->m_sendBtn->setXOffset(15);                                                  ///< 设置 X 偏移
-    this->m_sendBtn->setYOffset(15);                                                  ///< 设置 Y 偏移
-    m_snackbar->setParent(this);                                                      ///< 设置消息条父对象
-    m_snackbar->setAutoHideDuration(1500);                                            ///< 设置消息条显示时长
-    m_snackbar->setBackgroundColor(QColor(132, 202, 192, 200));                       ///< 设置消息条背景色
-    m_snackbar->setStyleSheet("border-radius: 10px;");                                ///< 设置消息条样式
-    connect(this->m_sendBtn, &QPushButton::clicked, this, &AiChat::onSendBtnClicked); ///< 连接发送按钮信号
+    ui->clear_toolButton->setCursor(Qt::PointingHandCursor);                                 ///< 设置清除按钮光标
+    ui->clear_toolButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);                  ///< 设置按钮样式
+    ui->clear_toolButton->setIcon(QIcon(QString(RESOURCE_DIR) + "/window/clear-black.svg")); ///< 设置清除图标
+    ui->clear_toolButton->setText("清除历史对话");                                                 ///< 设置清除文本
+    auto font = QFont("AaSongLiuKaiTi");                                                     ///< 设置字体
+    font.setPointSize(14);                                                                   ///< 设置字号
+    font.setWeight(QFont::Medium);                                                           ///< 设置字重
+    ui->question_textEdit->setFont(font);                                                    ///< 设置问题输入框字体
+    ui->question_textEdit->setCursor(Qt::IBeamCursor);                                       ///< 设置输入框光标
+    ui->question_textEdit->setPlaceholderText("请输入问题");                                      ///< 设置占位文本
+    ui->question_textEdit->installEventFilter(this);                                         ///< 安装事件过滤器
+    this->m_sendBtn->setParent(ui->button_widget);                                           ///< 设置发送按钮父对象
+    this->m_sendBtn->setCursor(Qt::PointingHandCursor);                                      ///< 设置发送按钮光标
+    this->m_sendBtn->setRippleStyle(Material::PositionedRipple);                             ///< 设置涟漪效果
+    this->m_sendBtn->setCorner(Qt::BottomRightCorner);                                       ///< 设置按钮位置
+    this->m_sendBtn->setXOffset(15);                                                         ///< 设置 X 偏移
+    this->m_sendBtn->setYOffset(15);                                                         ///< 设置 Y 偏移
+    m_snackbar->setParent(this);                                                             ///< 设置消息条父对象
+    m_snackbar->setAutoHideDuration(1500);                                                   ///< 设置消息条显示时长
+    m_snackbar->setBackgroundColor(QColor(132, 202, 192, 200));                              ///< 设置消息条背景色
+    m_snackbar->setStyleSheet("border-radius: 10px;");                                       ///< 设置消息条样式
+    connect(this->m_sendBtn, &QPushButton::clicked, this, &AiChat::onSendBtnClicked);        ///< 连接发送按钮信号
     QMetaObject::invokeMethod(this, "emitInitialized", Qt::QueuedConnection);
 }
 
@@ -134,7 +142,7 @@ void AiChat::initUi()
  * @param radius 圆角半径
  * @return 圆角图片
  */
-QPixmap AiChat::getRoundedPixmap(const QPixmap &src, const QSize &size, const int &radius)
+QPixmap AiChat::getRoundedPixmap(const QPixmap& src, const QSize& size, const int& radius)
 {
     QPixmap scaled = src.scaled(size, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
     ///< 缩放图片
@@ -167,11 +175,13 @@ void AiChat::dealMessageTime() const
 void AiChat::onSendBtnClicked()
 {
     const QString question = ui->question_textEdit->toPlainText().trimmed(); ///< 获取问题
-    if (question.isEmpty()) {
+    if (question.isEmpty())
+    {
         qWarning() << "Empty question";
         STREAM_WARN() << "Empty question"; ///< 记录警告日志
         if (m_snackbarTimer.isValid() && m_snackbarTimer.elapsed() < m_snackbar->
-            autoHideDuration()) {
+            autoHideDuration())
+        {
             qDebug() << "Snackbar cooling down";
             return; ///< 检查冷却时间
         }
@@ -185,7 +195,7 @@ void AiChat::onSendBtnClicked()
     dealMessageTime();                                 ///< 添加时间气泡
     auto pChatItem = new ChatItemBase(ChatRole::Self); ///< 创建自己聊天项
     pChatItem->setUserName("我");                       ///< 设置用户名
-    pChatItem->setUserIcon(getRoundedPixmap(QPixmap(":/Res/window/portrait.jpg"), {50, 50}, 25));
+    pChatItem->setUserIcon(getRoundedPixmap(QPixmap(QString(RESOURCE_DIR) + "/window/portrait.jpg"), {50, 50}, 25));
     ///< 设置头像
     auto pBubble = new TextBubble(ChatRole::Self, question);   ///< 创建问题气泡
     pChatItem->setWidget(pBubble);                             ///< 设置气泡
@@ -193,7 +203,7 @@ void AiChat::onSendBtnClicked()
     m_currentResponseItem = new ChatItemBase(ChatRole::Other); ///< 创建回答项
     m_currentResponseItem->setUserName("DeepSeek");            ///< 设置用户名
     m_currentResponseItem->setUserIcon(getRoundedPixmap(
-        QPixmap(":/Res/window/deepseek.png").scaled(46, 46),
+        QPixmap(QString(RESOURCE_DIR) + "/window/deepseek.png").scaled(46, 46),
         {46, 46},
         23));                                                      ///< 设置头像
     m_currentResponseItem->startMovie(true);                       ///< 启动加载动画
@@ -209,9 +219,10 @@ void AiChat::onSendBtnClicked()
  * @brief 接收回答内容
  * @param chunk 回答片段
  */
-void AiChat::getAnswer(const QString &chunk)
+void AiChat::getAnswer(const QString& chunk)
 {
-    if (m_currentResponseBubble) {
+    if (m_currentResponseBubble)
+    {
         m_currentResponseBubble->appendStreamingContent(chunk); ///< 追加流式内容
     }
 }
@@ -221,7 +232,8 @@ void AiChat::getAnswer(const QString &chunk)
  */
 void AiChat::onStreamFinished()
 {
-    if (m_currentResponseBubble) {
+    if (m_currentResponseBubble)
+    {
         m_currentResponseBubble->finishStreaming(); ///< 结束流式显示
         m_currentResponseItem->startMovie(false);   ///< 停止加载动画
     }
@@ -235,21 +247,28 @@ void AiChat::onStreamFinished()
  * @param event 事件对象
  * @return 是否处理事件
  */
-bool AiChat::eventFilter(QObject *watched, QEvent *event)
+bool AiChat::eventFilter(QObject* watched, QEvent* event)
 {
-    if (watched == ui->question_textEdit) {
-        if (event->type() == QEvent::KeyPress) {
-            QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
-            if (keyEvent->key() == Qt::Key_Return || keyEvent->key() == Qt::Key_Enter) {
-                if (keyEvent->modifiers() & Qt::ShiftModifier) {
+    if (watched == ui->question_textEdit)
+    {
+        if (event->type() == QEvent::KeyPress)
+        {
+            QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
+            if (keyEvent->key() == Qt::Key_Return || keyEvent->key() == Qt::Key_Enter)
+            {
+                if (keyEvent->modifiers() & Qt::ShiftModifier)
+                {
                     ui->question_textEdit->insertPlainText("\n"); ///< 插入换行
-                } else {
+                }
+                else
+                {
                     this->m_sendBtn->click(); ///< 触发发送
                 }
                 return true;
             }
         }
-        if (event->type() == QEvent::FocusIn) {
+        if (event->type() == QEvent::FocusIn)
+        {
             m_snackbar->hide(); ///< 隐藏消息条
         }
     }

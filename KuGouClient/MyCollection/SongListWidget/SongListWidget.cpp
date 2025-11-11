@@ -53,7 +53,8 @@ SongListWidget::~SongListWidget()
 void SongListWidget::initUi()
 {
     ui->batch_toolButton->setIcon(
-        QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/batch-operation-gray.svg")));
+        QIcon(QString(RESOURCE_DIR) + "/tabIcon/batch-operation-gray.svg")
+        );
     ///< 设置批量操作图标
     ui->search_lineEdit->setPlaceholderText(QStringLiteral("搜索")); ///< 设置搜索栏占位文本
     ui->search_lineEdit->setMaxWidth(200);                         ///< 设置搜索栏最大宽度
@@ -96,9 +97,10 @@ void SongListWidget::initBlock() const
         const auto block = new SongListBlockWidget(ui->table_widget); ///< 创建歌单块
         block->setTitleText(arr[i]);                                  ///< 设置标题
         if (i == 0) {
-            block->setCoverPix(QStringLiteral(":/TabIcon/Res/tabIcon/like.png")); ///< 设置“我喜欢”封面
+            block->setCoverPix(QString(RESOURCE_DIR) + "/tabIcon/like.png"); ///< 设置“我喜欢”封面
         } else {
-            block->setCoverPix(QStringLiteral(":/TabIcon/Res/tabIcon/playlist.png")); ///< 设置其他封面
+            block->setCoverPix(QString(RESOURCE_DIR) + "/tabIcon/playlist.png"
+                ); ///< 设置其他封面
         }
         lay->addWidget(block); ///< 添加到布局
     }

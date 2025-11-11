@@ -1,66 +1,76 @@
 /*--------------------title_widget------------------------------*/
-QToolButton#title_return_toolButton{
+QToolButton#title_return_toolButton {
     background-color: transparent;
-    border-image: url(":/Res/titlebar/return-black.svg");
-}
-QToolButton#title_return_toolButton:hover {
-    border-image: url(":/Res/titlebar/return-blue.svg");
-}
-QToolButton#title_refresh_toolButton{
-    background-color: transparent;
-    border-image: url(":/Res/titlebar/refresh-black.svg");
-}
-QToolButton#title_refresh_toolButton:hover {
-    border-image: url(":/Res/titlebar/refresh-blue.svg");
+    border-image: url("RESOURCE_DIR/titlebar/return-black.svg");
 }
 
-QWidget#title_widget QLabel{
+QToolButton#title_return_toolButton:hover {
+    border-image: url("RESOURCE_DIR/titlebar/return-blue.svg");
+}
+
+QToolButton#title_refresh_toolButton {
+    background-color: transparent;
+    border-image: url("RESOURCE_DIR/titlebar/refresh-black.svg");
+}
+
+QToolButton#title_refresh_toolButton:hover {
+    border-image: url("RESOURCE_DIR/titlebar/refresh-blue.svg");
+}
+
+QWidget#title_widget QLabel {
     background-color: transparent;
 }
-QWidget#title_widget QPushButton{
-    background-color:transparent;
-    color:rgba(0,0,0,50%);
+
+QWidget#title_widget QPushButton {
+    background-color: transparent;
+    color: rgba(0, 0, 0, 50%);
 }
+
 QWidget#title_widget QPushButton:hover {
     color: #3366FF;
     font-size: 20px;
 }
+
 QWidget#title_widget QPushButton:checked {
     color: #3366FF;
     font-size: 25px;
 }
 
 QToolButton#listen_toolButton {
-    background-color:transparent;
-    border-image: url(":/Res/titlebar/listen-music-black.svg");
+    background-color: transparent;
+    border-image: url("RESOURCE_DIR/titlebar/listen-music-black.svg");
     border-radius: 10px;
 }
+
 QToolButton#listen_toolButton:hover {
-    border-image: url(":/Res/titlebar/listen-music-blue.svg");
+    border-image: url("RESOURCE_DIR/titlebar/listen-music-blue.svg");
 }
 
 QToolButton#theme_toolButton {
     background-color: transparent;
-    border-image: url(":/Res/titlebar/theme-black.svg");
+    border-image: url("RESOURCE_DIR/titlebar/theme-black.svg");
 }
+
 QToolButton#theme_toolButton:hover {
-    border-image: url(":/Res/titlebar/theme-blue.svg");
+    border-image: url("RESOURCE_DIR/titlebar/theme-blue.svg");
 }
 
 QToolButton#message_toolButton {
     background-color: transparent;
-    border-image: url(":/Res/titlebar/message-black.svg");
+    border-image: url("RESOURCE_DIR/titlebar/message-black.svg");
 }
+
 QToolButton#message_toolButton:hover {
-    border-image: url(":/Res/titlebar/message-blue.svg");
+    border-image: url("RESOURCE_DIR/titlebar/message-blue.svg");
 }
 
 QToolButton#menu_toolButton {
     background-color: transparent;
-    border-image: url(":/Res/titlebar/menu-black.svg");
+    border-image: url("RESOURCE_DIR/titlebar/menu-black.svg");
 }
+
 QToolButton#menu_toolButton:hover {
-    border-image: url(":/Res/titlebar/menu-blue.svg");
+    border-image: url("RESOURCE_DIR/titlebar/menu-blue.svg");
 }
 
 QToolButton#min_toolButton,

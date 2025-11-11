@@ -10,24 +10,24 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-Registration_form::Registration_form(QWidget *parent)
+Registration_form::Registration_form(QWidget* parent)
     : QWidget{parent}
 {
     this->resize(477, 620);
 
-    username = new Input_box(":/Res/login/account.png", this);
+    username = new Input_box(QString(RESOURCE_DIR) + "/login/account.png", this);
     username->move(46, 130);
     username->setPlaceholderText("Username");
     username->openToolTip();
     username->setIconToolTip(QStringLiteral("用户名"));
 
-    email = new Input_box(":/Res/login/email.png", this);
+    email = new Input_box(QString(RESOURCE_DIR) + "/login/email.png", this);
     email->move(46, 220);
     email->setPlaceholderText("Email");
     email->openToolTip();
     email->setIconToolTip(QStringLiteral("邮箱"));
 
-    password = new Input_box(":/Res/login/password.png", this);
+    password = new Input_box(QString(RESOURCE_DIR) + "/login/password.png", this);
     password->move(46, 310);
     password->setPlaceholderText("Password");
     password->setEchoMode(QLineEdit::Password);
@@ -61,7 +61,7 @@ Registration_form::Registration_form(QWidget *parent)
     login_button->move(46, 400);
     login_button->setShortcut(Qt::Key::Key_Return);
 
-    QQ_LoginBtn = new QtMaterialFloatingActionButton(QIcon(":/Res/login/qq.png"), this);
+    QQ_LoginBtn = new QtMaterialFloatingActionButton(QIcon(QString(RESOURCE_DIR) + "/login/qq.png"), this);
     QQ_LoginBtn->setCursor(Qt::PointingHandCursor);          ///< 设置发送按钮光标
     QQ_LoginBtn->setRippleStyle(Material::PositionedRipple); ///< 设置涟漪效果
     QQ_LoginBtn->setCorner(Qt::BottomLeftCorner);            ///< 设置按钮位置
@@ -72,7 +72,7 @@ Registration_form::Registration_form(QWidget *parent)
     qq_tooTip->setToolTip(QStringLiteral("QQ登录"));
 
     WeChat_LoginBtn = new
-        QtMaterialFloatingActionButton(QIcon(":/Res/login/wechat.png"), this);
+        QtMaterialFloatingActionButton(QIcon(QString(RESOURCE_DIR) + "/login/wechat.png"), this);
     WeChat_LoginBtn->setCursor(Qt::PointingHandCursor);          ///< 设置发送按钮光标
     WeChat_LoginBtn->setRippleStyle(Material::PositionedRipple); ///< 设置涟漪效果
     WeChat_LoginBtn->setCorner(Qt::BottomLeftCorner);            ///< 设置按钮位置
@@ -83,7 +83,7 @@ Registration_form::Registration_form(QWidget *parent)
     wechat_tooTip->setToolTip(QStringLiteral("微信登录"));
 
     Google_LoginBtn = new QtMaterialFloatingActionButton(
-        QIcon(":/Res/login/logo_google.png"),
+        QIcon(QString(RESOURCE_DIR) + "/login/logo_google.png"),
         this);
     Google_LoginBtn->setCursor(Qt::PointingHandCursor);          ///< 设置发送按钮光标
     Google_LoginBtn->setRippleStyle(Material::PositionedRipple); ///< 设置涟漪效果
@@ -95,7 +95,7 @@ Registration_form::Registration_form(QWidget *parent)
     google_tooTip->setToolTip(QStringLiteral("谷歌登录"));
 
     Github_LoginBtn = new QtMaterialFloatingActionButton(
-        QIcon(":/Res/login/github-fill.png"),
+        QIcon(QString(RESOURCE_DIR) + "/login/github-fill.png"),
         this);
     Github_LoginBtn->setCursor(Qt::PointingHandCursor);          ///< 设置发送按钮光标
     Github_LoginBtn->setRippleStyle(Material::PositionedRipple); ///< 设置涟漪效果
@@ -132,7 +132,8 @@ Registration_form::Registration_form(QWidget *parent)
     connect(login_button,
             &Login_button::clicked,
             this,
-            [ = ] {
+            [ = ]
+            {
                 if (usernameHint->getStatus() == ValidationHint::Valid &&
                     emailHint->getStatus() == ValidationHint::Valid &&
                     passwordHint->getStatus() == ValidationHint::Valid) ///<满足条件，发送注册请求
@@ -153,7 +154,8 @@ Registration_form::Registration_form(QWidget *parent)
                     ///< 解析返回的 JSON 数据
                     QJsonParseError parseError;
                     doc = QJsonDocument::fromJson(reply.toUtf8(), &parseError);
-                    if (parseError.error != QJsonParseError::NoError || !doc.isObject()) {
+                    if (parseError.error != QJsonParseError::NoError || !doc.isObject())
+                    {
                         ElaMessageBar::error(ElaMessageBarType::BottomRight,
                                              "Error",
                                              QString("JSON 解析错误"),
@@ -166,13 +168,16 @@ Registration_form::Registration_form(QWidget *parent)
                     QJsonObject obj = doc.object();
                     QString status = obj.value("status").toString();
 
-                    if (status == "success") {
+                    if (status == "success")
+                    {
                         ElaMessageBar::success(ElaMessageBarType::BottomRight,
                                                "Success",
                                                QString("注册成功,请返回登录"),
                                                1000,
                                                this->window());
-                    } else {
+                    }
+                    else
+                    {
                         QString message = obj.value("message").toString();
                         ElaMessageBar::error(ElaMessageBarType::BottomRight,
                                              "Error",
@@ -182,31 +187,40 @@ Registration_form::Registration_form(QWidget *parent)
 
                         // qDebug() << reply;
                     }
-                } else ///<判空
+                }
+                else ///<判空
                 {
-                    if (username->text().isEmpty()) {
+                    if (username->text().isEmpty())
+                    {
                         username->setFocus(); // 不需要 clearFocus
 
                         QTimer::singleShot(100,
-                                           [this, usernameHint] {
+                                           [this, usernameHint]
+                                           {
                                                usernameHint->setStatus(
                                                    ValidationHint::Invalid,
                                                    "用户名不能为空");
                                                usernameHint->smoothShow();
                                            });
-                    } else if (email->text().isEmpty()) {
+                    }
+                    else if (email->text().isEmpty())
+                    {
                         email->setFocus();
                         QTimer::singleShot(100,
-                                           [this, emailHint] {
+                                           [this, emailHint]
+                                           {
                                                emailHint->setStatus(
                                                    ValidationHint::Invalid,
                                                    "邮箱不能为空");
                                                emailHint->smoothShow();
                                            });
-                    } else if (password->text().isEmpty()) {
+                    }
+                    else if (password->text().isEmpty())
+                    {
                         password->setFocus();
                         QTimer::singleShot(100,
-                                           [this, passwordHint] {
+                                           [this, passwordHint]
+                                           {
                                                passwordHint->setStatus(
                                                    ValidationHint::Invalid,
                                                    "密码不能为空");
@@ -219,7 +233,8 @@ Registration_form::Registration_form(QWidget *parent)
     // 连接图标点击信号
     connect(password,
             &Input_box::iconClicked,
-            [this] {
+            [this]
+            {
                 m_isPasswordVisible = !m_isPasswordVisible;
 
                 password->setIconToolTip(m_isPasswordVisible
@@ -232,56 +247,67 @@ Registration_form::Registration_form(QWidget *parent)
 
                 // 切换图标（需要准备两个图标）
                 password->setIcon(m_isPasswordVisible
-                                      ? ":/Res/login/password-unlock.png"
-                                      : ":/Res/login/password-lock.png");
+                                      ? QString(RESOURCE_DIR) + "/login/password-unlock.png"
+                                      : QString(RESOURCE_DIR) + "/login/password-lock.png");
             });
 
     connect(username,
             &ElaLineEdit::focusIn,
-            [this, usernameHint] {
+            [this, usernameHint]
+            {
                 usernameHint->smoothShow();
             });
     connect(username,
             &ElaLineEdit::focusOut,
-            [this, usernameHint] {
+            [this, usernameHint]
+            {
                 if (usernameHint->getStatus() != ValidationHint::Invalid)
                     usernameHint->smoothHide();
             });
 
     connect(email,
             &ElaLineEdit::focusIn,
-            [this, emailHint] {
+            [this, emailHint]
+            {
                 emailHint->smoothShow();
             });
     connect(email,
             &ElaLineEdit::focusOut,
-            [this, emailHint] {
+            [this, emailHint]
+            {
                 if (emailHint->getStatus() != ValidationHint::Invalid)
                     emailHint->smoothHide();
             });
 
     connect(password,
             &ElaLineEdit::focusIn,
-            [this, passwordHint] {
+            [this, passwordHint]
+            {
                 passwordHint->smoothShow();
             });
     connect(password,
             &ElaLineEdit::focusOut,
-            [this, passwordHint] {
+            [this, passwordHint]
+            {
                 if (passwordHint->getStatus() != ValidationHint::Invalid)
                     passwordHint->smoothHide();
             });
 
     connect(username,
             &QLineEdit::textChanged,
-            [this, usernameHint ](const QString &text) {
-                if (text.length() == 0) {
+            [this, usernameHint ](const QString& text)
+            {
+                if (text.length() == 0)
+                {
                     usernameHint->setStatus(ValidationHint::Neutral);
                     return;
                 }
-                if (text.length() < 6 || text.length() > 20) {
+                if (text.length() < 6 || text.length() > 20)
+                {
                     usernameHint->setStatus(ValidationHint::Invalid);
-                } else {
+                }
+                else
+                {
                     static QRegularExpression re("[a-zA-Z0-9_\\-!@#$%^&*()+=.,?:;\"'{}<>/|]{0,20}");
                     usernameHint->setStatus(re.match(text).hasMatch()
                                                 ? ValidationHint::Valid
@@ -290,14 +316,19 @@ Registration_form::Registration_form(QWidget *parent)
             });
     connect(email,
             &QLineEdit::textChanged,
-            [this, emailHint](const QString &text) {
-                if (text.length() == 0) {
+            [this, emailHint](const QString& text)
+            {
+                if (text.length() == 0)
+                {
                     emailHint->setStatus(ValidationHint::Neutral);
                     return;
                 }
-                if (text.length() < 6 || text.length() > 30) {
+                if (text.length() < 6 || text.length() > 30)
+                {
                     emailHint->setStatus(ValidationHint::Invalid);
-                } else {
+                }
+                else
+                {
                     static QRegularExpression re("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}");
                     emailHint->setStatus(re.match(text).hasMatch()
                                              ? ValidationHint::Valid
@@ -306,14 +337,19 @@ Registration_form::Registration_form(QWidget *parent)
             });
     connect(password,
             &QLineEdit::textChanged,
-            [this, passwordHint](const QString &text) {
-                if (text.length() == 0) {
+            [this, passwordHint](const QString& text)
+            {
+                if (text.length() == 0)
+                {
                     passwordHint->setStatus(ValidationHint::Neutral);
                     return;
                 }
-                if (text.length() < 6 || text.length() > 16) {
+                if (text.length() < 6 || text.length() > 16)
+                {
                     passwordHint->setStatus(ValidationHint::Invalid);
-                } else {
+                }
+                else
+                {
                     static QRegularExpression re("[a-zA-Z0-9]+$");
                     passwordHint->setStatus(re.match(text).hasMatch()
                                                 ? ValidationHint::Valid
@@ -342,16 +378,19 @@ void Registration_form::animations()
 
 void Registration_form::execute_animation(Login_button::AnimationState State)
 {
-    if (State == Login_button::Execute) {
+    if (State == Login_button::Execute)
+    {
         animation->setDirection(QAbstractAnimation::Forward);
         animation->start();
-    } else if (State == Login_button::Restore) {
+    }
+    else if (State == Login_button::Restore)
+    {
         animation->setDirection(QAbstractAnimation::Backward);
         animation->start();
     }
 }
 
-void Registration_form::paintEvent(QPaintEvent *event)
+void Registration_form::paintEvent(QPaintEvent* event)
 {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
@@ -363,7 +402,7 @@ void Registration_form::paintEvent(QPaintEvent *event)
     draw_text(&painter);
 }
 
-void Registration_form::crop_corner(QPainter *painter)
+void Registration_form::crop_corner(QPainter* painter)
 {
     painter->setPen(Qt::NoPen);
     QBrush Brush(QColor(255, 255, 255, 255));
@@ -371,7 +410,7 @@ void Registration_form::crop_corner(QPainter *painter)
     painter->drawRect(0, 0, width(), height());
 }
 
-void Registration_form::draw_text(QPainter *painter)
+void Registration_form::draw_text(QPainter* painter)
 {
     painter->setRenderHint(QPainter::TextAntialiasing);
 

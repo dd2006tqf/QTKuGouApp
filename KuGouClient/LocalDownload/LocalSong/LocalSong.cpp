@@ -48,7 +48,10 @@ LocalSong::LocalSong(QWidget *parent)
     ui->setupUi(this);                                              ///< 初始化 UI
     QFile file(GET_CURRENT_DIR + QStringLiteral("/localsong.css")); ///< 加载样式表
     if (file.open(QIODevice::ReadOnly)) {
-        this->setStyleSheet(file.readAll()); ///< 应用样式表
+        QString css = QString::fromUtf8(file.readAll());
+        // 替换 RESOURCE_DIR 为实际路径
+        css.replace("RESOURCE_DIR", RESOURCE_DIR);
+        this->setStyleSheet(css);
     } else {
         qDebug() << "样式表打开失败QAQ";
         STREAM_ERROR() << "样式表打开失败QAQ"; ///< 记录错误日志
@@ -240,12 +243,15 @@ void LocalSong::initUi()
     layout->setContentsMargins(0, 0, 0, 0); ///< 设置边距
 
     ui->local_all_play_toolButton->setIcon(
-        QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/play3-white.svg")));
+        QIcon(QString(RESOURCE_DIR) + "/tabIcon/play3-white.svg")
+        );
     ///< 设置播放按钮图标
-    ui->local_add_toolButton->setIcon(QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/add-gray.svg")));
+    ui->local_add_toolButton->setIcon(QIcon(QString(RESOURCE_DIR) + "/tabIcon/add-gray.svg")
+        );
     ///< 设置添加按钮图标
     ui->upload_toolButton->setIcon(
-        QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/upload-cloud-gray.svg"))); ///< 设置上传按钮图标
+        QIcon(QString(RESOURCE_DIR) + "/tabIcon/upload-cloud-gray.svg")
+        ); ///< 设置上传按钮图标
 
     auto searchLineEdit = new MySearchLineEdit(this);
     this->m_searchAction->
@@ -324,7 +330,7 @@ void LocalSong::getMetaData()
                     ///< 获取封面
                     if (cover.isNull()) {
                         cover = QPixmap(
-                            QString(":/Res/tablisticon/pix%1.png").arg(
+                            QString(QString(RESOURCE_DIR) + "/tablisticon/pix%1.png").arg(
                                 QRandomGenerator::global()->bounded(1, 11)));
                         ///< 设置随机封面
                     }
@@ -490,6 +496,7 @@ void LocalSong::startSerialLoading()
 
     // 如果已经在加载中，停止当前加载
     if (m_loadTimer && m_loadTimer
+
         ->
         isActive()
     ) {
@@ -516,6 +523,7 @@ void LocalSong::startSerialLoading()
 void LocalSong::finishLoading()
 {
     if (m_loadTimer && m_loadTimer
+
         ->
         isActive()
     ) {

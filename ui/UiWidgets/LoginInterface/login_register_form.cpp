@@ -13,13 +13,13 @@
 #include <QTimeLine>
 #include <QTimer>
 
-LoginRegisterForm::LoginRegisterForm(QWidget *parent)
+LoginRegisterForm::LoginRegisterForm(QWidget* parent)
     : QDialog{parent}
 {
     this->setFixedSize(955, 620);
     //设置窗体透明
     setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog);
-    WindowEffect::addShadowEffect((HWND) winId());
+    WindowEffect::addShadowEffect((HWND)winId());
 
     initUi();
     setRightShow();
@@ -79,17 +79,21 @@ void LoginRegisterForm::build_animation()
     connect(animation2,
             &QPropertyAnimation::valueChanged,
             this,
-            [this] {
+            [this]
+            {
                 if (scroll_bar->pos().x() > -this->width() / 2 && animation4->state() == !
                     QAbstractAnimation::Running &&
-                    animation_execute_duration) {
+                    animation_execute_duration)
+                {
                     animation2->pause();
                     animation3->setDirection(QAbstractAnimation::Forward);
                     animation3->start();
                     animation_execute_duration = false;
-                } else if (scroll_bar->pos().x() < -this->width() / 10 && animation3->state() == !
-                           QAbstractAnimation::Running &&
-                           animation_restore_duration) {
+                }
+                else if (scroll_bar->pos().x() < -this->width() / 10 && animation3->state() == !
+                    QAbstractAnimation::Running &&
+                    animation_restore_duration)
+                {
                     animation2->pause();
                     animation4->setDirection(QAbstractAnimation::Backward);
                     animation4->start();
@@ -100,8 +104,10 @@ void LoginRegisterForm::build_animation()
     connect(animation3,
             &QPropertyAnimation::finished,
             this,
-            [this] {
-                if (animation2->state() == QAbstractAnimation::Paused) {
+            [this]
+            {
+                if (animation2->state() == QAbstractAnimation::Paused)
+                {
                     animation2->resume();
                 }
             });
@@ -109,8 +115,10 @@ void LoginRegisterForm::build_animation()
     connect(animation4,
             &QPropertyAnimation::finished,
             this,
-            [this] {
-                if (animation2->state() == QAbstractAnimation::Paused) {
+            [this]
+            {
+                if (animation2->state() == QAbstractAnimation::Paused)
+                {
                     animation2->resume();
                 }
             });
@@ -127,7 +135,8 @@ void LoginRegisterForm::build_animation()
     connect(animation5,
             &QPropertyAnimation::finished,
             this,
-            [this] {
+            [this]
+            {
                 /// qDebug() << __LINE__;
                 ///< 显示了注册界面
                 login_form->setDefaultButton(false);
@@ -138,13 +147,15 @@ void LoginRegisterForm::build_animation()
 
 void LoginRegisterForm::onAnimation3Finished()
 {
-    if (currentSequence == 1) {
+    if (currentSequence == 1)
+    {
         animation4->setDirection(QAbstractAnimation::Forward);
         animation4->start();
         animation5->setDirection(QAbstractAnimation::Forward);
         animation5->start();
     }
-    for (auto btn : findChildren<QPushButton *>()) {
+    for (auto btn : findChildren<QPushButton*>())
+    {
         if (btn->objectName() == "minBtn" || btn->objectName() == "closeBtn")
             btn->raise();
     }
@@ -155,7 +166,8 @@ void LoginRegisterForm::onAnimation4Finished()
     if (currentSequence == 1)
         return;
 
-    if (currentSequence == 2) {
+    if (currentSequence == 2)
+    {
         animation3->setDirection(QAbstractAnimation::Backward);
         animation3->start();
 
@@ -171,7 +183,8 @@ void LoginRegisterForm::onAnimation4Finished()
 
 void LoginRegisterForm::execute_animation(Hollow_button::AnimationState status)
 {
-    if (status == Hollow_button::AnimationState::ANIMATION_STATE_EXECUTING) {
+    if (status == Hollow_button::AnimationState::ANIMATION_STATE_EXECUTING)
+    {
         animation_execute_duration = true;
         currentSequence = 1;
 
@@ -180,7 +193,9 @@ void LoginRegisterForm::execute_animation(Hollow_button::AnimationState status)
 
         animation6->setDirection(QAbstractAnimation::Forward);
         animation6->start();
-    } else if (status == Hollow_button::AnimationState::ANIMATION_STATE_RESET) {
+    }
+    else if (status == Hollow_button::AnimationState::ANIMATION_STATE_RESET)
+    {
         animation_restore_duration = true;
         currentSequence = 2;
 
@@ -189,7 +204,7 @@ void LoginRegisterForm::execute_animation(Hollow_button::AnimationState status)
     }
 }
 
-void LoginRegisterForm::paintEvent(QPaintEvent *event)
+void LoginRegisterForm::paintEvent(QPaintEvent* event)
 {
     QDialog::paintEvent(event);
     QPainter painter(this);
@@ -203,53 +218,68 @@ void LoginRegisterForm::paintEvent(QPaintEvent *event)
     painter.drawPath(path);
 }
 
-void LoginRegisterForm::mousePressEvent(QMouseEvent *event)
+void LoginRegisterForm::mousePressEvent(QMouseEvent* event)
 {
-    if (event->button() == Qt::LeftButton) {
+    if (event->button() == Qt::LeftButton)
+    {
         m_dragStartPosition = event->globalPosition().toPoint();
         m_startWindowPosition = this->pos();
         event->accept();
-    } else {
+    }
+    else
+    {
         QDialog::mousePressEvent(event);
     }
 }
 
-void LoginRegisterForm::mouseMoveEvent(QMouseEvent *event)
+void LoginRegisterForm::mouseMoveEvent(QMouseEvent* event)
 {
-    if (event->buttons() & Qt::LeftButton) {
+    if (event->buttons() & Qt::LeftButton)
+    {
         QPoint delta = event->globalPosition().toPoint() - m_dragStartPosition;
         this->move(m_startWindowPosition + delta);
         event->accept();
-    } else {
+    }
+    else
+    {
         QDialog::mouseMoveEvent(event);
     }
 }
 
-bool LoginRegisterForm::eventFilter(QObject *watched, QEvent *event) ///< 仅仅用来识别最小化和关闭按钮
+bool LoginRegisterForm::eventFilter(QObject* watched, QEvent* event) ///< 仅仅用来识别最小化和关闭按钮
 {
-    auto btn = qobject_cast<QPushButton *>(watched);
+    auto btn = qobject_cast<QPushButton*>(watched);
     if (!btn)
         return QDialog::eventFilter(watched, event);
 
     const QString name = btn->objectName();
 
-    if (event->type() == QEvent::Enter) {
-        if (name == "minBtn") {
-            btn->setIcon(QIcon(":/Res/titlebar/minimize-blue.svg"));
-        } else if (name == "closeBtn") {
-            btn->setIcon(QIcon(":/Res/titlebar/close-blue.svg"));
+    if (event->type() == QEvent::Enter)
+    {
+        if (name == "minBtn")
+        {
+            btn->setIcon(QIcon(QString(RESOURCE_DIR) + "/titlebar/minimize-blue.svg"));
         }
-    } else if (event->type() == QEvent::Leave) {
-        if (name == "minBtn") {
-            btn->setIcon(QIcon(":/Res/titlebar/minimize-black.svg"));
-        } else if (name == "closeBtn") {
-            btn->setIcon(QIcon(":/Res/titlebar/close-black.svg"));
+        else if (name == "closeBtn")
+        {
+            btn->setIcon(QIcon(QString(RESOURCE_DIR) + "/titlebar/close-blue.svg"));
+        }
+    }
+    else if (event->type() == QEvent::Leave)
+    {
+        if (name == "minBtn")
+        {
+            btn->setIcon(QIcon(QString(RESOURCE_DIR) + "/titlebar/minimize-black.svg"));
+        }
+        else if (name == "closeBtn")
+        {
+            btn->setIcon(QIcon(QString(RESOURCE_DIR) + "/titlebar/close-black.svg"));
         }
     }
     return QDialog::eventFilter(watched, event);
 }
 
-void LoginRegisterForm::showEvent(QShowEvent *event)
+void LoginRegisterForm::showEvent(QShowEvent* event)
 {
     QDialog::showEvent(event); // 确保正常显示
 
@@ -280,17 +310,21 @@ void LoginRegisterForm::showEvent(QShowEvent *event)
     connect(group,
             &QParallelAnimationGroup::finished,
             this,
-            [ = ] {
+            [ = ]
+            {
                 setGraphicsEffect(nullptr); // 移除模糊
-                if (isFirstShow) {
+                if (isFirstShow)
+                {
                     auto config = sApp->globalConfig();
 
                     //如果上次退出之前勾选了自动登陆，则自动点击登陆按钮
-                    if (config->value("user/autoLogin").toBool()) {
+                    if (config->value("user/autoLogin").toBool())
+                    {
                         qDebug() << "自动登录";
                         QTimer::singleShot(0,
                                            login_form,
-                                           [this] {
+                                           [this]
+                                           {
                                                login_form->onLogin();
                                            });
                     }
@@ -322,7 +356,8 @@ void LoginRegisterForm::accept()
     connect(group,
             &QParallelAnimationGroup::finished,
             this,
-            [ = ] {
+            [ = ]
+            {
                 setGraphicsEffect(nullptr);
                 QDialog::accept();
             });
@@ -333,12 +368,12 @@ void LoginRegisterForm::initUi()
 {
     auto minBtn = new QPushButton(this);
     minBtn->setObjectName("minBtn");
-    minBtn->setIcon(QIcon(QStringLiteral(":/Res/titlebar/minimize-black.svg")));
+    minBtn->setIcon(QIcon(QString(RESOURCE_DIR) + "/titlebar/minimize-black.svg"));
     minBtn->setCursor(Qt::PointingHandCursor);
     minBtn->installEventFilter(this);
     auto closeBtn = new QPushButton(this);
     closeBtn->setObjectName("closeBtn");
-    closeBtn->setIcon(QIcon(QStringLiteral(":/Res/titlebar/close-black.svg")));
+    closeBtn->setIcon(QIcon(QString(RESOURCE_DIR) + "/titlebar/close-black.svg"));
     closeBtn->setCursor(Qt::PointingHandCursor);
     closeBtn->installEventFilter(this);
     closeBtn->setStyleSheet(R"(
@@ -428,7 +463,8 @@ void LoginRegisterForm::initUi()
     connect(login_form,
             &Login_form::QQ_login,
             this,
-            [=]() {
+            [=]()
+            {
                 ElaMessageBar::information(ElaMessageBarType::BottomRight,
                                            "Infor",
                                            QString("QQ登录功能暂未实现，敬请期待"),
@@ -438,7 +474,8 @@ void LoginRegisterForm::initUi()
     connect(login_form,
             &Login_form::WeChat_login,
             this,
-            [=]() {
+            [=]()
+            {
                 ElaMessageBar::information(ElaMessageBarType::BottomRight,
                                            "Infor",
                                            QString("微信登录功能暂未实现，敬请期待"),
@@ -448,7 +485,8 @@ void LoginRegisterForm::initUi()
     connect(login_form,
             &Login_form::Google_login,
             this,
-            [=]() {
+            [=]()
+            {
                 ElaMessageBar::information(ElaMessageBarType::BottomRight,
                                            "Infor",
                                            QString("Google登录功能暂未实现，敬请期待"),
@@ -458,7 +496,8 @@ void LoginRegisterForm::initUi()
     connect(login_form,
             &Login_form::Github_login,
             this,
-            [=]() {
+            [=]()
+            {
                 ElaMessageBar::information(ElaMessageBarType::BottomRight,
                                            "Infor",
                                            QString("GitHub登录功能暂未实现，敬请期待"),
@@ -468,7 +507,8 @@ void LoginRegisterForm::initUi()
     connect(registration_form,
             &Registration_form::QQ_login,
             this,
-            [=]() {
+            [=]()
+            {
                 ElaMessageBar::information(ElaMessageBarType::BottomRight,
                                            "Infor",
                                            QString("QQ登录功能暂未实现，敬请期待"),
@@ -478,7 +518,8 @@ void LoginRegisterForm::initUi()
     connect(registration_form,
             &Registration_form::WeChat_login,
             this,
-            [=]() {
+            [=]()
+            {
                 ElaMessageBar::information(ElaMessageBarType::BottomRight,
                                            "Infor",
                                            QString("微信登录功能暂未实现，敬请期待"),
@@ -488,7 +529,8 @@ void LoginRegisterForm::initUi()
     connect(registration_form,
             &Registration_form::Google_login,
             this,
-            [=]() {
+            [=]()
+            {
                 ElaMessageBar::information(ElaMessageBarType::BottomRight,
                                            "Infor",
                                            QString("Google登录功能暂未实现，敬请期待"),
@@ -498,7 +540,8 @@ void LoginRegisterForm::initUi()
     connect(registration_form,
             &Registration_form::Github_login,
             this,
-            [=]() {
+            [=]()
+            {
                 ElaMessageBar::information(ElaMessageBarType::BottomRight,
                                            "Infor",
                                            QString("GitHub登录功能暂未实现，敬请期待"),
@@ -512,7 +555,7 @@ int LoginRegisterForm::animation_duration() const
     return m_animation_duration;
 }
 
-void LoginRegisterForm::setAnimation_duration(const int &newAnimation_duration)
+void LoginRegisterForm::setAnimation_duration(const int& newAnimation_duration)
 {
     m_animation_duration = newAnimation_duration;
 }

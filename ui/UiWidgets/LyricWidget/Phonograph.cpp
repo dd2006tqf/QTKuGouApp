@@ -9,9 +9,9 @@ Phonograph::Phonograph(QWidget* parent)
       currentDiskAngle(0),
       currentArmAngle(0),
       playing(false),
-      AlbumCover(":/Res/lyric/AlbumCover.jpg"),
-      disk(":/Res/lyric/netease_disk.png"),
-      toneArm(":/Res/lyric/netease_tone_arm.png")
+      AlbumCover(QString(RESOURCE_DIR) + "/lyric/AlbumCover.jpg"),
+      disk(QString(RESOURCE_DIR) + "/lyric/netease_disk.png"),
+      toneArm(QString(RESOURCE_DIR) + "/lyric/netease_tone_arm.png")
 {
     setMouseTracking(true);       //详见 BesFramelessWidget.h 注释
     timerDisk = new QTimer(this); //唱片转动定时器
@@ -58,7 +58,7 @@ bool Phonograph::isPlaying()
 
 void Phonograph::setOriginStyle()
 {
-    setAlbumCover(QPixmap(":/Res/lyric/AlbumCover.jpg"));
+    setAlbumCover(QPixmap(QString(RESOURCE_DIR) + "/lyric/AlbumCover.jpg"));
 }
 
 void Phonograph::paintEvent(QPaintEvent* event)
@@ -129,6 +129,8 @@ void Phonograph::updateAngleOfDisk()
 void Phonograph::updateAngleOfArm()
 {
     if (playing&& currentArmAngle
+
+    
     !=
     maxAngleOfArm
     ) //播放中，但是磁头没到位，则转动一下

@@ -30,7 +30,10 @@ UploadedSong::UploadedSong(QWidget *parent)
     ui->setupUi(this);
     QFile file(GET_CURRENT_DIR + QStringLiteral("/uploaded.css")); ///< 加载样式表
     if (file.open(QIODevice::ReadOnly)) {
-        this->setStyleSheet(file.readAll()); ///< 应用样式表
+        QString css = QString::fromUtf8(file.readAll());
+        // 替换 RESOURCE_DIR 为实际路径
+        css.replace("RESOURCE_DIR", RESOURCE_DIR);
+        this->setStyleSheet(css);
     } else {
         qDebug() << "样式表打开失败QAQ";
         STREAM_ERROR() << "样式表打开失败QAQ"; ///< 记录错误日志
@@ -127,12 +130,14 @@ void UploadedSong::initUi()
     ///< 创建批量操作按钮工具提示
     cloud_batch_toolButton_toolTip->setToolTip(QStringLiteral("批量操作")); ///< 设置批量操作提示
     ui->cloud_play_toolButton->setIcon(
-        QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/play3-gray.svg"))); ///< 设置播放按钮图标
+        QIcon(QString(RESOURCE_DIR) + "/tabIcon/play3-gray.svg")
+        ); ///< 设置播放按钮图标
     ui->cloud_upload_toolButton->setIcon(
         QIcon(QString(RESOURCE_DIR) + "/menuIcon/upload-white.svg"));
     ///< 设置上传按钮图标
     ui->cloud_download_toolButton->setIcon(
-        QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/download-gray.svg")));
+        QIcon(QString(RESOURCE_DIR) + "/tabIcon/download-gray.svg")
+        );
     ///< 设置下载按钮图标
     ui->cloud_delete_toolButton->
         setIcon(QIcon(QString(RESOURCE_DIR) + "/menuIcon/delete-gray.svg"));

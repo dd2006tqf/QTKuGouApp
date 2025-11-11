@@ -55,9 +55,11 @@ void UploadingSong::initUi()
         QIcon(QString(RESOURCE_DIR) + "/menuIcon/upload-white.svg"));
     ///< 设置上传按钮图标
     ui->cloud_start_toolButton->setIcon(
-        QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/play3-gray.svg"))); ///< 设置开始按钮图标
+        QIcon(QString(RESOURCE_DIR) + "/tabIcon/play3-gray.svg")
+        ); ///< 设置开始按钮图标
     ui->cloud_pause_toolButton->setIcon(
-        QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/stop-gray.svg"))); ///< 设置暂停按钮图标
+        QIcon(QString(RESOURCE_DIR) + "/tabIcon/stop-gray.svg")
+        ); ///< 设置暂停按钮图标
     ui->cloud_clear_toolButton->setIcon(QIcon(QString(RESOURCE_DIR) + "/menuIcon/delete-gray.svg"));
     ///< 设置清除按钮图标
 }

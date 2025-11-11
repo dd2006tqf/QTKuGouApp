@@ -122,7 +122,7 @@ void MusicCloudDisk::initIndexLab()
 
     for (int i = 0; i < 2; ++i)
     {
-        idxLabels[i]->setPixmap(QPixmap(":/Res/window/index_lab.svg"));
+        idxLabels[i]->setPixmap(QPixmap(QString(RESOURCE_DIR) + "/window/index_lab.svg"));
         guideWidgets[i]->installEventFilter(this);
         numLabels[i]->setStyleSheet(i == 0 ? "color:#26a1ff;font-size:14px;font-weight:bold;" : "");
         idxLabels[i]->setVisible(i == 0);

@@ -31,7 +31,10 @@ SingleSong::SingleSong(QWidget *parent)
     ui->setupUi(this);
     QFile file(GET_CURRENT_DIR + QStringLiteral("/single.css")); ///< 加载样式表
     if (file.open(QIODevice::ReadOnly)) {
-        this->setStyleSheet(file.readAll()); ///< 应用样式表
+        QString css = QString::fromUtf8(file.readAll());
+        // 替换 RESOURCE_DIR 为实际路径
+        css.replace("RESOURCE_DIR", RESOURCE_DIR);
+        this->setStyleSheet(css);
     } else {
         qDebug() << "样式表打开失败QAQ";
         STREAM_ERROR() << "样式表打开失败QAQ"; ///< 记录错误日志
@@ -131,10 +134,12 @@ void SingleSong::initUi()
                 collect_sort_toolButton_toolTip->setToolTip(QStringLiteral("当前排序方式：随机")); ///< 更新提示
             });
     ui->collect_play_toolButton->setIcon(
-        QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/play3-white.svg"))); ///< 设置播放图标
+        QIcon(QString(RESOURCE_DIR) + "/tabIcon/play3-white.svg")
+        ); ///< 设置播放图标
     ui->collect_download_toolButton->setIcon(
-        QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/download-gray.svg"))); ///< 设置下载图标
-    ui->collect_download_toolButton->installEventFilter(this);             ///< 安装下载按钮事件过滤器
+        QIcon(QString(RESOURCE_DIR) + "/tabIcon/download-gray.svg")
+        );                                                     ///< 设置下载图标
+    ui->collect_download_toolButton->installEventFilter(this); ///< 安装下载按钮事件过滤器
     this->m_searchAction->setIcon(
         QIcon(QString(RESOURCE_DIR) + "/menuIcon/search-black.svg")); ///< 设置搜索图标
     this->m_searchAction->setIconVisibleInMenu(false); ///< 仅显示图标
@@ -146,7 +151,7 @@ void SingleSong::initUi()
     ui->search_lineEdit->setFont(font); ///< 应用字体
     ui->search_lineEdit->setBorderRadius(10);
     QToolButton *searchButton = nullptr;
-    foreach(QToolButton *btn, ui->search_lineEdit->findChildren<QToolButton *>()) {
+    foreach(QToolButton * btn, ui->search_lineEdit->findChildren<QToolButton*>()) {
         if (btn->defaultAction() == this->m_searchAction) {
             searchButton = btn;                                          ///< 获取搜索按钮
             auto search_lineEdit_toolTip = new ElaToolTip(searchButton); ///< 创建搜索按钮工具提示
@@ -359,7 +364,8 @@ bool SingleSong::eventFilter(QObject *watched, QEvent *event)
             ///< 设置蓝色下载图标
         } else if (event->type() == QEvent::Leave) {
             ui->collect_download_toolButton->setIcon(
-                QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/download-gray.svg"))); ///< 设置灰色下载图标
+                QIcon(QString(RESOURCE_DIR) + "/tabIcon/download-gray.svg")
+                ); ///< 设置灰色下载图标
         }
     }
     if (const auto button = qobject_cast<QToolButton *>(watched);
@@ -370,7 +376,7 @@ bool SingleSong::eventFilter(QObject *watched, QEvent *event)
             ///< 设置蓝色搜索图标
         } else if (event->type() == QEvent::Leave) {
             this->m_searchAction->setIcon(
-                QIcon(QStringLiteral(":/MenuIcon/Res/menuIcon/search-black.svg"))); ///< 设置黑色搜索图标
+                QIcon(QString(RESOURCE_DIR) + "/menuIcon/search-black.svg")); ///< 设置黑色搜索图标
         }
     }
     return QObject::eventFilter(watched, event); ///< 调用父类过滤器

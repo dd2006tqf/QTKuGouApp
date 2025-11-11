@@ -13,7 +13,7 @@
 #include <QJsonObject>
 #include <QTimer>
 
-Login_form::Login_form(QWidget *parent)
+Login_form::Login_form(QWidget* parent)
     : QWidget{parent}
 {
     this->resize(477, 620);
@@ -26,7 +26,8 @@ Login_form::Login_form(QWidget *parent)
 
     connect(remember_password_checkBox,
             &QCheckBox::stateChanged,
-            [ = ](int checked) {
+            [ = ](int checked)
+            {
                 //如果取消记住密码，则取消自动登陆(没记住密码，哪来的自动登陆)
                 if (!checked)
                     auto_login_checkBox->setChecked(false);
@@ -34,7 +35,8 @@ Login_form::Login_form(QWidget *parent)
             });
     connect(auto_login_checkBox,
             &QCheckBox::stateChanged,
-            [ = ](int checked) {
+            [ = ](int checked)
+            {
                 //如果选择了自动登陆，那么自动勾选上记住密码(不记住密码，怎么自动登陆)
                 if (checked)
                     remember_password_checkBox->setChecked(true);
@@ -53,7 +55,8 @@ Login_form::Login_form(QWidget *parent)
     // 连接图标点击信号
     connect(password,
             &Input_box::iconClicked,
-            [this] {
+            [this]
+            {
                 m_isPasswordVisible = !m_isPasswordVisible;
 
                 password->setIconToolTip(m_isPasswordVisible
@@ -65,8 +68,8 @@ Login_form::Login_form(QWidget *parent)
 
                 // 切换图标（需要准备两个图标）
                 password->setIcon(m_isPasswordVisible
-                                      ? ":/Res/login/password-unlock.png"
-                                      : ":/Res/login/password-lock.png");
+                                      ? QString(RESOURCE_DIR) + "/login/password-unlock.png"
+                                      : QString(RESOURCE_DIR) + "/login/password-lock.png");
             });
 }
 
@@ -79,7 +82,7 @@ void Login_form::setDefaultButton(bool flag)
 void Login_form::initUi()
 {
     ///< 两个输入框
-    username = new Input_box(":/Res/login/account.png", this);
+    username = new Input_box(QString(RESOURCE_DIR) + "/login/account.png", this);
     username->move(46, 161);
     username->setPlaceholderText("Username");
     username->setMaxLength(20);
@@ -90,7 +93,7 @@ void Login_form::initUi()
     username->openToolTip();
     username->setIconToolTip(QStringLiteral("用户名"));
 
-    password = new Input_box(":/Res/login/password-lock.png", this);
+    password = new Input_box(QString(RESOURCE_DIR) + "/login/password-lock.png", this);
     password->move(46, 253);
     password->setPlaceholderText("Password");
     password->setEchoMode(QLineEdit::Password);
@@ -103,22 +106,22 @@ void Login_form::initUi()
     ///< 提示tip
     {
         auto username_cue = new QLabel(this);
-        username_cue->setPixmap(QPixmap(":/Res/window/cue-gray.svg"));
+        username_cue->setPixmap(QPixmap(QString(RESOURCE_DIR) + "/window/cue-gray.svg"));
         username_cue->setFixedSize(14, 14);
         username_cue->move(
             username->x() + username->width() + 4,
             username->y() + (username->height() - username_cue->height()) / 2
-            );
+        );
         auto username_cue_toolTip = new ElaToolTip(username_cue);
         username_cue_toolTip->setToolTip("6~20个字符，可包含字母、数字或符号");
 
         auto password_cue = new QLabel(this);
-        password_cue->setPixmap(QPixmap(":/Res/window/cue-gray.svg"));
+        password_cue->setPixmap(QPixmap(QString(RESOURCE_DIR) + "/window/cue-gray.svg"));
         password_cue->setFixedSize(14, 14);
         password_cue->move(
             password->x() + password->width() + 4,
             password->y() + (password->height() - password_cue->height()) / 2
-            );
+        );
         auto password_cue_toolTip = new ElaToolTip(password_cue);
         password_cue_toolTip->setToolTip("必须包含6~16位数字或字母");
     }
@@ -135,7 +138,7 @@ void Login_form::initUi()
         password->x(),
         // 水平对齐 password 左边
         password->y() + password->height() + 15 // 在 password 下方留出一定间距
-        );
+    );
     //读取配置文件
     remember_password_checkBox->setChecked(config->value("user/rememberPassword").toBool());
 
@@ -148,11 +151,12 @@ void Login_form::initUi()
     auto_login_checkBox->move(
         remember_password_checkBox->x() + remember_password_checkBox->width() + 15,
         remember_password_checkBox->y()
-        );
+    );
     //读取配置文件
     auto_login_checkBox->setChecked(config->value("user/autoLogin").toBool());
 
-    if (remember_password_checkBox->isChecked()) {
+    if (remember_password_checkBox->isChecked())
+    {
         username->setText(config->value("user/account").toString());
         password->setText(config->value("user/password").toString());
     }
@@ -167,7 +171,7 @@ void Login_form::initUi()
     ///< 底部四个登录选项按钮
     {
         QQ_LoginBtn = new
-            QtMaterialFloatingActionButton(QIcon(":/Res/login/qq.png"), this);
+            QtMaterialFloatingActionButton(QIcon(QString(RESOURCE_DIR) + "/login/qq.png"), this);
         QQ_LoginBtn->setCursor(Qt::PointingHandCursor);          ///< 设置发送按钮光标
         QQ_LoginBtn->setRippleStyle(Material::PositionedRipple); ///< 设置涟漪效果
         QQ_LoginBtn->setCorner(Qt::BottomRightCorner);           ///< 设置按钮位置
@@ -178,7 +182,7 @@ void Login_form::initUi()
         qq_tooTip->setToolTip(QStringLiteral("QQ登录"));
 
         WeChat_LoginBtn = new QtMaterialFloatingActionButton(
-            QIcon(":/Res/login/wechat.png"),
+            QIcon(QString(RESOURCE_DIR) + "/login/wechat.png"),
             this);
         WeChat_LoginBtn->setCursor(Qt::PointingHandCursor);          ///< 设置发送按钮光标
         WeChat_LoginBtn->setRippleStyle(Material::PositionedRipple); ///< 设置涟漪效果
@@ -190,7 +194,7 @@ void Login_form::initUi()
         wechat_tooTip->setToolTip(QStringLiteral("微信登录"));
 
         Google_LoginBtn = new QtMaterialFloatingActionButton(
-            QIcon(":/Res/login/logo_google.png"),
+            QIcon(QString(RESOURCE_DIR) + "/login/logo_google.png"),
             this);
         Google_LoginBtn->setCursor(Qt::PointingHandCursor);          ///< 设置发送按钮光标
         Google_LoginBtn->setRippleStyle(Material::PositionedRipple); ///< 设置涟漪效果
@@ -202,7 +206,7 @@ void Login_form::initUi()
         google_tooTip->setToolTip(QStringLiteral("Google登录"));
 
         Github_LoginBtn = new QtMaterialFloatingActionButton(
-            QIcon(":/Res/login/github-fill.png"),
+            QIcon(QString(RESOURCE_DIR) + "/login/github-fill.png"),
             this);
         Github_LoginBtn->setCursor(Qt::PointingHandCursor);          ///< 设置发送按钮光标
         Github_LoginBtn->setRippleStyle(Material::PositionedRipple); ///< 设置涟漪效果
@@ -238,10 +242,13 @@ void Login_form::animations()
 
 void Login_form::execute_animation(Login_button::AnimationState State)
 {
-    if (State == Login_button::Execute) {
+    if (State == Login_button::Execute)
+    {
         animation->setDirection(QAbstractAnimation::Forward);
         animation->start();
-    } else if (State == Login_button::Restore) {
+    }
+    else if (State == Login_button::Restore)
+    {
         animation->setDirection(QAbstractAnimation::Backward);
         animation->start();
     }
@@ -249,7 +256,8 @@ void Login_form::execute_animation(Login_button::AnimationState State)
 
 void Login_form::onLogin()
 {
-    if (username->text().isEmpty()) {
+    if (username->text().isEmpty())
+    {
         username->setFocus();
         ElaMessageBar::error(ElaMessageBarType::BottomRight,
                              "Error",
@@ -258,7 +266,8 @@ void Login_form::onLogin()
                              this->window());
         return;
     }
-    if (password->text().isEmpty()) {
+    if (password->text().isEmpty())
+    {
         password->setFocus();
         ElaMessageBar::error(ElaMessageBarType::BottomRight,
                              "Error",
@@ -282,7 +291,8 @@ void Login_form::onLogin()
     ///< 解析返回的 JSON 数据
     QJsonParseError parseError;
     doc = QJsonDocument::fromJson(reply.toUtf8(), &parseError);
-    if (parseError.error != QJsonParseError::NoError || !doc.isObject()) {
+    if (parseError.error != QJsonParseError::NoError || !doc.isObject())
+    {
         ElaMessageBar::error(ElaMessageBarType::BottomRight,
                              "Error",
                              QString("JSON 解析错误"),
@@ -295,7 +305,8 @@ void Login_form::onLogin()
     QJsonObject obj = doc.object();
     QString status = obj.value("status").toString();
 
-    if (status == "success") {
+    if (status == "success")
+    {
         ///< 登录成功，禁止鼠标交互
         this->setEnabled(false);
         this->parentWidget()->setEnabled(false);
@@ -313,10 +324,13 @@ void Login_form::onLogin()
         config->setValue("user/autoLogin", auto_login_checkBox->isChecked());
         QTimer::singleShot(1000,
                            this,
-                           [this] {
+                           [this]
+                           {
                                emit loginSuccess();
                            });
-    } else {
+    }
+    else
+    {
         QString message = obj.value("message").toString();
         ElaMessageBar::error(ElaMessageBarType::BottomRight,
                              "Error",
@@ -328,7 +342,7 @@ void Login_form::onLogin()
     }
 }
 
-void Login_form::paintEvent(QPaintEvent *event)
+void Login_form::paintEvent(QPaintEvent* event)
 {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
@@ -340,7 +354,7 @@ void Login_form::paintEvent(QPaintEvent *event)
     draw_text(&painter);
 }
 
-void Login_form::crop_corner(QPainter *painter)
+void Login_form::crop_corner(QPainter* painter)
 {
     painter->setPen(Qt::NoPen);
     QBrush Brush(QColor(255, 255, 255, 255));
@@ -348,7 +362,7 @@ void Login_form::crop_corner(QPainter *painter)
     painter->drawRect(0, 0, width(), height());
 }
 
-void Login_form::draw_text(QPainter *painter)
+void Login_form::draw_text(QPainter* painter)
 {
     painter->setRenderHint(QPainter::TextAntialiasing);
 

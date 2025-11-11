@@ -79,7 +79,10 @@ void GLTabWidget::initUi()
 
     QFile file(GET_CURRENT_DIR + QStringLiteral("/table.css")); ///< 加载样式表
     if (file.open(QIODevice::ReadOnly)) {
-        this->setStyleSheet(file.readAll()); ///< 应用样式表
+        QString css = QString::fromUtf8(file.readAll());
+        // 替换 RESOURCE_DIR 为实际路径
+        css.replace("RESOURCE_DIR", RESOURCE_DIR);
+        this->setStyleSheet(css);
     } else {
         qDebug() << "样式表打开失败QAQ";
         STREAM_ERROR() << "样式表打开失败QAQ"; ///< 记录错误日志

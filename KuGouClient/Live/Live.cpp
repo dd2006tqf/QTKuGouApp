@@ -229,21 +229,24 @@ void Live::initPopularWidget()
     ui->toolButton_1->setToolButtonStyle(Qt::ToolButtonIconOnly);                 ///< 设置图标样式
     ui->toolButton_2->setToolButtonStyle(Qt::ToolButtonIconOnly);                 ///< 设置图标样式
     ui->toolButton_3->setToolButtonStyle(Qt::ToolButtonIconOnly);                 ///< 设置图标样式
-    ui->toolButton_1->setBackgroundImg(QString(QString(RESOURCE_DIR) + "/rectcover/music-rect-cover%1.jpg")
+    ui->toolButton_1->setBackgroundImg(
+        QString(QString(RESOURCE_DIR) + "/rectcover/music-rect-cover%1.jpg")
         .arg(QString::number(
             QRandomGenerator::global()->bounded(1,
                                                 getFileCount(
                                                     GET_CURRENT_DIR +
                                                     "/../../Res_Qrc/Res/rectcover")))));
     ///< 设置按钮1背景
-    ui->toolButton_2->setBackgroundImg(QString(QString(RESOURCE_DIR) + "/rectcover/music-rect-cover%1.jpg")
+    ui->toolButton_2->setBackgroundImg(
+        QString(QString(RESOURCE_DIR) + "/rectcover/music-rect-cover%1.jpg")
         .arg(QString::number(
             QRandomGenerator::global()->bounded(1,
                                                 getFileCount(
                                                     GET_CURRENT_DIR +
                                                     "/../../Res_Qrc/Res/rectcover")))));
     ///< 设置按钮2背景
-    ui->toolButton_3->setBackgroundImg(QString(QString(RESOURCE_DIR) + "/rectcover/music-rect-cover%1.jpg")
+    ui->toolButton_3->setBackgroundImg(
+        QString(QString(RESOURCE_DIR) + "/rectcover/music-rect-cover%1.jpg")
         .arg(QString::number(
             QRandomGenerator::global()->bounded(1,
                                                 getFileCount(
@@ -326,9 +329,10 @@ QPixmap Live::roundedPixmap(const QPixmap& src, const QSize& size, const int& ra
  */
 void Live::initAttentionWidget()
 {
-    const QPixmap roundedPix = roundedPixmap(QPixmap(QStringLiteral(":/Res/window/portrait.jpg")),
-                                             ui->portrait_label->size(),
-                                             15);                    ///< 生成圆角头像
+    const QPixmap roundedPix = roundedPixmap(
+        QPixmap(QString(RESOURCE_DIR) + "/window/portrait.jpg"),
+        ui->portrait_label->size(),
+        15);                                                         ///< 生成圆角头像
     ui->portrait_label->setPixmap(roundedPix);                       ///< 设置头像
     const auto group = new QButtonGroup(this);                       ///< 创建按钮组
     group->addButton(ui->pushButton_1);                              ///< 添加按钮1

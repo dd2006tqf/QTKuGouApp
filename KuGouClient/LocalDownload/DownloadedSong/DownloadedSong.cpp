@@ -30,7 +30,10 @@ DownloadedSong::DownloadedSong(QWidget *parent)
     ui->setupUi(this);                                                   ///< 初始化 UI
     QFile file(GET_CURRENT_DIR + QStringLiteral("/downloadedsong.css")); ///< 加载样式表
     if (file.open(QIODevice::ReadOnly)) {
-        this->setStyleSheet(file.readAll()); ///< 应用样式表
+        QString css = QString::fromUtf8(file.readAll());
+        // 替换 RESOURCE_DIR 为实际路径
+        css.replace("RESOURCE_DIR", RESOURCE_DIR);
+        this->setStyleSheet(css);
     } else {
         qDebug() << "样式表打开失败QAQ";
         STREAM_ERROR() << "样式表打开失败QAQ"; ///< 记录错误日志
@@ -125,7 +128,8 @@ void DownloadedSong::initUi()
     ///< 创建批量操作按钮工具提示
     local_batch_toolButton_toolTip->setToolTip(QStringLiteral("批量操作")); ///< 设置批量操作提示
     ui->local_play_toolButton->setIcon(
-        QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/play3-white.svg"))); ///< 设置播放按钮图标
+        QIcon(QString(RESOURCE_DIR) + "/tabIcon/play3-white.svg")
+        ); ///< 设置播放按钮图标
     this->m_searchAction->setIcon(QIcon(QString(RESOURCE_DIR) + "/menuIcon/search-black.svg"));
     ///< 设置搜索动作图标
     this->m_searchAction->setIconVisibleInMenu(false); ///< 仅显示图标

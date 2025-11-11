@@ -34,7 +34,10 @@ AllMusic::AllMusic(QWidget *parent)
     ui->setupUi(this);
     QFile file(GET_CURRENT_DIR + QStringLiteral("/all.css"));
     if (file.open(QIODevice::ReadOnly)) {
-        setStyleSheet(file.readAll());
+        QString css = QString::fromUtf8(file.readAll());
+        // 替换 RESOURCE_DIR 为实际路径
+        css.replace("RESOURCE_DIR", RESOURCE_DIR);
+        this->setStyleSheet(css);
     } else {
         qDebug() << "样式表打开失败QAQ";
         STREAM_ERROR() << "样式表打开失败QAQ";
@@ -203,9 +206,11 @@ void AllMusic::initUi()
             });
 
     ui->all_play_toolButton->
-        setIcon(QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/play3-white.svg")));
+        setIcon(QIcon(QString(RESOURCE_DIR) + "/tabIcon/play3-white.svg")
+            );
     ui->all_download_toolButton->setIcon(
-        QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/download-gray.svg")));
+        QIcon(QString(RESOURCE_DIR) + "/tabIcon/download-gray.svg")
+        );
     ui->all_download_toolButton->installEventFilter(this);
 
     m_searchAction->setIcon(QIcon(QString(RESOURCE_DIR) + "/menuIcon/search-black.svg"));
@@ -264,7 +269,7 @@ void AllMusic::initIndexLab()
     };
 
     for (int i = 0; i < 7; ++i) {
-        idxLabels[i]->setPixmap(QPixmap(":/Res/window/index_lab.svg"));
+        idxLabels[i]->setPixmap(QPixmap(QString(RESOURCE_DIR) + "/window/index_lab.svg"));
         guideWidgets[i]->installEventFilter(this);
         numLabels[i]->setStyleSheet(i == 0 ? "color:#26a1ff;font-size:16px;font-weight:bold;" : "");
         idxLabels[i]->setVisible(i == 0);

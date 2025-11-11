@@ -23,24 +23,21 @@
  */
 VideoChannelBlock::VideoChannelBlock(QWidget *parent)
     : QWidget(parent)
-    , ui(new Ui::VideoChannelBlock)
+      , ui(new Ui::VideoChannelBlock)
 {
     ui->setupUi(this);
     this->setObjectName("videoblock"); ///< 设置对象名称
     {
         QFile file(GET_CURRENT_DIR + QStringLiteral("/videoblock.css"));
-        if (file.open(QIODevice::ReadOnly))
-        {
+        if (file.open(QIODevice::ReadOnly)) {
             this->setStyleSheet(file.readAll()); ///< 加载样式表
-        }
-        else
-        {
+        } else {
             qDebug() << "样式表打开失败QAQ";
             STREAM_ERROR() << "样式表打开失败QAQ";
             return;
         }
     }
-    initUi();            ///< 初始化界面
+    initUi(); ///< 初始化界面
 }
 
 /**
@@ -76,12 +73,12 @@ void VideoChannelBlock::setDescription(const QString &description)
 void VideoChannelBlock::setCoverText(const QString &text) const
 {
     auto font = QFont("YouYuan");
-    font.setPixelSize(16);                                  ///< 设置像素大小
-    ui->coverTextLab->setFont(font); ///< 设置字体
-    ui->coverTextLab->setText(text);                        ///< 设置文本
-    int yPosition = height() - 95;                          ///< 计算 Y 位置（下方 95 像素）
-    int xPosition = (width() - ui->coverTextLab->width()) / 2;            ///< 计算 X 位置（水平居中）
-    ui->coverTextLab->move(xPosition, yPosition);     ///< 移动文本标签
+    font.setPixelSize(16);                                     ///< 设置像素大小
+    ui->coverTextLab->setFont(font);                           ///< 设置字体
+    ui->coverTextLab->setText(text);                           ///< 设置文本
+    int yPosition = height() - 95;                             ///< 计算 Y 位置（下方 95 像素）
+    int xPosition = (width() - ui->coverTextLab->width()) / 2; ///< 计算 X 位置（水平居中）
+    ui->coverTextLab->move(xPosition, yPosition);              ///< 移动文本标签
     ui->coverTextLab->raise();
 }
 
@@ -90,20 +87,22 @@ void VideoChannelBlock::setCoverText(const QString &text) const
  */
 void VideoChannelBlock::initUi()
 {
-    auto &mask = ui->cover_widget->getMask();                     ///< 获取遮罩
+    auto &mask = ui->cover_widget->getMask();                          ///< 获取遮罩
     mask.setDefaultFillCircleColor(QColor(QStringLiteral("#525759"))); ///< 设置默认圆形颜色
-    mask.setHoverFillCircleColor(QColor(QStringLiteral("#525759")));  ///< 设置悬停圆形颜色
-    mask.setDefaultFillTriangleColor(Qt::white);                   ///< 设置默认三角形颜色
-    mask.setHoverFillTriangleColor(Qt::white);                    ///< 设置悬停三角形颜色
-    mask.setMaskColor(QColor(0, 0, 0, 100));                      ///< 设置遮罩颜色
-    ui->cover_widget->setAspectRatio(1.5);                        ///< 设置宽高比
-    ui->cover_widget->installEventFilter(this);                   ///< 安装事件过滤器
+    mask.setHoverFillCircleColor(QColor(QStringLiteral("#525759")));   ///< 设置悬停圆形颜色
+    mask.setDefaultFillTriangleColor(Qt::white);                       ///< 设置默认三角形颜色
+    mask.setHoverFillTriangleColor(Qt::white);                         ///< 设置悬停三角形颜色
+    mask.setMaskColor(QColor(0, 0, 0, 100));                           ///< 设置遮罩颜色
+    ui->cover_widget->setAspectRatio(1.5);                             ///< 设置宽高比
+    ui->cover_widget->installEventFilter(this);                        ///< 安装事件过滤器
 
-    ui->coverTextLab->setFixedSize(this->width() - 20,40);      ///< 设置固定宽度
+    ui->coverTextLab->setFixedSize(this->width() - 20, 40); ///< 设置固定宽度
 
     ui->desc_toolButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon); ///< 设置工具按钮样式
-    ui->desc_toolButton->setIcon(QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/eye-gray.svg"))); ///< 设置图标
-    ui->desc_toolButton->setText(QString::number(QRandomGenerator::global()->bounded(1, 500)) + "人在看"); ///< 设置随机观看人数
+    ui->desc_toolButton->setIcon(QIcon(QString(RESOURCE_DIR) + "/tabIcon/eye-gray.svg")
+        ); ///< 设置图标
+    ui->desc_toolButton->setText(
+        QString::number(QRandomGenerator::global()->bounded(1, 500)) + "人在看"); ///< 设置随机观看人数
 }
 
 /**
@@ -113,7 +112,7 @@ void VideoChannelBlock::initUi()
  */
 void VideoChannelBlock::mousePressEvent(QMouseEvent *event)
 {
-    event->ignore();                                              ///< 忽略事件
+    event->ignore(); ///< 忽略事件
 }
 
 /**
@@ -123,7 +122,7 @@ void VideoChannelBlock::mousePressEvent(QMouseEvent *event)
  */
 void VideoChannelBlock::mouseReleaseEvent(QMouseEvent *event)
 {
-    event->ignore();                                              ///< 忽略事件
+    event->ignore(); ///< 忽略事件
 }
 
 /**
@@ -133,7 +132,7 @@ void VideoChannelBlock::mouseReleaseEvent(QMouseEvent *event)
  */
 void VideoChannelBlock::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    event->ignore();                                              ///< 忽略事件
+    event->ignore(); ///< 忽略事件
 }
 
 /**
@@ -145,16 +144,12 @@ void VideoChannelBlock::mouseDoubleClickEvent(QMouseEvent *event)
  */
 bool VideoChannelBlock::eventFilter(QObject *watched, QEvent *event)
 {
-    if (watched == ui->cover_widget)
-    {
-        if (event->type() == QEvent::Enter)
-        {
-            ui->coverTextLab->hide();                         ///< 鼠标进入时隐藏文本
-        }
-        else if (event->type() == QEvent::Leave)
-        {
-            ui->coverTextLab->show();                         ///< 鼠标离开时显示文本
-            ui->coverTextLab->raise();                        ///< 提升层级
+    if (watched == ui->cover_widget) {
+        if (event->type() == QEvent::Enter) {
+            ui->coverTextLab->hide(); ///< 鼠标进入时隐藏文本
+        } else if (event->type() == QEvent::Leave) {
+            ui->coverTextLab->show();  ///< 鼠标离开时显示文本
+            ui->coverTextLab->raise(); ///< 提升层级
         }
     }
     return QWidget::eventFilter(watched, event);

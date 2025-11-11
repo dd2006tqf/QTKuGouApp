@@ -23,15 +23,18 @@
  * @brief 构造函数，初始化本地下载界面
  * @param parent 父控件指针，默认为 nullptr
  */
-LocalDownload::LocalDownload(QWidget *parent)
+LocalDownload::LocalDownload(QWidget* parent)
     : QWidget(parent), ui(new Ui::LocalDownload),
       m_buttonGroup(std::make_unique<QButtonGroup>(this))
 {
     ui->setupUi(this);
     QFile file(GET_CURRENT_DIR + QStringLiteral("/local.css")); ///< 加载样式表
-    if (file.open(QIODevice::ReadOnly)) {
+    if (file.open(QIODevice::ReadOnly))
+    {
         this->setStyleSheet(file.readAll()); ///< 应用样式表
-    } else {
+    }
+    else
+    {
         qDebug() << "样式表打开失败QAQ";
         STREAM_ERROR() << "样式表打开失败QAQ"; ///< 记录错误日志
         return;
@@ -39,7 +42,8 @@ LocalDownload::LocalDownload(QWidget *parent)
     initUi();
     connect(ui->stackedWidget,
             &SlidingStackedWidget::animationFinished,
-            [this] {
+            [this]
+            {
                 enableButton(true);
             }); ///< 连接动画完成信号
 
@@ -60,7 +64,8 @@ LocalDownload::~LocalDownload()
  */
 void LocalDownload::audioFinished()
 {
-    if (m_localSong) {
+    if (m_localSong)
+    {
         m_localSong->onAudioFinished(); ///< 转发音频播放结束
     }
 }
@@ -70,7 +75,8 @@ void LocalDownload::audioFinished()
  */
 void LocalDownload::playLocalSongNextSong()
 {
-    if (m_localSong) {
+    if (m_localSong)
+    {
         m_localSong->playNextSong(); ///< 播放下一首
     }
 }
@@ -80,7 +86,8 @@ void LocalDownload::playLocalSongNextSong()
  */
 void LocalDownload::playLocalSongPrevSong()
 {
-    if (m_localSong) {
+    if (m_localSong)
+    {
         m_localSong->playPrevSong(); ///< 播放上一首
     }
 }
@@ -90,10 +97,11 @@ void LocalDownload::playLocalSongPrevSong()
  * @param id 页面索引
  * @return 创建的页面控件
  */
-QWidget *LocalDownload::createPage(int id)
+QWidget* LocalDownload::createPage(int id)
 {
-    QWidget *page = nullptr;
-    switch (id) {
+    QWidget* page = nullptr;
+    switch (id)
+    {
     case 0: m_localSong = std::make_unique<LocalSong>(ui->stackedWidget);
         connect(m_localSong.get(),
                 &LocalSong::find_more_music,
@@ -152,7 +160,8 @@ void LocalDownload::initStackedWidget()
     m_buttonGroup->setExclusive(true);
 
     // 初始化占位页面
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < 4; ++i)
+    {
         ui->stackedWidget->insertWidget(i, createPage(i));
     }
     QMetaObject::invokeMethod(this,
@@ -166,8 +175,10 @@ void LocalDownload::initStackedWidget()
     connect(m_buttonGroup.get(),
             &QButtonGroup::idClicked,
             this,
-            [this](const int &id) {
-                if (m_currentIdx == id) {
+            [this](const int& id)
+            {
+                if (m_currentIdx == id)
+                {
                     return;
                 }
 
@@ -177,13 +188,15 @@ void LocalDownload::initStackedWidget()
                 m_currentIdx = id;
 
                 // 更新索引标签和样式
-                QLabel *idxLabels[] = {ui->idx1_lab, ui->idx2_lab, ui->idx3_lab, ui->idx4_lab};
-                QLabel *numLabels[] = {ui->local_music_number_label,
-                                       ui->downloaded_music_number_label,
-                                       ui->downloaded_video_number_label,
-                                       ui->downloading_number_label
+                QLabel* idxLabels[] = {ui->idx1_lab, ui->idx2_lab, ui->idx3_lab, ui->idx4_lab};
+                QLabel* numLabels[] = {
+                    ui->local_music_number_label,
+                    ui->downloaded_music_number_label,
+                    ui->downloaded_video_number_label,
+                    ui->downloading_number_label
                 };
-                for (int i = 0; i < 4; ++i) {
+                for (int i = 0; i < 4; ++i)
+                {
                     idxLabels[i]->setVisible(i == id);
                     numLabels[i]->setStyleSheet(
                         i == id
@@ -208,7 +221,8 @@ void LocalDownload::initUi()
     connect(this->m_localSong.get(),
             &LocalSong::playMusic,
             this,
-            [this](const QString &localPath) {
+            [this](const QString& localPath)
+            {
                 emit playMusic(localPath); ///< 中转播放音乐信号
             });
     connect(this->m_localSong.get(),
@@ -218,13 +232,15 @@ void LocalDownload::initUi()
     connect(this->m_localSong.get(),
             &LocalSong::cancelLoopPlay,
             this,
-            [this] {
+            [this]
+            {
                 emit cancelLoopPlay(); ///< 中转取消循环信号
             });                        ///< 初始化堆栈窗口
 
     QTimer::singleShot(0,
                        this,
-                       [this] {
+                       [this]
+                       {
                            initIndexLab();                          ///< 初始化索引标签
                            ui->download_history_toolButton->hide(); ///< 隐藏下载历史按钮
                            ui->local_music_pushButton->click();     ///< 默认点击本地音乐按钮
@@ -241,27 +257,35 @@ void LocalDownload::initUi()
  */
 void LocalDownload::initIndexLab()
 {
-    QLabel *idxLabels[] = {ui->idx1_lab, ui->idx2_lab, ui->idx3_lab, ui->idx4_lab};
-    QWidget *guideWidgets[] = {ui->guide_widget1, ui->guide_widget2, ui->guide_widget3,
-                               ui->guide_widget4};
-    QPushButton *buttons[] = {ui->local_music_pushButton,
-                              ui->downloaded_music_pushButton,
-                              ui->downloaded_video_pushButton,
-                              ui->downloading_pushButton
+    QLabel* idxLabels[] = {ui->idx1_lab, ui->idx2_lab, ui->idx3_lab, ui->idx4_lab};
+    QWidget* guideWidgets[] = {
+        ui->guide_widget1, ui->guide_widget2, ui->guide_widget3,
+        ui->guide_widget4
     };
-    QLabel *numLabels[] = {ui->local_music_number_label,
-                           ui->downloaded_music_number_label,
-                           ui->downloaded_video_number_label,
-                           ui->downloading_number_label
+    QPushButton* buttons[] = {
+        ui->local_music_pushButton,
+        ui->downloaded_music_pushButton,
+        ui->downloaded_video_pushButton,
+        ui->downloading_pushButton
+    };
+    QLabel* numLabels[] = {
+        ui->local_music_number_label,
+        ui->downloaded_music_number_label,
+        ui->downloaded_video_number_label,
+        ui->downloading_number_label
     };
 
-    for (int i = 0; i < 4; ++i) {
-        idxLabels[i]->setPixmap(QPixmap(QStringLiteral(":/Res/window/index_lab.svg")));
+    for (int i = 0; i < 4; ++i)
+    {
+        idxLabels[i]->setPixmap(QPixmap(QString(RESOURCE_DIR) + "/window/index_lab.svg"));
         guideWidgets[i]->installEventFilter(this);
-        if (i == 0) {
+        if (i == 0)
+        {
             numLabels[i]->setStyleSheet(
                 QStringLiteral("color:#26a1ff;font-size:16px;font-weight:bold;"));
-        } else {
+        }
+        else
+        {
             idxLabels[i]->hide();
             numLabels[i]->setStyleSheet(QString());
         }
@@ -272,7 +296,7 @@ void LocalDownload::initIndexLab()
  * @brief 启用/禁用按钮
  * @param flag 是否启用
  */
-void LocalDownload::enableButton(const bool &flag) const
+void LocalDownload::enableButton(const bool& flag) const
 {
     ui->local_music_pushButton->setEnabled(flag);
     ui->downloaded_music_pushButton->setEnabled(flag);
@@ -287,24 +311,31 @@ void LocalDownload::enableButton(const bool &flag) const
  * @return 是否处理事件
  * @note 动态切换按钮和标签样式
  */
-bool LocalDownload::eventFilter(QObject *watched, QEvent *event)
+bool LocalDownload::eventFilter(QObject* watched, QEvent* event)
 {
-    QWidget *guideWidgets[] = {ui->guide_widget1, ui->guide_widget2, ui->guide_widget3,
-                               ui->guide_widget4};
-    QPushButton *buttons[] = {ui->local_music_pushButton,
-                              ui->downloaded_music_pushButton,
-                              ui->downloaded_video_pushButton,
-                              ui->downloading_pushButton
+    QWidget* guideWidgets[] = {
+        ui->guide_widget1, ui->guide_widget2, ui->guide_widget3,
+        ui->guide_widget4
     };
-    QLabel *numLabels[] = {ui->local_music_number_label,
-                           ui->downloaded_music_number_label,
-                           ui->downloaded_video_number_label,
-                           ui->downloading_number_label
+    QPushButton* buttons[] = {
+        ui->local_music_pushButton,
+        ui->downloaded_music_pushButton,
+        ui->downloaded_video_pushButton,
+        ui->downloading_pushButton
+    };
+    QLabel* numLabels[] = {
+        ui->local_music_number_label,
+        ui->downloaded_music_number_label,
+        ui->downloaded_video_number_label,
+        ui->downloading_number_label
     };
 
-    for (int i = 0; i < 4; ++i) {
-        if (watched == guideWidgets[i]) {
-            if (event->type() == QEvent::Enter) {
+    for (int i = 0; i < 4; ++i)
+    {
+        if (watched == guideWidgets[i])
+        {
+            if (event->type() == QEvent::Enter)
+            {
                 buttons[i]->setStyleSheet(R"(
                     QPushButton {
                         color:#26a1ff;
@@ -323,7 +354,9 @@ bool LocalDownload::eventFilter(QObject *watched, QEvent *event)
                                                 ? QStringLiteral(
                                                     "color:#26a1ff;font-size:16px;font-weight:bold;")
                                                 : QStringLiteral("color:#26a1ff;"));
-            } else if (event->type() == QEvent::Leave) {
+            }
+            else if (event->type() == QEvent::Leave)
+            {
                 buttons[i]->setStyleSheet(R"(
                     QPushButton {
                         color:black;
@@ -354,24 +387,29 @@ bool LocalDownload::eventFilter(QObject *watched, QEvent *event)
  * @param event 鼠标事件
  * @note 点击标签切换界面
  */
-void LocalDownload::mousePressEvent(QMouseEvent *event)
+void LocalDownload::mousePressEvent(QMouseEvent* event)
 {
-    if (event->button() == Qt::LeftButton) {
-        QLabel *numLabels[] = {ui->local_music_number_label,
-                               ui->downloaded_music_number_label,
-                               ui->downloaded_video_number_label,
-                               ui->downloading_number_label
+    if (event->button() == Qt::LeftButton)
+    {
+        QLabel* numLabels[] = {
+            ui->local_music_number_label,
+            ui->downloaded_music_number_label,
+            ui->downloaded_video_number_label,
+            ui->downloading_number_label
         };
-        QPushButton *buttons[] = {ui->local_music_pushButton,
-                                  ui->downloaded_music_pushButton,
-                                  ui->downloaded_video_pushButton,
-                                  ui->downloading_pushButton
+        QPushButton* buttons[] = {
+            ui->local_music_pushButton,
+            ui->downloaded_music_pushButton,
+            ui->downloaded_video_pushButton,
+            ui->downloading_pushButton
         };
 
-        for (int i = 0; i < 4; ++i) {
+        for (int i = 0; i < 4; ++i)
+        {
             const auto labelRect = numLabels[i]->geometry();
             const QPoint clickPos = numLabels[i]->parentWidget()->mapFrom(this, event->pos());
-            if (labelRect.contains(clickPos)) {
+            if (labelRect.contains(clickPos))
+            {
                 buttons[i]->click();
                 break;
             }
@@ -399,7 +437,7 @@ void LocalDownload::on_download_history_toolButton_clicked()
  * @param num 歌曲数量
  * @note 更新本地音乐数量标签
  */
-void LocalDownload::local_music_label_changed(const int &num)
+void LocalDownload::local_music_label_changed(const int& num)
 {
     ui->local_music_number_label->setText(QString::number(num)); ///< 更新数量标签
 }

@@ -24,16 +24,19 @@
  * @brief 构造函数，初始化视频界面
  * @param parent 父控件指针，默认为 nullptr
  */
-Video::Video(QWidget *parent)
+Video::Video(QWidget* parent)
     : QWidget(parent)
       , ui(new Ui::Video)
       , m_buttonGroup(std::make_unique<QButtonGroup>(this))
 {
     ui->setupUi(this);
     QFile file(GET_CURRENT_DIR + QStringLiteral("/video.css"));
-    if (file.open(QIODevice::ReadOnly)) {
+    if (file.open(QIODevice::ReadOnly))
+    {
         setStyleSheet(file.readAll());
-    } else {
+    }
+    else
+    {
         qDebug() << "样式表打开失败QAQ";
         STREAM_ERROR() << "样式表打开失败QAQ";
         return;
@@ -42,7 +45,8 @@ Video::Video(QWidget *parent)
     initStackedWidget();
     connect(ui->stackedWidget,
             &SlidingStackedWidget::animationFinished,
-            [this] {
+            [this]
+            {
                 enableButton(true);
             });
     enableButton(true);
@@ -61,24 +65,28 @@ Video::~Video()
  * @param id 页面索引
  * @return 创建的页面控件
 */
-QWidget *Video::createPage(const int &id)
+QWidget* Video::createPage(const int& id)
 {
-    QWidget *page = nullptr;
-    switch (id) {
+    QWidget* page = nullptr;
+    switch (id)
+    {
     case 0: // Video Channel
-        if (!m_videoChannelWidget) {
+        if (!m_videoChannelWidget)
+        {
             m_videoChannelWidget = std::make_unique<VideoChannelWidget>(ui->stackedWidget);
         }
         page = m_videoChannelWidget.get();
         break;
     case 1: // MV
-        if (!m_MVWidget) {
+        if (!m_MVWidget)
+        {
             m_MVWidget = std::make_unique<MVWidget>(ui->stackedWidget);
         }
         page = m_MVWidget.get();
         break;
     case 2: // Video
-        if (!m_videoWidget) {
+        if (!m_videoWidget)
+        {
             m_videoWidget = std::make_unique<VideoWidget>(ui->stackedWidget);
         }
         page = m_videoWidget.get();
@@ -95,7 +103,7 @@ QWidget *Video::createPage(const int &id)
  */
 void Video::initUi()
 {
-    ElaToolTip *toolTips[] = {
+    ElaToolTip* toolTips[] = {
         new ElaToolTip(ui->video_channel_pushButton),
         new ElaToolTip(ui->MV_pushButton),
         new ElaToolTip(ui->video_pushButton)
@@ -106,13 +114,15 @@ void Video::initUi()
         QStringLiteral("视频")
     };
 
-    for (int i = 0; i < 3; ++i) {
+    for (int i = 0; i < 3; ++i)
+    {
         toolTips[i]->setToolTip(toolTipTexts[i]);
     }
 
-    QLabel *idxLabels[] = {ui->index_label1, ui->index_label2, ui->index_label3};
-    for (int i = 0; i < 3; ++i) {
-        idxLabels[i]->setPixmap(QPixmap(":/Res/window/index_lab.svg"));
+    QLabel* idxLabels[] = {ui->index_label1, ui->index_label2, ui->index_label3};
+    for (int i = 0; i < 3; ++i)
+    {
+        idxLabels[i]->setPixmap(QPixmap(QString(RESOURCE_DIR) + "/window/index_lab.svg"));
         idxLabels[i]->setVisible(i == 0);
     }
 
@@ -131,7 +141,8 @@ void Video::initStackedWidget()
     m_buttonGroup->addButton(ui->video_pushButton, 2);
     m_buttonGroup->setExclusive(true);
 
-    for (int i = 0; i < 3; ++i) {
+    for (int i = 0; i < 3; ++i)
+    {
         ui->stackedWidget->insertWidget(i, createPage(i));
     }
 
@@ -144,7 +155,8 @@ void Video::initStackedWidget()
     connect(m_buttonGroup.get(),
             &QButtonGroup::idClicked,
             this,
-            [this](int id) {
+            [this](int id)
+            {
                 if (m_currentIdx == id)
                     return;
 
@@ -155,9 +167,11 @@ void Video::initStackedWidget()
                 m_currentIdx = id;
 
                 // 更新索引标签
-                QLabel *idxLabels[] = {
-                    ui->index_label1, ui->index_label2, ui->index_label3};
-                for (int i = 0; i < 3; ++i) {
+                QLabel* idxLabels[] = {
+                    ui->index_label1, ui->index_label2, ui->index_label3
+                };
+                for (int i = 0; i < 3; ++i)
+                {
                     idxLabels[i]->setVisible(i == id);
                 }
 

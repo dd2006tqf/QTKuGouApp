@@ -35,7 +35,10 @@ DailyRecommend::DailyRecommend(QWidget *parent)
     {
         QFile file(GET_CURRENT_DIR + QStringLiteral("/daily.css")); ///< 加载样式表
         if (file.open(QIODevice::ReadOnly)) {
-            this->setStyleSheet(file.readAll()); ///< 应用样式表
+            QString css = QString::fromUtf8(file.readAll());
+            // 替换 RESOURCE_DIR 为实际路径
+            css.replace("RESOURCE_DIR", RESOURCE_DIR);
+            this->setStyleSheet(css);
         } else {
             qDebug() << "样式表打开失败QAQ";
             STREAM_ERROR() << "样式表打开失败QAQ"; ///< 记录错误日志
@@ -78,7 +81,8 @@ void DailyRecommend::initUi()
     ui->history_recommend_toolButton->setHoverFontColor(QColor(QStringLiteral("#3AA1FF")));
     ///< 设置悬停字体颜色
 
-    ui->play_toolButton->setIcon(QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/play3-white.svg")));
+    ui->play_toolButton->setIcon(QIcon(QString(RESOURCE_DIR) + "/tabIcon/play3-white.svg")
+        );
     ///< 设置播放按钮图标
     ui->play_toolButton->setText(QStringLiteral("播放")); ///< 设置播放按钮文本
 
@@ -92,20 +96,25 @@ void DailyRecommend::initUi()
     batch_toolButton_toolTip->setToolTip(QStringLiteral("批量操作"));               ///< 设置批量操作工具提示内容
 
     ui->vip_toolButton->setIconSize(QSize(18, 18)); ///< 设置 VIP 按钮图标大小
-    ui->vip_toolButton->setIcon(QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/yellow-diamond.svg")));
+    ui->vip_toolButton->setIcon(QIcon(QString(RESOURCE_DIR) + "/tabIcon/yellow-diamond.svg")
+        );
     ///< 设置 VIP 按钮图标
     ui->vip_toolButton->setText(QStringLiteral("+30")); ///< 设置 VIP 按钮文本
     ui->vip_toolButton->setApproach(true);              ///< 启用接近效果
 
-    ui->collect_toolButton->setIcon(QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/like-gray.svg")));
+    ui->collect_toolButton->setIcon(QIcon(QString(RESOURCE_DIR) + "/tabIcon/like-gray.svg")
+        );
     ///< 设置收藏按钮图标
     ui->download_toolButton->setIcon(
-        QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/download-gray.svg"))); ///< 设置下载按钮图标
-    ui->batch_toolButton->setIcon(QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/batch-gray.svg")));
+        QIcon(QString(RESOURCE_DIR) + "/tabIcon/download-gray.svg")
+        ); ///< 设置下载按钮图标
+    ui->batch_toolButton->setIcon(QIcon(QString(RESOURCE_DIR) + "/tabIcon/batch-gray.svg")
+        );
     ///< 设置批量操作按钮图标
     ui->count_label->setText(QStringLiteral("30")); ///< 设置歌曲数量标签
     ui->ico_label->setPixmap(
-        QPixmap(QStringLiteral(":/TabIcon/Res/tabIcon/yellow-diamond.svg")).scaled(18, 18));
+        QPixmap(QString(RESOURCE_DIR) + "/tabIcon/yellow-diamond.svg").scaled(18, 18)
+        );
     ///< 设置图标标签
 
     QTimer::singleShot(0, this, [this] { initDateLab(); });      ///< 初始化日期标签
@@ -159,7 +168,8 @@ void DailyRecommend::initTableWidget()
         queue->enqueue([this, layout, i]() {
             SongInfor tempInformation;
             tempInformation.index = i;
-            tempInformation.cover = QPixmap(QString(":/Res/tablisticon/pix%1.png").arg(i % 10 + 1));
+            tempInformation.cover = QPixmap(
+                QString(QString(RESOURCE_DIR) + "/tablisticon/pix%1.png").arg(i % 10 + 1));
             tempInformation.songName = "网络歌曲";
             tempInformation.singer = "网络歌手";
             tempInformation.duration = "未知时长";

@@ -30,7 +30,10 @@ PaidSingle::PaidSingle(QWidget *parent)
     ui->setupUi(this);
     QFile file(GET_CURRENT_DIR + QStringLiteral("/paid.css")); ///< 加载样式表
     if (file.open(QIODevice::ReadOnly)) {
-        this->setStyleSheet(file.readAll()); ///< 应用样式表
+        QString css = QString::fromUtf8(file.readAll());
+        // 替换 RESOURCE_DIR 为实际路径
+        css.replace("RESOURCE_DIR", RESOURCE_DIR);
+        this->setStyleSheet(css);
     } else {
         qDebug() << "样式表打开失败QAQ";
         STREAM_ERROR() << "样式表打开失败QAQ"; ///< 记录错误日志
@@ -132,10 +135,12 @@ void PaidSingle::initUi()
     ///< 批量操作按钮工具提示
     single_batch_toolButton_toolTip->setToolTip(QStringLiteral("批量操作"));
     ui->single_play_toolButton->setIcon(
-        QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/play3-white.svg"))); ///< 设置播放按钮图标
-    ui->single_play_toolButton->setCursor(Qt::PointingHandCursor);       ///< 设置播放按钮光标
+        QIcon(QString(RESOURCE_DIR) + "/tabIcon/play3-white.svg")
+        );                                                         ///< 设置播放按钮图标
+    ui->single_play_toolButton->setCursor(Qt::PointingHandCursor); ///< 设置播放按钮光标
     ui->single_download_toolButton->setIcon(
-        QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/download-gray.svg")));
+        QIcon(QString(RESOURCE_DIR) + "/tabIcon/download-gray.svg")
+        );
     ///< 设置下载按钮图标
     ui->single_download_toolButton->installEventFilter(this); ///< 安装下载按钮事件过滤器
     this->m_searchAction->setIcon(QIcon(QString(RESOURCE_DIR) + "/menuIcon/search-black.svg"));
@@ -345,7 +350,8 @@ bool PaidSingle::eventFilter(QObject *watched, QEvent *event)
             ///< 设置下载按钮悬停图标
         } else if (event->type() == QEvent::Leave) {
             ui->single_download_toolButton->setIcon(
-                QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/download-gray.svg")));
+                QIcon(QString(RESOURCE_DIR) + "/tabIcon/download-gray.svg")
+                );
             ///< 设置下载按钮默认图标
         }
     }

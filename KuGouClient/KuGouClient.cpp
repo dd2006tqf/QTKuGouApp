@@ -37,7 +37,7 @@
  * @brief 构造函数，初始化酷狗音乐主界面
  * @param parent 父窗口指针，默认为 nullptr
  */
-KuGouClient::KuGouClient(MainWindow *parent)
+KuGouClient::KuGouClient(MainWindow* parent)
     : MainWindow(parent)
       , ui(new Ui::KuGouClient)
       , m_menuBtnGroup(std::make_unique<QButtonGroup>(this)) ///< 初始化菜单按钮组
@@ -47,7 +47,8 @@ KuGouClient::KuGouClient(MainWindow *parent)
 {
     {
         // 初始化日志
-        if (!mylog::logger::get().init("../logs/main.log")) {
+        if (!mylog::logger::get().init("../logs/main.log"))
+        {
             qWarning() << "客户端日志初始化失败";
             return; ///< 日志初始化失败，退出
         }
@@ -61,9 +62,12 @@ KuGouClient::KuGouClient(MainWindow *parent)
     ui->setupUi(this); ///< 设置 UI 布局
     {
         QFile file(GET_CURRENT_DIR + QStringLiteral("/kugou.css")); ///< 加载样式表
-        if (file.open(QIODevice::ReadOnly)) {
+        if (file.open(QIODevice::ReadOnly))
+        {
             this->setStyleSheet(file.readAll()); ///< 应用样式表
-        } else {
+        }
+        else
+        {
             // @note 未使用，保留用于调试
             qDebug() << "样式表打开失败QAQ";
             STREAM_ERROR() << "样式表打开失败QAQ"; ///< 记录错误日志
@@ -79,8 +83,10 @@ KuGouClient::KuGouClient(MainWindow *parent)
     // @note 动画结束，恢复按钮可交互
     connect(ui->stackedWidget,
             &SlidingStackedWidget::animationFinished,
-            [this] {
-                if (m_isInitialized) {
+            [this]
+            {
+                if (m_isInitialized)
+                {
                     /// qDebug()<<__LINE__<<" 动画结束，初始化完成，设置按钮可交互";
                     enableButton(true);
                 }
@@ -143,8 +149,8 @@ void KuGouClient::initPlayer()
  */
 void KuGouClient::initUi()
 {
-    this->setWindowIcon(QIcon(QStringLiteral(":/Res/window/windowIcon.png")));  ///< 设置窗口图标
-    this->setWindowFlags(Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint); ///< 设置无边框和无阴影
+    this->setWindowIcon(QIcon(QString(RESOURCE_DIR) + "/window/windowIcon.png")); ///< 设置窗口图标
+    this->setWindowFlags(Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);   ///< 设置无边框和无阴影
     // @note 移动窗口到屏幕中央
     move(QGuiApplication::primaryScreen()->geometry().width() / 2 - this->width() / 2, 100);
 
@@ -163,8 +169,10 @@ void KuGouClient::initUi()
     this->m_refreshMask->setParent(ui->stackedWidget); ///< 设置遮罩父对象
     connect(this->m_refreshMask.get(),
             &RefreshMask::loadingFinished,
-            [this](const QString &message) {
-                if (!message.isEmpty()) {
+            [this](const QString& message)
+            {
+                if (!message.isEmpty())
+                {
                     m_snackbar->addMessage(message); ///< 显示加载完成提示
                     m_snackbar->show();
                 }
@@ -191,8 +199,10 @@ void KuGouClient::initUi()
     connect(m_searchResultWidget.get(),
             &SearchResultWidget::cancelLoopPlay,
             this,
-            [this] {
-                if (m_isSingleCircle) {
+            [this]
+            {
+                if (m_isSingleCircle)
+                {
                     onCircleBtnClicked();
                 }
             });
@@ -213,9 +223,10 @@ void KuGouClient::initStackedWidget()
 {
     m_menuBtnGroup->setParent(ui->center_menu_widget);
 
-    for (int i = 0; i < 17; ++i) {
-        auto *placeholder = new QWidget;
-        auto *layout = new QVBoxLayout(placeholder);
+    for (int i = 0; i < 17; ++i)
+    {
+        auto* placeholder = new QWidget;
+        auto* layout = new QVBoxLayout(placeholder);
         layout->setContentsMargins(0, 0, 0, 0);
         layout->setSpacing(0);
         m_pages[i] = placeholder;
@@ -236,12 +247,13 @@ void KuGouClient::initStackedWidget()
     /// connect(m_menuBtnGroup.get(), &QButtonGroup::idClicked, this,&KuGouClient::onSelectedWidget);
 }
 
-void KuGouClient::onSelectedWidget(const int &id)
+void KuGouClient::onSelectedWidget(const int& id)
 {
     if (m_currentIdx == id)
         return;
 
-    if (id == 16) {
+    if (id == 16)
+    {
         ui->stackedWidget->setCurrentWidget(this->m_searchResultWidget.get()); ///< 切换到搜索结果界面
         enableButton(true);
         m_isInitialized = true;
@@ -253,16 +265,20 @@ void KuGouClient::onSelectedWidget(const int &id)
     m_snackbar->hide();
 
     enableButton(false);
-    QWidget *placeholder = m_pages[id];
+    QWidget* placeholder = m_pages[id];
 
     auto layout = placeholder->layout();
-    if (layout->count() == 0) {
+    if (layout->count() == 0)
+    {
         qDebug() << "layout 里没有 widget";
         m_isInitialized = false;
-        QWidget *realPage = createPage(id);
-        if (!realPage) {
+        QWidget* realPage = createPage(id);
+        if (!realPage)
+        {
             qWarning() << "[WARNING] Failed to create page at index:" << id;
-        } else {
+        }
+        else
+        {
             layout->addWidget(realPage);
         }
         qDebug() << "创建界面 , ID : " << id;
@@ -292,14 +308,16 @@ void KuGouClient::connectTitleWidget()
     connect(ui->title_widget,
             &TitleWidget::showAboutDialog,
             this,
-            [this] {
+            [this]
+            {
                 MainWindow::onShowAboutDialog(true); ///< 显示关于对话框
             });
     // @note 响应刷新窗口
     connect(ui->title_widget,
             &TitleWidget::refresh,
             this,
-            [this] {
+            [this]
+            {
                 this->m_refreshMask->showLoading(); ///< 显示加载遮罩
                 this->m_refreshMask->raise();       ///< 提升遮罩层级
             });
@@ -333,10 +351,12 @@ void KuGouClient::connectPlayWidget()
     connect(this->m_player,
             &VideoPlayer::positionChanged,
             this,
-            [this](const int &pos) {
+            [this](const int& pos)
+            {
                 //qDebug() << "播放器位置变化：" << pos;
                 //改变预览歌词时的滚动状态
-                if (m_lyricWidget->isLyricValid()) {
+                if (m_lyricWidget->isLyricValid())
+                {
                     m_lyricWidget->setViewerHighlightLineLyricAtPos(pos);
                 }
             });
@@ -353,10 +373,12 @@ void KuGouClient::connectPlayWidget()
     connect(this->m_player,
             &VideoPlayer::pictureFound,
             this,
-            [this](const QPixmap &pixmap) {
+            [this](const QPixmap& pixmap)
+            {
                 if (!pixmap.isNull())
                     m_lyricWidget->AlbumImageChanged(pixmap);
-                else {
+                else
+                {
                     m_lyricWidget->setToDefaultAlbumImage();
                 }
             });
@@ -368,9 +390,11 @@ void KuGouClient::connectPlayWidget()
     connect(this->m_player,
             &VideoPlayer::titleFound,
             this,
-            [this](const QString &title) {
+            [this](const QString& title)
+            {
                 qDebug() << "标题：" << title;
-                if (!title.isEmpty()) {
+                if (!title.isEmpty())
+                {
                     m_lyricWidget->setMusicTitle(title);
                 }
             });
@@ -382,7 +406,8 @@ void KuGouClient::connectPlayWidget()
     connect(this->m_player,
             &VideoPlayer::artistFound,
             this,
-            [this](const QString &singer) {
+            [this](const QString& singer)
+            {
                 qDebug() << "歌手：" << singer;
                 if (!singer.isEmpty())
                     m_lyricWidget->setMusicSinger(singer);
@@ -395,7 +420,8 @@ void KuGouClient::connectPlayWidget()
     connect(this->m_player,
             &VideoPlayer::audioPlay,
             this,
-            [this] {
+            [this]
+            {
                 m_lyricWidget->playPhonograph();
             });
 
@@ -407,14 +433,16 @@ void KuGouClient::connectPlayWidget()
     connect(this->m_player,
             &VideoPlayer::audioPause,
             this,
-            [this] {
+            [this]
+            {
                 m_lyricWidget->stopPhonograph();
             });
 
     mediaStatusConnection = connect(this->m_player,
                                     &VideoPlayer::audioFinish,
                                     this,
-                                    [this] {
+                                    [this]
+                                    {
                                         // @note 未使用，保留用于调试
                                         // qDebug() << __LINE__ << " ***** " << this->m_player->getMusicPath() << "播放结束。。。";
                                         ui->play_widget->setPlayPauseIcon(false);
@@ -424,15 +452,17 @@ void KuGouClient::connectPlayWidget()
                                         // qDebug() << __LINE__ << "当前界面下标：" << ui->stackedWidget->currentIndex();
                                         if (ui->stackedWidget->currentIndex() == static_cast<int>(
                                                 TitleWidget::StackType::LocalDownload) &&
-                                            this->m_localDownload) {
+                                            this->m_localDownload)
+                                        {
                                             // qDebug() << "通知本地下载界面播放结束";
                                             ///< 通知本地下载组件
                                             this->m_localDownload->audioFinished();
                                         }
                                         if (ui->stackedWidget->currentWidget() ==
-                                            static_cast<QWidget *>(this->
-                                                m_searchResultWidget.get()) &&
-                                            this->m_searchResultWidget) {
+                                            static_cast<QWidget*>(this->
+                                                                  m_searchResultWidget.get()) &&
+                                            this->m_searchResultWidget)
+                                        {
                                             ///< 通知搜索结果组件
                                             // qDebug() << "通知搜索结果界面播放结束";
                                             this->m_searchResultWidget->onAudioFinished();
@@ -441,7 +471,8 @@ void KuGouClient::connectPlayWidget()
     connect(this->m_player,
             &VideoPlayer::errorOccur,
             this,
-            [this](const QString &msg) {
+            [this](const QString& msg)
+            {
                 ElaMessageBar::error(ElaMessageBarType::BottomRight,
                                      "Error",
                                      msg,
@@ -452,8 +483,10 @@ void KuGouClient::connectPlayWidget()
     connect(ui->play_widget,
             &PlayWidget::volumeChange,
             this,
-            [this](int value) {
-                if (this->m_player) {
+            [this](int value)
+            {
+                if (this->m_player)
+                {
                     //qDebug() << __LINE__ << "音量变化：" << value;
                     this->m_player->setVolume(value / 100.0); ///< 设置播放器音量
                 }
@@ -462,10 +495,12 @@ void KuGouClient::connectPlayWidget()
     connect(ui->play_widget,
             &PlayWidget::sliderPressed,
             this,
-            [this](const int &value) {
+            [this](const int& value)
+            {
                 ///< 鼠标按下事件
                 //qDebug() << __LINE__ << "滑块按下，准备跳转到位置：" << value;
-                if (this->m_player->state() == VideoPlayer::State::Stop) {
+                if (this->m_player->state() == VideoPlayer::State::Stop)
+                {
                     this->m_player->replay(true); ///< 重新播放
                 }
                 this->m_player->pause();     ///< 暂停播放
@@ -475,10 +510,12 @@ void KuGouClient::connectPlayWidget()
     connect(m_lyricWidget.get(),
             &LyricWidget::jumpToTime,
             this,
-            [this](const int &pos) {
+            [this](const int& pos)
+            {
                 //qDebug() << __LINE__ << "跳转到时间：" << pos;
                 ///< 鼠标按下事件
-                if (this->m_player->state() == VideoPlayer::State::Stop) {
+                if (this->m_player->state() == VideoPlayer::State::Stop)
+                {
                     this->m_player->replay(true); ///< 重新播放
                 }
                 this->m_player->pause();          ///< 暂停播放
@@ -494,14 +531,20 @@ void KuGouClient::connectPlayWidget()
     connect(ui->play_widget,
             &PlayWidget::clickedPlayPauseBtn,
             this,
-            [this] {
-                if (this->m_player->state() == VideoPlayer::State::Playing) {
+            [this]
+            {
+                if (this->m_player->state() == VideoPlayer::State::Playing)
+                {
                     this->m_player->pause(); ///< 暂停播放
                     ui->play_widget->setPlayPauseIcon(false);
-                } else if (this->m_player->state() == VideoPlayer::State::Pause) {
+                }
+                else if (this->m_player->state() == VideoPlayer::State::Pause)
+                {
                     this->m_player->play(); ///< 继续播放
                     ui->play_widget->setPlayPauseIcon(true);
-                } else if (this->m_player->state() == VideoPlayer::State::Stop) {
+                }
+                else if (this->m_player->state() == VideoPlayer::State::Stop)
+                {
                     this->m_player->replay(true);            ///< 重新播放
                     ui->play_widget->setPlayPauseIcon(true); ///< 设置播放图标
                 }
@@ -522,19 +565,24 @@ void KuGouClient::connectPlayWidget()
     connect(ui->play_widget,
             &PlayWidget::doubleClicked,
             this,
-            [this] {
+            [this]
+            {
                 ui->title_widget->setMaxScreen();
             });
     connect(ui->play_widget,
             &PlayWidget::showLyricWidget,
             this,
-            [this] {
+            [this]
+            {
                 m_lyricWidget->toggleAnimation();
-                if (m_lyricWidget->isVisible()) {
+                if (m_lyricWidget->isVisible())
+                {
                     m_lyricWidget->raise();
                     ui->play_widget->raise();
                     ui->play_widget->setTextColor(true);
-                } else {
+                }
+                else
+                {
                     ui->play_widget->lower(); // 恢复到底层
                     ui->play_widget->setTextColor(false);
                 }
@@ -552,31 +600,45 @@ void KuGouClient::initMenu()
 
     this->m_menuBtnGroup->setParent(ui->center_menu_widget);
 
-    ui->recommend_you_toolButton->setIcon(QIcon(QStringLiteral(":/Res/window/recommend.svg")));
+    ui->recommend_you_toolButton->setIcon(
+        QIcon(QString(RESOURCE_DIR) + "/window/recommend.svg"));
     ///< 设置推荐图标
     ui->music_repository_toolButton->setIcon(
-        QIcon(QStringLiteral(":/Res/window/music-library.svg"))); ///< 设置音乐库图标
-    ui->channel_toolButton->setIcon(QIcon(QStringLiteral(":/Res/window/my-channel.svg")));
+        QIcon(QString(RESOURCE_DIR) + "/window/music-library.svg"));
+    ///< 设置音乐库图标
+    ui->channel_toolButton->setIcon(
+        QIcon(QString(RESOURCE_DIR) + "/window/my-channel.svg"));
     ///< 设置频道图标
-    ui->video_toolButton->setIcon(QIcon(QStringLiteral(":/Res/window/video.svg"))); ///< 设置视频图标
-    ui->live_toolButton->setIcon(QIcon(QStringLiteral(":/Res/window/live.svg")));   ///< 设置直播图标
-    ui->ai_chat_toolButton->setIcon(QIcon(QStringLiteral(":/Res/window/ai-chat.svg")));
+    ui->video_toolButton->setIcon(
+        QIcon(QString(RESOURCE_DIR) + "/window/video.svg")); ///< 设置视频图标
+    ui->live_toolButton->setIcon(
+        QIcon(QString(RESOURCE_DIR) + "/window/live.svg")); ///< 设置直播图标
+    ui->ai_chat_toolButton->setIcon(
+        QIcon(QString(RESOURCE_DIR) + "/window/ai-chat.svg"));
     ///< 设置 AI 聊天图标
-    ui->song_list_toolButton->setIcon(QIcon(QStringLiteral(":/Res/window/song-list.svg")));
+    ui->song_list_toolButton->setIcon(
+        QIcon(QString(RESOURCE_DIR) + "/window/song-list.svg"));
     ///< 设置歌单图标
-    ui->daily_recommend_toolButton->setIcon(QIcon(QStringLiteral(":/Res/window/daily.svg")));
+    ui->daily_recommend_toolButton->setIcon(
+        QIcon(QString(RESOURCE_DIR) + "/window/daily.svg"));
     ///< 设置每日推荐图标
-    ui->my_collection_toolButton->setIcon(QIcon(QStringLiteral(":/Res/window/collect.svg")));
+    ui->my_collection_toolButton->setIcon(
+        QIcon(QString(RESOURCE_DIR) + "/window/collect.svg"));
     ///< 设置收藏图标
-    ui->local_download_toolButton->setIcon(QIcon(QStringLiteral(":/Res/window/download.svg")));
+    ui->local_download_toolButton->setIcon(
+        QIcon(QString(RESOURCE_DIR) + "/window/download.svg"));
     ///< 设置本地下载图标
-    ui->music_cloud_disk_toolButton->setIcon(QIcon(QStringLiteral(":/Res/window/cloud.svg")));
+    ui->music_cloud_disk_toolButton->setIcon(
+        QIcon(QString(RESOURCE_DIR) + "/window/cloud.svg"));
     ///< 设置云盘图标
-    ui->purchased_music_toolButton->setIcon(QIcon(QStringLiteral(":/Res/window/bought.svg")));
+    ui->purchased_music_toolButton->setIcon(
+        QIcon(QString(RESOURCE_DIR) + "/window/bought.svg"));
     ///< 设置已购音乐图标
-    ui->recently_played_toolButton->setIcon(QIcon(QStringLiteral(":/Res/window/history.svg")));
+    ui->recently_played_toolButton->setIcon(
+        QIcon(QString(RESOURCE_DIR) + "/window/history.svg"));
     ///< 设置最近播放图标
-    ui->all_music_toolButton->setIcon(QIcon(QStringLiteral(":/Res/titlebar/menu-black.svg")));
+    ui->all_music_toolButton->setIcon(
+        QIcon(QString(RESOURCE_DIR) + "/titlebar/menu-black.svg"));
     ///< 设置全部音乐图标
     // @note 设置互斥按钮组
     this->m_menuBtnGroup->addButton(ui->recommend_you_toolButton, 3);     ///< 添加推荐按钮
@@ -601,23 +663,26 @@ void KuGouClient::initMenu()
  * @param flag 是否启用
  * @note 控制 14 个菜单按钮和标题栏的交互
  */
-void KuGouClient::enableButton(const bool &flag)
+void KuGouClient::enableButton(const bool& flag)
 {
-    QToolButton *buttons[] = {ui->recommend_you_toolButton,
-                              ui->music_repository_toolButton,
-                              ui->song_list_toolButton,
-                              ui->channel_toolButton,
-                              ui->video_toolButton,
-                              ui->live_toolButton,
-                              ui->ai_chat_toolButton,
-                              ui->daily_recommend_toolButton,
-                              ui->my_collection_toolButton,
-                              ui->local_download_toolButton,
-                              ui->music_cloud_disk_toolButton,
-                              ui->purchased_music_toolButton,
-                              ui->recently_played_toolButton,
-                              ui->all_music_toolButton};
-    for (auto *button : buttons) {
+    QToolButton* buttons[] = {
+        ui->recommend_you_toolButton,
+        ui->music_repository_toolButton,
+        ui->song_list_toolButton,
+        ui->channel_toolButton,
+        ui->video_toolButton,
+        ui->live_toolButton,
+        ui->ai_chat_toolButton,
+        ui->daily_recommend_toolButton,
+        ui->my_collection_toolButton,
+        ui->local_download_toolButton,
+        ui->music_cloud_disk_toolButton,
+        ui->purchased_music_toolButton,
+        ui->recently_played_toolButton,
+        ui->all_music_toolButton
+    };
+    for (auto* button : buttons)
+    {
         button->setEnabled(flag);
     }
 
@@ -625,172 +690,204 @@ void KuGouClient::enableButton(const bool &flag)
     ui->title_widget->setEnableTitleButton(flag);
 }
 
-QWidget *KuGouClient::createPage(int id)
+QWidget* KuGouClient::createPage(int id)
 {
-    QWidget *page = nullptr;
-    switch (id) {
+    QWidget* page = nullptr;
+    switch (id)
+    {
     case 0: // Live
-        if (!m_live) {
+        if (!m_live)
+        {
             m_live = std::make_unique<Live>(ui->stackedWidget);
             connect(
                 m_live.get(),
                 &Live::initialized,
                 this,
-                [this] {
+                [this]
+                {
                     this->m_isInitialized = true;
                     enableButton(true);
                 },
                 Qt::QueuedConnection);
-        } else
+        }
+        else
             return m_live.get();
         page = m_live.get();
         break;
     case 1: // ListenBook
-        if (!m_listenBook) {
+        if (!m_listenBook)
+        {
             m_listenBook = std::make_unique<ListenBook>(ui->stackedWidget);
             connect(
                 m_listenBook.get(),
                 &ListenBook::initialized,
                 this,
-                [this](bool flag) {
+                [this](bool flag)
+                {
                     this->m_isInitialized = flag;
                     enableButton(flag);
                 },
                 Qt::QueuedConnection);
-        } else
+        }
+        else
             return m_listenBook.get();
         page = m_listenBook.get();
         break;
     case 2: // Search
-        if (!m_search) {
+        if (!m_search)
+        {
             m_search = std::make_unique<Search>(ui->stackedWidget);
             connect(
                 m_search.get(),
                 &Search::initialized,
                 this,
-                [this] {
+                [this]
+                {
                     this->m_isInitialized = true;
                     enableButton(true);
                 },
                 Qt::QueuedConnection);
-        } else
+        }
+        else
             return m_search.get();
         page = m_search.get();
         break;
     case 3: // RecommendForYou
-        if (!m_recommendForYou) {
+        if (!m_recommendForYou)
+        {
             m_recommendForYou = std::make_unique<RecommendForYou>(ui->stackedWidget);
             connect(
                 m_recommendForYou.get(),
                 &RecommendForYou::initialized,
                 this,
-                [this] {
+                [this]
+                {
                     this->m_isInitialized = true;
                     enableButton(true);
                 },
                 Qt::QueuedConnection);
-        } else
+        }
+        else
             return m_recommendForYou.get();
         page = m_recommendForYou.get();
         break;
     case 4: // MusicRepository
-        if (!m_musicRepository) {
+        if (!m_musicRepository)
+        {
             m_musicRepository = std::make_unique<MusicRepository>(ui->stackedWidget);
             connect(
                 m_musicRepository.get(),
                 &MusicRepository::initialized,
                 this,
-                [this] {
+                [this]
+                {
                     this->m_isInitialized = true;
                     enableButton(true);
                 },
                 Qt::QueuedConnection);
-        } else
+        }
+        else
             return m_musicRepository.get();
         page = m_musicRepository.get();
         break;
     case 5: // Channel
-        if (!m_channel) {
+        if (!m_channel)
+        {
             m_channel = std::make_unique<Channel>(ui->stackedWidget);
             connect(
                 m_channel.get(),
                 &Channel::initialized,
                 this,
-                [this] {
+                [this]
+                {
                     this->m_isInitialized = true;
                     enableButton(true);
                 },
                 Qt::QueuedConnection);
-        } else
+        }
+        else
             return m_channel.get();
         page = m_channel.get();
         break;
     case 6: // Video
-        if (!m_video) {
+        if (!m_video)
+        {
             m_video = std::make_unique<Video>(ui->stackedWidget);
             connect(
                 m_video.get(),
                 &Video::initialized,
                 this,
-                [this](bool flag) {
+                [this](bool flag)
+                {
                     this->m_isInitialized = flag;
                     enableButton(flag);
                 },
                 Qt::QueuedConnection);
-        } else
+        }
+        else
             return m_video.get();
         page = m_video.get();
         break;
     case 7: // AiChat
-        if (!m_aiChat) {
+        if (!m_aiChat)
+        {
             m_aiChat = std::make_unique<AiChat>(ui->stackedWidget);
             connect(
                 m_aiChat.get(),
                 &AiChat::initialized,
                 this,
-                [this] {
+                [this]
+                {
                     this->m_isInitialized = true;
                     enableButton(true);
                 },
                 Qt::QueuedConnection);
-        } else
+        }
+        else
             return m_aiChat.get();
         page = m_aiChat.get();
         break;
     case 8: // SongList
-        if (!m_songList) {
+        if (!m_songList)
+        {
             m_songList = std::make_unique<SongList>(ui->stackedWidget);
             connect(
                 m_songList.get(),
                 &SongList::initialized,
                 this,
-                [this] {
+                [this]
+                {
                     this->m_isInitialized = true;
                     enableButton(true);
                 },
                 Qt::QueuedConnection);
-        } else
+        }
+        else
             return m_songList.get();
         page = m_songList.get();
         break;
     case 9: // DailyRecommend
-        if (!m_dailyRecommend) {
+        if (!m_dailyRecommend)
+        {
             m_dailyRecommend = std::make_unique<DailyRecommend>(ui->stackedWidget);
             connect(
                 m_dailyRecommend.get(),
                 &DailyRecommend::initialized,
                 this,
-                [this] {
+                [this]
+                {
                     this->m_isInitialized = true;
                     enableButton(true);
                 },
                 Qt::QueuedConnection);
-        } else
+        }
+        else
             return m_dailyRecommend.get();
         page = m_dailyRecommend.get();
         break;
     case 10: // MyCollection
-        if (!m_collection) {
+        if (!m_collection)
+        {
             m_collection = std::make_unique<MyCollection>(ui->stackedWidget);
             connect(m_collection.get(),
                     &MyCollection::find_more_music,
@@ -800,17 +897,20 @@ QWidget *KuGouClient::createPage(int id)
                 m_collection.get(),
                 &MyCollection::initialized,
                 this,
-                [this] {
+                [this]
+                {
                     this->m_isInitialized = true;
                     enableButton(true);
                 },
                 Qt::QueuedConnection);
-        } else
+        }
+        else
             return m_collection.get();
         page = m_collection.get();
         break;
     case 11: // LocalDownload
-        if (!m_localDownload) {
+        if (!m_localDownload)
+        {
             m_localDownload = std::make_unique<LocalDownload>(ui->stackedWidget);
             connect(m_localDownload.get(),
                     &LocalDownload::find_more_music,
@@ -823,8 +923,10 @@ QWidget *KuGouClient::createPage(int id)
             connect(m_localDownload.get(),
                     &LocalDownload::cancelLoopPlay,
                     this,
-                    [this] {
-                        if (m_isSingleCircle) {
+                    [this]
+                    {
+                        if (m_isSingleCircle)
+                        {
                             onCircleBtnClicked();
                         }
                     });
@@ -832,17 +934,20 @@ QWidget *KuGouClient::createPage(int id)
                 m_localDownload.get(),
                 &LocalDownload::initialized,
                 this,
-                [this](bool flag) {
+                [this](bool flag)
+                {
                     this->m_isInitialized = flag;
                     enableButton(flag);
                 },
                 Qt::QueuedConnection);
-        } else
+        }
+        else
             return m_localDownload.get();
         page = m_localDownload.get();
         break;
     case 12: // MusicCloudDisk
-        if (!m_musicCloudDisk) {
+        if (!m_musicCloudDisk)
+        {
             m_musicCloudDisk = std::make_unique<MusicCloudDisk>(ui->stackedWidget);
             connect(m_musicCloudDisk.get(),
                     &MusicCloudDisk::find_more_music,
@@ -852,17 +957,20 @@ QWidget *KuGouClient::createPage(int id)
                 m_musicCloudDisk.get(),
                 &MusicCloudDisk::initialized,
                 this,
-                [this] {
+                [this]
+                {
                     this->m_isInitialized = true;
                     enableButton(true);
                 },
                 Qt::QueuedConnection);
-        } else
+        }
+        else
             return m_musicCloudDisk.get();
         page = m_musicCloudDisk.get();
         break;
     case 13: // PurchasedMusic
-        if (!m_purchasedMusic) {
+        if (!m_purchasedMusic)
+        {
             m_purchasedMusic = std::make_unique<PurchasedMusic>(ui->stackedWidget);
             connect(m_purchasedMusic.get(),
                     &PurchasedMusic::find_more_music,
@@ -872,17 +980,20 @@ QWidget *KuGouClient::createPage(int id)
                 m_purchasedMusic.get(),
                 &PurchasedMusic::initialized,
                 this,
-                [this] {
+                [this]
+                {
                     this->m_isInitialized = true;
                     enableButton(true);
                 },
                 Qt::QueuedConnection);
-        } else
+        }
+        else
             return m_purchasedMusic.get();
         page = m_purchasedMusic.get();
         break;
     case 14: // RecentlyPlayed
-        if (!m_recentlyPlayed) {
+        if (!m_recentlyPlayed)
+        {
             m_recentlyPlayed = std::make_unique<RecentlyPlayed>(ui->stackedWidget);
             connect(m_recentlyPlayed.get(),
                     &RecentlyPlayed::find_more_music,
@@ -896,17 +1007,20 @@ QWidget *KuGouClient::createPage(int id)
                 m_recentlyPlayed.get(),
                 &RecentlyPlayed::initialized,
                 this,
-                [this] {
+                [this]
+                {
                     this->m_isInitialized = true;
                     enableButton(true);
                 },
                 Qt::QueuedConnection);
-        } else
+        }
+        else
             return m_recentlyPlayed.get();
         page = m_recentlyPlayed.get();
         break;
     case 15: // AllMusic
-        if (!m_allMusic) {
+        if (!m_allMusic)
+        {
             m_allMusic = std::make_unique<AllMusic>(ui->stackedWidget);
             connect(m_allMusic.get(),
                     &AllMusic::find_more_music,
@@ -916,12 +1030,14 @@ QWidget *KuGouClient::createPage(int id)
                 m_allMusic.get(),
                 &AllMusic::initialized,
                 this,
-                [this] {
+                [this]
+                {
                     this->m_isInitialized = true;
                     enableButton(true);
                 },
                 Qt::QueuedConnection);
-        } else
+        }
+        else
             return m_allMusic.get();
         page = m_allMusic.get();
         break;
@@ -936,7 +1052,7 @@ QWidget *KuGouClient::createPage(int id)
 void KuGouClient::setupButtonConnections()
 {
     // 建立按钮与对应函数的映射关系
-    QMap<QToolButton *, void (TitleWidget::*)()> buttonMap = {
+    QMap<QToolButton*, void (TitleWidget::*)()> buttonMap = {
         {ui->recommend_you_toolButton, &TitleWidget::onLeftMenu_recommend_clicked},
         {ui->music_repository_toolButton, &TitleWidget::onLeftMenu_musicRepository_clicked},
         {ui->channel_toolButton, &TitleWidget::onLeftMenu_channel_clicked},
@@ -950,24 +1066,28 @@ void KuGouClient::setupButtonConnections()
         {ui->music_cloud_disk_toolButton, &TitleWidget::onLeftMenu_musicCloudDisk_clicked},
         {ui->purchased_music_toolButton, &TitleWidget::onLeftMenu_purchasedMusic_clicked},
         {ui->recently_played_toolButton, &TitleWidget::onLeftMenu_recentlyPlayed_clicked},
-        {ui->all_music_toolButton, &TitleWidget::onLeftMenu_allMusic_clicked}};
+        {ui->all_music_toolButton, &TitleWidget::onLeftMenu_allMusic_clicked}
+    };
 
     // 统一连接所有按钮信号
-    for (auto it = buttonMap.begin(); it != buttonMap.end(); ++it) {
+    for (auto it = buttonMap.begin(); it != buttonMap.end(); ++it)
+    {
         connect(it.key(),
                 &QToolButton::clicked,
                 this,
-                [this, func = it.value()] {
+                [this, func = it.value()]
+                {
                     (ui->title_widget->*func)(); // 调用对应的成员函数
                 });
     }
 }
 
-void KuGouClient::mousePressEvent(QMouseEvent *ev)
+void KuGouClient::mousePressEvent(QMouseEvent* ev)
 {
     MainWindow::mousePressEvent(ev);
 
-    if (ev->button() == Qt::LeftButton) {
+    if (ev->button() == Qt::LeftButton)
+    {
         this->m_pressPos = ev->pos(); ///< 记录按下位置
     }
 }
@@ -977,15 +1097,18 @@ void KuGouClient::mousePressEvent(QMouseEvent *ev)
  * @param event 鼠标事件
  * @note 处理窗口拖动和最大化还原
  */
-void KuGouClient::mouseMoveEvent(QMouseEvent *event)
+void KuGouClient::mouseMoveEvent(QMouseEvent* event)
 {
     MainWindow::mouseMoveEvent(event);                          ///< 调用父类处理
     point_offset = event->globalPosition().toPoint() - mousePs; ///< 计算鼠标偏移量
 
-    if (isPress) {
-        if (mouse_press_region == kMousePositionMid) {
+    if (isPress)
+    {
+        if (mouse_press_region == kMousePositionMid)
+        {
             if (ui->title_widget->geometry().contains(m_pressPos) || ui->play_widget->geometry().
-                contains(m_pressPos)) {
+                                                                         contains(m_pressPos))
+            {
                 move(windowsLastPs + point_offset);
             }
         }
@@ -997,7 +1120,7 @@ void KuGouClient::mouseMoveEvent(QMouseEvent *event)
  * @param event 调整大小事件
  * @note 更新最大化状态、角标位置和文本省略
  */
-void KuGouClient::resizeEvent(QResizeEvent *event)
+void KuGouClient::resizeEvent(QResizeEvent* event)
 {
     MainWindow::resizeEvent(event); ///< 调用父类处理
 
@@ -1016,11 +1139,12 @@ void KuGouClient::resizeEvent(QResizeEvent *event)
  * @return 是否处理事件
  * @note 处理鼠标移动事件
  */
-bool KuGouClient::event(QEvent *event)
+bool KuGouClient::event(QEvent* event)
 {
-    if (QEvent::HoverMove == event->type()) {
+    if (QEvent::HoverMove == event->type())
+    {
         ///< 鼠标移动事件
-        auto ev = static_cast<QMouseEvent *>(event);
+        auto ev = static_cast<QMouseEvent*>(event);
         this->mouseMoveEvent(ev); ///< 处理鼠标移动
         return true;
     }
@@ -1031,10 +1155,11 @@ bool KuGouClient::event(QEvent *event)
  * @brief 处理suggestBox选中项槽函数
  * @note 切换搜索结果界面
  */
-void KuGouClient::handleSuggestBoxSuggestionClicked(const QString &suggestText,
-                                                    const QVariantMap &suggestData)
+void KuGouClient::handleSuggestBoxSuggestionClicked(const QString& suggestText,
+                                                    const QVariantMap& suggestData)
 {
-    if (suggestText.isEmpty() || suggestText.trimmed().isEmpty() || suggestText.isNull()) {
+    if (suggestText.isEmpty() || suggestText.trimmed().isEmpty() || suggestText.isNull())
+    {
         ElaMessageBar::warning(ElaMessageBarType::BottomRight,
                                "Warning",
                                "Empty Suggestion",
@@ -1058,7 +1183,7 @@ void KuGouClient::handleSuggestBoxSuggestionClicked(const QString &suggestText,
  * @brief 更新播放进度
  * @note 根据进度条位置调整播放器进度
  */
-void KuGouClient::updateProcess(const int &sliderValue, const int &maxSliderValue)
+void KuGouClient::updateProcess(const int& sliderValue, const int& maxSliderValue)
 {
     qint64 position = sliderValue * this->m_player->getTotalTime() / maxSliderValue;
 
@@ -1076,9 +1201,12 @@ void KuGouClient::updateProcess(const int &sliderValue, const int &maxSliderValu
  */
 void KuGouClient::onKeyPause()
 {
-    if (this->m_player->state() == VideoPlayer::State::Playing) {
+    if (this->m_player->state() == VideoPlayer::State::Playing)
+    {
         this->m_player->pause(); ///< 暂停播放
-    } else {
+    }
+    else
+    {
         if (!this->m_player->getMusicPath().isEmpty())
             this->m_player->play(); ///< 继续播放
     }
@@ -1093,7 +1221,8 @@ void KuGouClient::onKeyLeft()
     // @note 未使用，保留用于调试
     // qDebug() << "getCurrentTime() : " << this->m_player->getCurrentTime();
     this->m_player->seek(this->m_player->getCurrentTime() * 1000 - 5000000); ///< 快退 5 秒
-    if (this->m_player->state() == VideoPlayer::State::Pause) {
+    if (this->m_player->state() == VideoPlayer::State::Pause)
+    {
         this->m_player->play(); ///< 继续播放
     }
 }
@@ -1107,7 +1236,8 @@ void KuGouClient::onKeyRight()
     // @note 未使用，保留用于调试
     // qDebug() << "getCurrentTime() : " << this->m_player->getCurrentTime();
     this->m_player->seek(this->m_player->getCurrentTime() * 1000 + 5000000); ///< 快进 5 秒
-    if (this->m_player->state() == VideoPlayer::State::Pause) {
+    if (this->m_player->state() == VideoPlayer::State::Pause)
+    {
         this->m_player->play(); ///< 继续播放
     }
 }
@@ -1118,7 +1248,7 @@ void KuGouClient::onKeyRight()
  * @param slide 是否滑动切换
  * @note 更新堆栈页面和按钮状态
  */
-void KuGouClient::onTitleCurrentStackChange(const int &index)
+void KuGouClient::onTitleCurrentStackChange(const int& index)
 {
     if (m_currentIdx == index)
         return;
@@ -1129,7 +1259,8 @@ void KuGouClient::onTitleCurrentStackChange(const int &index)
 
     ui->stackedWidget->slideInIdx(index); ///< 滑动切换页面
 
-    switch (index) {
+    switch (index)
+    {
     case 3: ui->recommend_you_toolButton->setChecked(true);
         break; ///< 推荐页面
     case 4: ui->music_repository_toolButton->setChecked(true);
@@ -1165,11 +1296,14 @@ void KuGouClient::onTitleCurrentStackChange(const int &index)
  * @param flag 是否显示
  * @note 显示或隐藏菜单滚动区域
  */
-void KuGouClient::onLeftMenuShow(const bool &flag) const
+void KuGouClient::onLeftMenuShow(const bool& flag) const
 {
-    if (flag) {
+    if (flag)
+    {
         ui->menu_scrollArea->show(); ///< 显示菜单
-    } else {
+    }
+    else
+    {
         ui->menu_scrollArea->hide(); ///< 隐藏菜单
     }
 }
@@ -1179,30 +1313,35 @@ void KuGouClient::onLeftMenuShow(const bool &flag) const
  * @param localPath 本地音乐路径
  * @note 检查文件存在并启动播放
  */
-void KuGouClient::onPlayLocalMusic(const QString &localPath)
+void KuGouClient::onPlayLocalMusic(const QString& localPath)
 {
     // @note 未使用，保留用于调试
     // qDebug() << "播放：" << localPath;
-    if (!QFile::exists(localPath)) {
+    if (!QFile::exists(localPath))
+    {
         // @note 未使用，保留用于调试
         // qDebug() << "File does not exist:" << localPath;
         return;
     }
-    if (!m_player->startPlay(localPath.toStdString())) {
+    if (!m_player->startPlay(localPath.toStdString()))
+    {
         ElaMessageBar::error(ElaMessageBarType::BottomRight,
                              "Error",
                              "Failed to start playback",
                              2000,
                              this->window()); ///< 显示播放失败提示
-    } else {
+    }
+    else
+    {
         ///< 本地歌曲没有歌词
         m_lyricWidget->setLyricPath("");
     }
 }
 
-void KuGouClient::onSearchResultMusicPlay(const MusicItemWidget *item)
+void KuGouClient::onSearchResultMusicPlay(const MusicItemWidget* item)
 {
-    if (!m_player->startPlay(item->m_information.netUrl.toStdString())) {
+    if (!m_player->startPlay(item->m_information.netUrl.toStdString()))
+    {
         ElaMessageBar::error(ElaMessageBarType::BottomRight,
                              "Error",
                              "Failed to start playback",
@@ -1211,9 +1350,12 @@ void KuGouClient::onSearchResultMusicPlay(const MusicItemWidget *item)
     }
     //qDebug() << "设置封面：" << item->m_information.cover;
     ui->play_widget->setCover(item->m_information.cover);
-    if (!item->m_information.cover.isNull()) {
+    if (!item->m_information.cover.isNull())
+    {
         m_lyricWidget->AlbumImageChanged(item->m_information.cover);
-    } else {
+    }
+    else
+    {
         m_lyricWidget->setToDefaultAlbumImage();
     }
 
@@ -1225,7 +1367,7 @@ void KuGouClient::onSearchResultMusicPlay(const MusicItemWidget *item)
     m_lyricWidget->setLyricRawText(item->m_information.lyric);
 }
 
-void KuGouClient::onTrayIconNoVolume(const bool &flag)
+void KuGouClient::onTrayIconNoVolume(const bool& flag)
 {
     ui->play_widget->setNoVolume(flag);
 }
@@ -1241,7 +1383,8 @@ void KuGouClient::onTrayIconExit()
  */
 void KuGouClient::onCircleBtnClicked()
 {
-    if (this->m_player->getMusicPath().isEmpty()) {
+    if (this->m_player->getMusicPath().isEmpty())
+    {
         ElaMessageBar::warning(ElaMessageBarType::BottomRight,
                                "Warning",
                                QStringLiteral("暂无可播放音乐"),
@@ -1251,14 +1394,17 @@ void KuGouClient::onCircleBtnClicked()
     }
     m_isSingleCircle = !m_isSingleCircle; ///< 切换循环状态
     ui->play_widget->changeCircleToolButtonState(m_isSingleCircle);
-    if (m_isSingleCircle) {
+    if (m_isSingleCircle)
+    {
         ///< 设置单曲循环样式
-        if (mediaStatusConnection) {
+        if (mediaStatusConnection)
+        {
             disconnect(mediaStatusConnection); ///< 断开原有连接
             mediaStatusConnection = connect(this->m_player,
                                             &VideoPlayer::audioFinish,
                                             this,
-                                            [this] {
+                                            [this]
+                                            {
                                                 // @note 未使用，保留用于调试
                                                 // qDebug() << __LINE__ << " ***** " << this->m_player->getMusicPath() << "播放结束。。。";
                                                 ui->play_widget->setPlayPauseIcon(false);
@@ -1267,18 +1413,24 @@ void KuGouClient::onCircleBtnClicked()
                                                 // qDebug() << __LINE__ << " 重新播放";
                                                 this->m_player->replay(true); ///< 重新播放
                                             });                               ///< 连接单曲循环信号
-        } else {
+        }
+        else
+        {
             // @note 未使用，保留用于调试
             qDebug() << "mediaStatusConnection is empty";
             STREAM_WARN() << "mediaStatusConnection is empty"; ///< 记录警告日志
         }
-    } else {
-        if (mediaStatusConnection) {
+    }
+    else
+    {
+        if (mediaStatusConnection)
+        {
             disconnect(mediaStatusConnection); ///< 断开原有连接
             mediaStatusConnection = connect(this->m_player,
                                             &VideoPlayer::audioFinish,
                                             this,
-                                            [this] {
+                                            [this]
+                                            {
                                                 // @note 未使用，保留用于调试
                                                 // qDebug() << __LINE__ << " ***** " << this->m_player->getMusicPath() << "播放结束。。。";
                                                 ui->play_widget->setPlayPauseIcon(false);
@@ -1289,21 +1441,25 @@ void KuGouClient::onCircleBtnClicked()
                                                 if (ui->stackedWidget->currentIndex() == static_cast
                                                     <int>(
                                                         TitleWidget::StackType::LocalDownload) &&
-                                                    this->m_localDownload) {
+                                                    this->m_localDownload)
+                                                {
                                                     // qDebug() << "通知本地下载界面播放结束";
                                                     ///< 通知本地下载组件
                                                     this->m_localDownload->audioFinished();
                                                 }
                                                 if (ui->stackedWidget->currentWidget() ==
-                                                    static_cast<QWidget *>(this->
-                                                        m_searchResultWidget.get()) &&
-                                                    this->m_searchResultWidget) {
+                                                    static_cast<QWidget*>(this->
+                                                                          m_searchResultWidget.get()) &&
+                                                    this->m_searchResultWidget)
+                                                {
                                                     ///< 通知搜索结果组件
                                                     // qDebug() << "通知搜索结果界面播放结束";
                                                     this->m_searchResultWidget->onAudioFinished();
                                                 }
                                             }); ///< 连接正常播放结束信号
-        } else {
+        }
+        else
+        {
             // @note 未使用，保留用于调试
             qDebug() << "mediaStatusConnection is empty";
             STREAM_WARN() << "mediaStatusConnection is empty"; ///< 记录警告日志
@@ -1318,7 +1474,8 @@ void KuGouClient::onCircleBtnClicked()
 void KuGouClient::onPreBtnClicked()
 {
     ///< 点击下一首/上一首时需要判断当前是否播放过音乐，如果没有播放过音乐，需要显示无音乐提示
-    if (this->m_player->getMusicPath().isEmpty()) {
+    if (this->m_player->getMusicPath().isEmpty())
+    {
         ElaMessageBar::warning(ElaMessageBarType::BottomRight,
                                "Warning",
                                QStringLiteral("暂无可播放音乐"),
@@ -1327,9 +1484,12 @@ void KuGouClient::onPreBtnClicked()
         return;
     }
     if (m_player->getMusicPath().startsWith("http://") || m_player->getMusicPath().
-        startsWith("https://")) {
+                                                                    startsWith("https://"))
+    {
         m_searchResultWidget->playPreviousMusic();
-    } else if (m_localDownload) {
+    }
+    else if (m_localDownload)
+    {
         this->m_localDownload->playLocalSongPrevSong(); ///< 播放上一首
     }
 }
@@ -1340,7 +1500,8 @@ void KuGouClient::onPreBtnClicked()
  */
 void KuGouClient::onNextBtnClicked()
 {
-    if (this->m_player->getMusicPath().isEmpty()) {
+    if (this->m_player->getMusicPath().isEmpty())
+    {
         ElaMessageBar::warning(ElaMessageBarType::BottomRight,
                                "Warning",
                                QStringLiteral("暂无可播放音乐"),
@@ -1349,9 +1510,12 @@ void KuGouClient::onNextBtnClicked()
         return;
     }
     if (m_player->getMusicPath().startsWith("http://") || m_player->getMusicPath().
-        startsWith("https://")) {
+                                                                    startsWith("https://"))
+    {
         m_searchResultWidget->playNextMusic();
-    } else if (m_localDownload) {
+    }
+    else if (m_localDownload)
+    {
         this->m_localDownload->playLocalSongNextSong(); ///< 播放下一首
     }
 }

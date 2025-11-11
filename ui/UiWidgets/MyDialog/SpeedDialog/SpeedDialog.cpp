@@ -49,7 +49,10 @@ SpeedDialog::SpeedDialog(QWidget* parent)
     QFile file(GET_CURRENT_DIR + QStringLiteral("/speed.css"));
     if (file.open(QIODevice::ReadOnly))
     {
-        this->setStyleSheet(file.readAll());
+        QString css = QString::fromUtf8(file.readAll());
+        // 替换 RESOURCE_DIR 为实际路径
+        css.replace("RESOURCE_DIR", RESOURCE_DIR);
+        this->setStyleSheet(css);
     }
     else
     {

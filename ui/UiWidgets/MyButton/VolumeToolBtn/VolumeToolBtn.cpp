@@ -17,14 +17,14 @@
  * @brief 构造函数，初始化音量调节按钮
  * @param parent 父控件指针，默认为 nullptr
  */
-VolumeToolBtn::VolumeToolBtn(QWidget *parent)
+VolumeToolBtn::VolumeToolBtn(QWidget* parent)
     : QToolButton(parent)
-    , m_volumeWidget(std::make_unique<MyWidget>())
-    , m_volumeLab(std::make_unique<QLabel>())
-    , m_volumeSlider(std::make_unique<SliderWidget>())
-    , m_leaveTimer(new QTimer(this))
-    , m_positionCheckTimer(new QTimer(this))
-    , m_isNoVolume(false)
+      , m_volumeWidget(std::make_unique<MyWidget>())
+      , m_volumeLab(std::make_unique<QLabel>())
+      , m_volumeSlider(std::make_unique<SliderWidget>())
+      , m_leaveTimer(new QTimer(this))
+      , m_positionCheckTimer(new QTimer(this))
+      , m_isNoVolume(false)
 {
     initUi();
 
@@ -37,27 +37,36 @@ VolumeToolBtn::VolumeToolBtn(QWidget *parent)
     connect(m_positionCheckTimer, &QTimer::timeout, this, &VolumeToolBtn::checkMousePosition);
 
     // 连接点击事件，切换静音状态
-    connect(this, &QToolButton::clicked, this, [this]
-    {
-        m_isNoVolume = !m_isNoVolume;
-        if (m_isNoVolume)
-        {
-            this->setIcon(QIcon(QStringLiteral(":/Res/playbar/volume-off-blue.svg")));
-            emit m_volumeWidget->noVolume(true);
-        }
-        else
-        {
-            this->setIcon(QIcon(QStringLiteral(":/Res/playbar/volume-on-blue.svg")));
-            emit m_volumeWidget->noVolume(false);
-        }
-    });
+    connect(this,
+            &QToolButton::clicked,
+            this,
+            [this]
+            {
+                m_isNoVolume = !m_isNoVolume;
+                if (m_isNoVolume)
+                {
+                    this->setIcon(
+                        QIcon(QString(RESOURCE_DIR) + "/playbar/volume-off-blue.svg"));
+                    emit
+                    m_volumeWidget->noVolume(true);
+                }
+                else
+                {
+                    this->setIcon(QIcon(QString(RESOURCE_DIR) + "/playbar/volume-on-blue.svg"));
+                    emit
+                    m_volumeWidget->noVolume(false);
+                }
+            });
 
     // 连接滑块值变化事件，更新音量标签和信号
-    connect(this->m_volumeSlider.get(), &QSlider::valueChanged, [this]
-    {
-        this->m_volumeLab->setText(" " + QString::number(this->m_volumeSlider->getValue()) + "%");
-        emit volumeChange(this->m_volumeSlider->getValue());
-    });
+    connect(this->m_volumeSlider.get(),
+            &QSlider::valueChanged,
+            [this]
+            {
+                this->m_volumeLab->setText(
+                    " " + QString::number(this->m_volumeSlider->getValue()) + "%");
+                emit volumeChange(this->m_volumeSlider->getValue());
+            });
 
     // 连接滑块静音信号
     connect(this->m_volumeSlider.get(), &SliderWidget::noVolume, this, &VolumeToolBtn::onNoVolume);
@@ -108,10 +117,12 @@ void VolumeToolBtn::initVolumeWidget()
     this->m_vBoxLayout = new QVBoxLayout(this->m_volumeWidget.get());
     this->m_vBoxLayout->setAlignment(Qt::AlignCenter);
     this->m_vBoxLayout->setSpacing(5);
-    this->m_vBoxLayout->addSpacerItem(new QSpacerItem(10, 10, QSizePolicy::Fixed, QSizePolicy::Fixed));
+    this->m_vBoxLayout->addSpacerItem(
+        new QSpacerItem(10, 10, QSizePolicy::Fixed, QSizePolicy::Fixed));
     this->m_vBoxLayout->addLayout(hBoxLayout);
     this->m_vBoxLayout->addWidget(this->m_volumeLab.get());
-    this->m_vBoxLayout->addSpacerItem(new QSpacerItem(10, 10, QSizePolicy::Fixed, QSizePolicy::Expanding));
+    this->m_vBoxLayout->addSpacerItem(
+        new QSpacerItem(10, 10, QSizePolicy::Fixed, QSizePolicy::Expanding));
 }
 
 /**
@@ -120,7 +131,7 @@ void VolumeToolBtn::initVolumeWidget()
 void VolumeToolBtn::initUi()
 {
     this->setStyleSheet(QStringLiteral("border:none;"));
-    this->setIcon(QIcon(QStringLiteral(":/Res/playbar/volume-on-gray.svg")));
+    this->setIcon(QIcon(QString(RESOURCE_DIR) + "/playbar/volume-on-gray.svg"));
     initVolumeWidget();
 }
 
@@ -132,7 +143,8 @@ void VolumeToolBtn::checkMousePosition() const
     QPoint globalMousePos = QCursor::pos();
     if (!this->m_volumeWidget->isHidden())
     {
-        if (this->m_volumeWidget->geometry().contains(this->m_volumeParent->mapFromGlobal(globalMousePos)))
+        if (this->m_volumeWidget->geometry().contains(
+            this->m_volumeParent->mapFromGlobal(globalMousePos)))
         {
             this->m_volumeWidget->raise();
             this->m_volumeWidget->show();
@@ -184,13 +196,15 @@ void VolumeToolBtn::updateIcon(bool isHovered)
 {
     if (m_isNoVolume)
     {
-        setIcon(QIcon(isHovered ? ":/Res/playbar/volume-off-blue.svg"
-                      : ":/Res/playbar/volume-off-gray.svg"));
+        setIcon(QIcon(isHovered
+                          ? QString(RESOURCE_DIR) + "/playbar/volume-off-blue.svg"
+                          : QString(RESOURCE_DIR) + "/playbar/volume-off-gray.svg"));
     }
     else
     {
-        setIcon(QIcon(isHovered ? ":/Res/playbar/volume-on-blue.svg"
-                      : ":/Res/playbar/volume-on-gray.svg"));
+        setIcon(QIcon(isHovered
+                          ? QString(RESOURCE_DIR) + "/playbar/volume-on-blue.svg"
+                          : QString(RESOURCE_DIR) + "/playbar/volume-on-gray.svg"));
     }
 }
 
@@ -207,7 +221,7 @@ void VolumeToolBtn::setVolume(const int& value) const
  * @brief 鼠标进入事件，显示音量控件
  * @param event 进入事件
  */
-void VolumeToolBtn::enterEvent(QEnterEvent *event)
+void VolumeToolBtn::enterEvent(QEnterEvent* event)
 {
     QToolButton::enterEvent(event);
     updateIcon(true);
@@ -231,7 +245,7 @@ void VolumeToolBtn::enterEvent(QEnterEvent *event)
  * @brief 鼠标离开事件，延迟隐藏音量控件
  * @param event 事件
  */
-void VolumeToolBtn::leaveEvent(QEvent *event)
+void VolumeToolBtn::leaveEvent(QEvent* event)
 {
     QToolButton::leaveEvent(event);
     updateIcon(false);
@@ -245,7 +259,7 @@ void VolumeToolBtn::leaveEvent(QEvent *event)
  * @brief 控件显示事件，更新音量控件位置
  * @param event 显示事件
  */
-void VolumeToolBtn::showEvent(QShowEvent *event)
+void VolumeToolBtn::showEvent(QShowEvent* event)
 {
     QToolButton::showEvent(event);
     getVolumeWidgetPosition();
@@ -258,7 +272,7 @@ void VolumeToolBtn::showEvent(QShowEvent *event)
  * @param event 事件
  * @return 是否处理事件
  */
-bool VolumeToolBtn::eventFilter(QObject *watched, QEvent *event)
+bool VolumeToolBtn::eventFilter(QObject* watched, QEvent* event)
 {
     if (watched == m_volumeParent)
     {
@@ -304,7 +318,7 @@ void VolumeToolBtn::onNoVolume(bool flag)
         if (!this->m_isNoVolume)
         {
             this->m_isNoVolume = true;
-            this->setIcon(QIcon(QStringLiteral(":/Res/playbar/volume-off-gray.svg")));
+            this->setIcon(QIcon(QString(RESOURCE_DIR) + "/playbar/volume-off-gray.svg"));
         }
     }
     else
@@ -312,7 +326,7 @@ void VolumeToolBtn::onNoVolume(bool flag)
         if (this->m_isNoVolume)
         {
             this->m_isNoVolume = false;
-            this->setIcon(QIcon(QStringLiteral(":/Res/playbar/volume-on-gray.svg")));
+            this->setIcon(QIcon(QString(RESOURCE_DIR) + "/playbar/volume-on-gray.svg"));
         }
     }
 }

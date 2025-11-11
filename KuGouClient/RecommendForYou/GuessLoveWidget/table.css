@@ -1,56 +1,69 @@
 /*--------------------guess_love_widget------------------------------*/
-GLTabWidget{
-    border-image: url(":/TabIcon/Res/tabIcon/cover.jpg");
-    border-radius:10px;
-    border:none;
+GLTabWidget {
+    border-image: url("RESOURCE_DIR/tabIcon/cover.jpg");
+    border-radius: 10px;
+    border: none;
     background-color: transparent;
 }
-QLabel#glLab{
+
+QLabel#glLab {
     font-size: 25px;
     color: white;
 }
-QLabel#songNameLab{
+
+QLabel#songNameLab {
     font-size: 15px;
     color: white;
 }
-QLabel#singerLab{
+
+QLabel#singerLab {
     font-size: 11px;
     color: #e0e0e0;
 }
+
 QToolButton#playToolBtn {
     height: 30px;
     width: 30px;
-    border-image: url(":/TabIcon/Res/tabIcon/play-white.svg");
+    border-image: url("RESOURCE_DIR/tabIcon/play-white.svg");
 }
+
 QToolButton#playToolBtn:hover {
-    border-image: url(":/TabIcon/Res/tabIcon/play-blue.svg");
+    border-image: url("RESOURCE_DIR/tabIcon/play-blue.svg");
 }
+
 QToolButton#nextToolBtn {
-    border-image: url(":/TabIcon/Res/tabIcon/next-song-white.svg");
+    border-image: url("RESOURCE_DIR/tabIcon/next-song-white.svg");
 }
+
 QToolButton#nextToolBtn:hover {
-    border-image: url(":/TabIcon/Res/tabIcon/next-song-blue.svg");
+    border-image: url("RESOURCE_DIR/tabIcon/next-song-blue.svg");
 }
+
 QToolButton#likeToolBtn {
-    border-image: url(":/TabIcon/Res/tabIcon/like-white.svg");
+    border-image: url("RESOURCE_DIR/tabIcon/like-white.svg");
 }
+
 QToolButton#likeToolBtn:hover {
-    border-image: url(":/TabIcon/Res/tabIcon/like-blue.svg");
+    border-image: url("RESOURCE_DIR/tabIcon/like-blue.svg");
 }
+
 QToolButton#dislikeToolBtn {
-    border-image: url(":/TabIcon/Res/tabIcon/dislike-white.svg");
+    border-image: url("RESOURCE_DIR/tabIcon/dislike-white.svg");
 }
+
 QToolButton#dislikeToolBtn:hover {
-    border-image: url(":/TabIcon/Res/tabIcon/dislike-blue.svg");
+    border-image: url("RESOURCE_DIR/tabIcon/dislike-blue.svg");
 }
-QToolButton#modelBtn{
+
+QToolButton#modelBtn {
     color: white;
     font-size: 12px;
     border: none;
     border-radius: 10px;
-    background-color: rgba(0,0,0,30%);
+    background-color: rgba(0, 0, 0, 30%);
     margin-left: 2px;
 }
+
 /*--------------------menu------------------------------*/
 QMenu::item {
     text-align: center;
@@ -58,6 +71,7 @@ QMenu::item {
     max-width: 40px;
     border-radius: 5px;
 }
+
 QMenu::item:selected {
     background-color: #F0F0F0;
 }

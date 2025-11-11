@@ -248,9 +248,10 @@ void MusicItemWidget::setInformation(const SongInfor &info)
         m_coverLab->setPixmap(roundedPix(info.cover, m_coverLab->size(), PIX_RADIUS));
     } else if (!info.coverUrl.isEmpty()) {
         // 如果有封面URL但还没加载，可以显示占位图
-        m_coverLab->setPixmap(roundedPix(QPixmap(":/Res/tablisticon/pix4.png"),
-                                         m_coverLab->size(),
-                                         PIX_RADIUS));
+        m_coverLab->setPixmap(roundedPix(
+            QPixmap(QString(RESOURCE_DIR) + "/tablisticon/pix4.png"),
+            m_coverLab->size(),
+            PIX_RADIUS));
     }
 
     /*this->m_nameLab->setText(this->m_name);
@@ -598,7 +599,7 @@ void MusicItemWidget::onDownloadToolBtnClicked()
 void MusicItemWidget::onLoveToolBtnClicked()
 {
     m_isLove = !m_isLove; // 切换收藏状态
-    m_loveToolBtn->setIcon(QIcon(QString(":/Res/window/%1.svg").arg(
+    m_loveToolBtn->setIcon(QIcon(QString(QString(RESOURCE_DIR) + "/window/%1.svg").arg(
         m_isLove ? "love" : "unlove"))); // 更新图标
     ElaMessageBar::success(ElaMessageBarType::BottomRight,
                            "Success",
@@ -850,12 +851,15 @@ void MusicItemWidget::initUi()
     auto popularLab_toolTip = new ElaToolTip(this->m_popularLab);
     popularLab_toolTip->setToolTip("热度");
 
-    this->m_playToolBtn->setIcon(QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/play3-gray.svg")));
+    this->m_playToolBtn->setIcon(QIcon(QString(RESOURCE_DIR) + "/tabIcon/play3-gray.svg")
+        );
     this->m_playNextToolBtn->setIcon(
-        QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/add-music-list-gray.svg")));
-    this->m_downloadToolBtn->setIcon(QIcon(QStringLiteral(":/Res/window/download.svg")));
-    this->m_loveToolBtn->setIcon(QIcon(QStringLiteral(":/Res/window/unlove.svg")));
-    this->m_moreToolBtn->setIcon(QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/more2-gray.svg")));
+        QIcon(QString(RESOURCE_DIR) + "/tabIcon/add-music-list-gray.svg")
+        );
+    this->m_downloadToolBtn->setIcon(QIcon(QString(RESOURCE_DIR) + "/window/download.svg"));
+    this->m_loveToolBtn->setIcon(QIcon(QString(RESOURCE_DIR) + "/window/unlove.svg"));
+    this->m_moreToolBtn->setIcon(QIcon(QString(RESOURCE_DIR) + "/tabIcon/more2-gray.svg")
+        );
 
     this->m_playToolBtn->setCursor(Qt::PointingHandCursor);
     this->m_playNextToolBtn->setCursor(Qt::PointingHandCursor);

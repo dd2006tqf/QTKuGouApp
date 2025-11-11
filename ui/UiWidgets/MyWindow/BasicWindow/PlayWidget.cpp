@@ -16,7 +16,7 @@
 #include <QTime>
 #include <QPropertyAnimation>
 
-QPixmap roundedPixmap(const QPixmap &src, QSize size, int radius)
+QPixmap roundedPixmap(const QPixmap& src, QSize size, int radius)
 {
     QPixmap scaled = src.scaled(size, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
 
@@ -38,7 +38,7 @@ QPixmap roundedPixmap(const QPixmap &src, QSize size, int radius)
  * @brief 构造函数，初始化播放控件
  * @param parent 父控件指针，默认为 nullptr
  */
-PlayWidget::PlayWidget(QWidget *parent)
+PlayWidget::PlayWidget(QWidget* parent)
     : QWidget(parent)
       , ui(new Ui::PlayWidget)
       , m_sizeGrip(std::make_unique<QSizeGrip>(this)) ///< 初始化窗口大小调整角标
@@ -52,7 +52,7 @@ PlayWidget::PlayWidget(QWidget *parent)
     initUi();
 }
 
-void PlayWidget::setSongName(const QString &name)
+void PlayWidget::setSongName(const QString& name)
 {
     ui->song_name_text->setText(name);
     ui->song_name_text->adjustSize(); ///< 适应文本
@@ -62,7 +62,7 @@ void PlayWidget::setSongName(const QString &name)
     ui->singer_song_HLayout->update();
 }
 
-void PlayWidget::setSingerName(const QString &singer)
+void PlayWidget::setSingerName(const QString& singer)
 {
     ui->singer_text->setText(singer);
     ui->singer_text->adjustSize();
@@ -73,19 +73,22 @@ void PlayWidget::setSingerName(const QString &singer)
     ui->singer_song_HLayout->update(); ///< 更新布局
 }
 
-void PlayWidget::setCover(const QPixmap &pix)
+void PlayWidget::setCover(const QPixmap& pix)
 {
-    if (pix.isNull()) {
+    if (pix.isNull())
+    {
         /// 网络歌曲无法解析出图片
         /// if (m_player->getMusicPath().startsWith("http://") || m_player->getMusicPath().
         ///     startsWith("https://"))
         ///     return;
         // qDebug() << "图片为空，设置默认图片";
         ui->cover_label->setPixmap(roundedPixmap(
-            QPixmap(":/Res/playbar/default-cover.png"),
+            QPixmap(QString(RESOURCE_DIR) + "/playbar/default-cover.png"),
             ui->cover_label->size(),
             8)); ///< 设置默认封面
-    } else {
+    }
+    else
+    {
         // qDebug() << "图片不为空，设置图片：" << pix;
         ui->cover_label->setPixmap(roundedPixmap(pix, ui->cover_label->size(), 8)); ///< 设置封面图片
     }
@@ -93,11 +96,14 @@ void PlayWidget::setCover(const QPixmap &pix)
 
 void PlayWidget::changeCircleToolButtonState(bool singleCircle)
 {
-    if (singleCircle) {
+    if (singleCircle)
+    {
         ui->circle_toolButton->setStyleSheet(
             R"(QToolButton{border-image:url(':/Res/playbar/single-list-loop-gray.svg');}
                QToolButton:hover{border-image:url(':/Res/playbar/single-list-loop-blue.svg');})");
-    } else {
+    }
+    else
+    {
         ui->circle_toolButton->setStyleSheet(
             R"(QToolButton{border-image:url(':/Res/playbar/list-loop-gray.svg');}
                QToolButton:hover{border-image:url(':/Res/playbar/list-loop-blue.svg');})");
@@ -109,7 +115,7 @@ void PlayWidget::changeCircleToolButtonState(bool singleCircle)
  * @param duration 总时长（毫秒）
  * @note 设置进度条最大值和时长标签
  */
-void PlayWidget::updateSliderRange(const qint64 &duration)
+void PlayWidget::updateSliderRange(const qint64& duration)
 {
     ui->progressSlider->setMaximum(static_cast<int>(duration)); ///< 设置进度条最大值
     // @note 未使用，保留用于调试
@@ -119,12 +125,13 @@ void PlayWidget::updateSliderRange(const qint64 &duration)
     ///< 更新时长标签
 }
 
-void PlayWidget::setNoVolume(const bool &flag)
+void PlayWidget::setNoVolume(const bool& flag)
 {
     // @note 未使用，保留用于调试
     // STREAM_INFO() << "KuGouApp 托盘图标点击: " << (flag ? "静音" : "开启声音");
     if ((flag && ui->volume_toolButton->getVolumeValue()) || (
-            !flag && !ui->volume_toolButton->getVolumeValue())) {
+        !flag && !ui->volume_toolButton->getVolumeValue()))
+    {
         QCoreApplication::sendEvent(ui->volume_toolButton, new QEvent(QEvent::Enter)); ///< 触发进入事件
         ui->volume_toolButton->clicked();                                              ///< 模拟点击
     }
@@ -132,9 +139,12 @@ void PlayWidget::setNoVolume(const bool &flag)
 
 void PlayWidget::setPlayPauseIcon(bool isPlay)
 {
-    if (isPlay) {
+    if (isPlay)
+    {
         onAudioPlay();
-    } else {
+    }
+    else
+    {
         onAudioPause();
     }
 }
@@ -165,7 +175,7 @@ void PlayWidget::setTextColor(bool isWhite)
 }
 
 
-void PlayWidget::onSliderPositionChanged(const int &position)
+void PlayWidget::onSliderPositionChanged(const int& position)
 {
     if (ui->progressSlider->isSliderDown())
         return;
@@ -174,17 +184,17 @@ void PlayWidget::onSliderPositionChanged(const int &position)
         QTime::fromMSecsSinceStartOfDay(position).toString("mm:ss")); ///< 更新时间标签
 }
 
-void PlayWidget::onCoverChanged(const QPixmap &pix)
+void PlayWidget::onCoverChanged(const QPixmap& pix)
 {
     setCover(pix);
 }
 
-void PlayWidget::onSongNameChanged(const QString &name)
+void PlayWidget::onSongNameChanged(const QString& name)
 {
     setSongName(name);
 }
 
-void PlayWidget::onSingerNameChanged(const QString &name)
+void PlayWidget::onSingerNameChanged(const QString& name)
 {
     setSingerName(name);
 }
@@ -192,44 +202,47 @@ void PlayWidget::onSingerNameChanged(const QString &name)
 void PlayWidget::onAudioPlay()
 {
     ui->play_or_pause_toolButton->setIcon(
-        QIcon(QStringLiteral(":/Res/playbar/play.svg")));
+        QIcon(QString(RESOURCE_DIR) + "/playbar/play.svg"));
 }
 
 void PlayWidget::onAudioPause()
 {
     ui->play_or_pause_toolButton->setIcon(
-        QIcon(QStringLiteral(":/Res/playbar/pause.svg")));
+        QIcon(QString(RESOURCE_DIR) + "/playbar/pause.svg"));
 }
 
 void PlayWidget::initUi()
 {
     setStyleSheet("font-family: 'TaiwanPearl';");
-    ui->love_toolButton->setIcon(QIcon(QStringLiteral(":/Res/playbar/collect.svg")));
+    ui->love_toolButton->setIcon(QIcon(QString(RESOURCE_DIR) + "/playbar/collect.svg"));
     ///< 设置收藏图标
-    ui->download_toolButton->setIcon(QIcon(QStringLiteral(":/Res/playbar/download.svg")));
+    ui->download_toolButton->setIcon(QIcon(QString(RESOURCE_DIR) + "/playbar/download.svg"));
     ///< 设置下载图标
-    ui->comment_toolButton->setIcon(QIcon(QStringLiteral(":/Res/playbar/comment.svg")));
+    ui->comment_toolButton->setIcon(QIcon(QString(RESOURCE_DIR) + "/playbar/comment.svg"));
     ///< 设置评论图标
-    ui->share_toolButton->setIcon(QIcon(QStringLiteral(":/Res/playbar/share.svg"))); ///< 设置分享图标
-    ui->more_toolButton->setIcon(QIcon(QStringLiteral(":/Res/playbar/more.svg")));   ///< 设置更多图标
-    ui->pre_toolButton->setIcon(QIcon(QStringLiteral(":/Res/playbar/previous-song.svg")));
+    ui->share_toolButton->setIcon(QIcon(QString(RESOURCE_DIR) + "/playbar/share.svg"));
+    ///< 设置分享图标
+    ui->more_toolButton->setIcon(QIcon(QString(RESOURCE_DIR) + "/playbar/more.svg"));
+    ///< 设置更多图标
+    ui->pre_toolButton->setIcon(QIcon(QString(RESOURCE_DIR) + "/playbar/previous-song.svg"));
     ///< 设置上一首图标
-    ui->play_or_pause_toolButton->setIcon(QIcon(QStringLiteral(":/Res/playbar/pause.svg")));
+    ui->play_or_pause_toolButton->setIcon(QIcon(QString(RESOURCE_DIR) + "/playbar/pause.svg"));
     ///< 设置播放/暂停图标
-    ui->next_toolButton->setIcon(QIcon(QStringLiteral(":/Res/playbar/next-song.svg")));
+    ui->next_toolButton->setIcon(QIcon(QString(RESOURCE_DIR) + "/playbar/next-song.svg"));
     ///< 设置下一首图标
-    ui->erji_toolButton->setIcon(QIcon(QStringLiteral(":/Res/playbar/together.svg")));
+    ui->erji_toolButton->setIcon(QIcon(QString(RESOURCE_DIR) + "/playbar/together.svg"));
     ///< 设置一起听图标
-    ui->lyrics_toolButton->setIcon(QIcon(QStringLiteral(":/Res/playbar/song-words.svg")));
+    ui->lyrics_toolButton->setIcon(QIcon(QString(RESOURCE_DIR) + "/playbar/song-words.svg"));
     ///< 设置歌词图标
-    ui->song_queue_toolButton->setIcon(QIcon(QStringLiteral(":/Res/playbar/play-list.svg")));
+    ui->song_queue_toolButton->setIcon(QIcon(QString(RESOURCE_DIR) + "/playbar/play-list.svg"));
     ///< 设置播放队列图标
 
-    ui->cover_label->setPixmap(roundedPixmap(QPixmap(":/Res/playbar/default-cover.png"),
-                                             ui->cover_label->size(),
-                                             8)); ///< 设置默认封面
+    ui->cover_label->setPixmap(roundedPixmap(
+        QPixmap(QString(RESOURCE_DIR) + "/playbar/default-cover.png"),
+        ui->cover_label->size(),
+        8)); ///< 设置默认封面
     ///< @封面动画
-    hoverPixmap.load(":/Res/playbar/up-lyric.svg");
+    hoverPixmap.load(QString(RESOURCE_DIR) + "/playbar/up-lyric.svg");
     hoverPixmap = hoverPixmap.scaled(ui->cover_label->height() / 2,
                                      ui->cover_label->height() / 2,
                                      Qt::KeepAspectRatio,
@@ -279,14 +292,16 @@ void PlayWidget::initUi()
     connect(ui->volume_toolButton,
             &VolumeToolBtn::volumeChange,
             this,
-            [this](const int value) {
+            [this](const int value)
+            {
                 emit volumeChange(value); ///< 设置播放器音量
             });
 
     connect(ui->progressSlider,
             &QSlider::sliderReleased,
             this,
-            [this] {
+            [this]
+            {
                 emit sliderReleased(ui->progressSlider->value(),
                                     ui->
                                     progressSlider->maximum()); ///< 发出滑块释放信号
@@ -298,7 +313,7 @@ void PlayWidget::initUi()
  * @param widget 目标控件
  * @param tooltip 提示内容
  */
-void PlayWidget::setElaToolTip(QWidget *widget, const QString &tooltip)
+void PlayWidget::setElaToolTip(QWidget* widget, const QString& tooltip)
 {
     auto toolTip = new ElaToolTip(widget);
     toolTip->setToolTip(tooltip);
@@ -308,10 +323,11 @@ void PlayWidget::setElaToolTip(QWidget *widget, const QString &tooltip)
  * @brief 重写鼠标双击事件，触发双击信号
  * @param event 鼠标事件
  */
-void PlayWidget::mouseDoubleClickEvent(QMouseEvent *event)
+void PlayWidget::mouseDoubleClickEvent(QMouseEvent* event)
 {
     QWidget::mouseDoubleClickEvent(event);
-    if (event->button() == Qt::LeftButton) {
+    if (event->button() == Qt::LeftButton)
+    {
         if (!ui->cover_label->rect().contains(ui->cover_label->mapFromParent(event->pos())))
             emit doubleClicked(); ///< 左键双击时发出自定义信号
     }
@@ -321,7 +337,7 @@ void PlayWidget::mouseDoubleClickEvent(QMouseEvent *event)
  * @brief 重写绘制事件，绘制带圆角的线性渐变阴影
  * @param ev 绘制事件
  */
-void PlayWidget::paintEvent(QPaintEvent *ev)
+void PlayWidget::paintEvent(QPaintEvent* ev)
 {
     QWidget::paintEvent(ev);
     QPainter p(this);
@@ -358,21 +374,26 @@ void PlayWidget::paintEvent(QPaintEvent *ev)
  * @return 是否处理事件
  * @note 处理进度条和封面标签事件
  */
-bool PlayWidget::eventFilter(QObject *watched, QEvent *event)
+bool PlayWidget::eventFilter(QObject* watched, QEvent* event)
 {
-    if (watched == ui->progressSlider) {
+    if (watched == ui->progressSlider)
+    {
         // @note 禁用进度条拖拽
         if (event->type() == QEvent::MouseButtonPress || event->type() == QEvent::MouseButtonRelease
             || event->type() == QEvent::MouseButtonDblClick
-            || event->type() == QEvent::MouseMove) {
+            || event->type() == QEvent::MouseMove)
+        {
             if (ui->duration_label->text() == "00:00" && ui->position_label->text() ==
-                "00:00") {
+                "00:00")
+            {
                 return true; ///< 拦截鼠标事件
             }
         }
-        if (event->type() == QEvent::MouseButtonPress) {
-            auto mouseEvent = dynamic_cast<QMouseEvent *>(event);
-            if (mouseEvent->button() == Qt::LeftButton) {
+        if (event->type() == QEvent::MouseButtonPress)
+        {
+            auto mouseEvent = dynamic_cast<QMouseEvent*>(event);
+            if (mouseEvent->button() == Qt::LeftButton)
+            {
                 ///< 左键按下
                 qint64 value = QStyle::sliderValueFromPosition(ui->progressSlider->minimum(),
                                                                ui->progressSlider->maximum(),
@@ -382,18 +403,24 @@ bool PlayWidget::eventFilter(QObject *watched, QEvent *event)
             }
         }
     }
-    if (watched == ui->cover_label) {
-        if (event->type() == QEvent::Enter) {
+    if (watched == ui->cover_label)
+    {
+        if (event->type() == QEvent::Enter)
+        {
             coverAnim->stop();
             coverAnim->setStartValue(coverFillRatio);
             coverAnim->setEndValue(1.0);
             coverAnim->start();
-        } else if (event->type() == QEvent::Leave) {
+        }
+        else if (event->type() == QEvent::Leave)
+        {
             coverAnim->stop();
             coverAnim->setStartValue(coverFillRatio);
             coverAnim->setEndValue(0.0);
             coverAnim->start();
-        } else if (event->type() == QEvent::Paint) {
+        }
+        else if (event->type() == QEvent::Paint)
+        {
             QPainter p(ui->cover_label);
             p.setRenderHint(QPainter::Antialiasing, true);
             p.setRenderHint(QPainter::SmoothPixmapTransform, true);
@@ -411,7 +438,8 @@ bool PlayWidget::eventFilter(QObject *watched, QEvent *event)
             const int radius = 11;
 
             // 3) 圆角阴影遮罩（方向由 m_isLyricWidgetShow 决定）
-            if (coverFillRatio > 0.0) {
+            if (coverFillRatio > 0.0)
+            {
                 const int maskH = qBound(0, int(h * coverFillRatio), h);
                 const int y = (m_isLyricWidgetShow ? 0 : (h - maskH)); // 上下方向切换
                 QPainterPath path;
@@ -420,7 +448,8 @@ bool PlayWidget::eventFilter(QObject *watched, QEvent *event)
             }
 
             // 绘制 hover 图片
-            if (!hoverPixmap.isNull() && coverFillRatio > 0.0) {
+            if (!hoverPixmap.isNull() && coverFillRatio > 0.0)
+            {
                 // 缩放 hoverPixmap 为左上角正方形 1/3 大小
                 int hoverSide = coverSquareSide / 3;
                 QPixmap scaledHover = hoverPixmap.scaled(hoverSide,
@@ -452,7 +481,7 @@ bool PlayWidget::eventFilter(QObject *watched, QEvent *event)
     return QWidget::eventFilter(watched, event);
 }
 
-void PlayWidget::resizeEvent(QResizeEvent *event)
+void PlayWidget::resizeEvent(QResizeEvent* event)
 {
     QWidget::resizeEvent(event);
 
@@ -463,18 +492,23 @@ void PlayWidget::resizeEvent(QResizeEvent *event)
     this->m_sizeGrip->setVisible(true); ///< 显示角标
 }
 
-void PlayWidget::mousePressEvent(QMouseEvent *event)
+void PlayWidget::mousePressEvent(QMouseEvent* event)
 {
     QWidget::mousePressEvent(event);
-    if (event->button() == Qt::LeftButton) {
-        if (ui->cover_label->rect().contains(ui->cover_label->mapFromParent(event->pos()))) {
+    if (event->button() == Qt::LeftButton)
+    {
+        if (ui->cover_label->rect().contains(ui->cover_label->mapFromParent(event->pos())))
+        {
             emit showLyricWidget();
             // qDebug() << "显示歌词窗口";
             m_isLyricWidgetShow = !m_isLyricWidgetShow;
-            if (m_isLyricWidgetShow) {
-                hoverPixmap.load(":/Res/playbar/down-lyric.svg");
-            } else {
-                hoverPixmap.load(":/Res/playbar/up-lyric.svg");
+            if (m_isLyricWidgetShow)
+            {
+                hoverPixmap.load(QString(RESOURCE_DIR) + "/playbar/down-lyric.svg");
+            }
+            else
+            {
+                hoverPixmap.load(QString(RESOURCE_DIR) + "/playbar/up-lyric.svg");
             }
         }
     }
@@ -486,7 +520,8 @@ void PlayWidget::mousePressEvent(QMouseEvent *event)
  */
 void PlayWidget::on_play_or_pause_toolButton_clicked()
 {
-    if (ui->duration_label->text() == "00:00" && ui->position_label->text() == "00:00") {
+    if (ui->duration_label->text() == "00:00" && ui->position_label->text() == "00:00")
+    {
         ElaMessageBar::warning(ElaMessageBarType::BottomRight,
                                "Warning",
                                QStringLiteral("暂无可播放音乐"),
@@ -503,7 +538,8 @@ void PlayWidget::on_play_or_pause_toolButton_clicked()
  */
 void PlayWidget::on_love_toolButton_clicked()
 {
-    if (ui->duration_label->text() == "00:00" && ui->position_label->text() == "00:00") {
+    if (ui->duration_label->text() == "00:00" && ui->position_label->text() == "00:00")
+    {
         ElaMessageBar::warning(ElaMessageBarType::BottomRight,
                                "Warning",
                                QStringLiteral("暂无可播放音乐"),
@@ -518,7 +554,8 @@ void PlayWidget::on_love_toolButton_clicked()
  */
 void PlayWidget::on_download_toolButton_clicked()
 {
-    if (ui->duration_label->text() == "00:00" && ui->position_label->text() == "00:00") {
+    if (ui->duration_label->text() == "00:00" && ui->position_label->text() == "00:00")
+    {
         ElaMessageBar::warning(ElaMessageBarType::BottomRight,
                                "Warning",
                                QStringLiteral("暂无可播放音乐"),
@@ -533,7 +570,8 @@ void PlayWidget::on_download_toolButton_clicked()
  */
 void PlayWidget::on_comment_toolButton_clicked()
 {
-    if (ui->duration_label->text() == "00:00" && ui->position_label->text() == "00:00") {
+    if (ui->duration_label->text() == "00:00" && ui->position_label->text() == "00:00")
+    {
         ElaMessageBar::warning(ElaMessageBarType::BottomRight,
                                "Warning",
                                QStringLiteral("暂无可播放音乐"),
@@ -548,7 +586,8 @@ void PlayWidget::on_comment_toolButton_clicked()
  */
 void PlayWidget::on_share_toolButton_clicked()
 {
-    if (ui->duration_label->text() == "00:00" && ui->position_label->text() == "00:00") {
+    if (ui->duration_label->text() == "00:00" && ui->position_label->text() == "00:00")
+    {
         ElaMessageBar::warning(ElaMessageBarType::BottomRight,
                                "Warning",
                                QStringLiteral("暂无可播放音乐"),
@@ -563,7 +602,8 @@ void PlayWidget::on_share_toolButton_clicked()
  */
 void PlayWidget::on_more_toolButton_clicked()
 {
-    if (ui->duration_label->text() == "00:00" && ui->position_label->text() == "00:00") {
+    if (ui->duration_label->text() == "00:00" && ui->position_label->text() == "00:00")
+    {
         ElaMessageBar::warning(ElaMessageBarType::BottomRight,
                                "Warning",
                                QStringLiteral("暂无可播放音乐"),
@@ -599,7 +639,8 @@ void PlayWidget::on_speed_pushButton_clicked()
     // 连接关闭信号以保存状态
     connect(speedDialog,
             &SpeedDialog::aboutToClose,
-            [this, speedDialog, statePtr]() {
+            [this, speedDialog, statePtr]()
+            {
                 // 获取当前状态并保存到文件
                 *statePtr = speedDialog->getState();
                 statePtr->save();
@@ -625,22 +666,32 @@ void PlayWidget::on_speed_pushButton_clicked()
     connect(speedDialog,
             &SpeedDialog::btnTextChanged,
             this,
-            [this](const QString &text) {
+            [this](const QString& text)
+            {
                 ui->speed_pushButton->setText(text);
-                if (text == "倍速") {
-                    if (m_isLyricWidgetShow) {
+                if (text == "倍速")
+                {
+                    if (m_isLyricWidgetShow)
+                    {
                         ui->speed_pushButton->setStyleSheet(
                             "QPushButton {background-color: transparent;color:while;}");
-                    } else {
+                    }
+                    else
+                    {
                         ui->speed_pushButton->setStyleSheet(
                             "QPushButton {background-color: transparent; color:black;}");
                     }
-                } else {
-                    if (m_isLyricWidgetShow) {
+                }
+                else
+                {
+                    if (m_isLyricWidgetShow)
+                    {
                         ui->speed_pushButton->setStyleSheet(
                             "QPushButton {background-color: qlineargradient(spread:pad,x1:0, y1:0,x2:1, y2:0,stop:0 "
                             "rgb(105, 225, 255), stop:1 rgba(255, 182, 193, 255)); color:white;}");
-                    } else {
+                    }
+                    else
+                    {
                         ui->speed_pushButton->setStyleSheet(
                             "QPushButton {background-color: qlineargradient(spread:pad,x1:0, y1:0,x2:1, y2:0,stop:0 "
                             "rgb(105, 225, 255), stop:1 rgba(255, 182, 193, 255)); color:black;}");
@@ -651,7 +702,8 @@ void PlayWidget::on_speed_pushButton_clicked()
     connect(speedDialog,
             &SpeedDialog::speedChanged,
             this,
-            [this](const float &speed) {
+            [this](const float& speed)
+            {
                 // @note 调试用 qDebug() << "设置速度为：" << speed;
                 //if (this->m_player)
                 //    this->m_player->setSpeed(speed);
@@ -664,7 +716,8 @@ void PlayWidget::on_speed_pushButton_clicked()
  */
 void PlayWidget::on_stander_pushButton_clicked()
 {
-    if (ui->duration_label->text() == "00:00" && ui->position_label->text() == "00:00") {
+    if (ui->duration_label->text() == "00:00" && ui->position_label->text() == "00:00")
+    {
         ElaMessageBar::information(ElaMessageBarType::BottomRight,
                                    "Info",
                                    QStringLiteral("音质选择功能 暂未实现 敬请期待"),
@@ -680,7 +733,8 @@ void PlayWidget::on_stander_pushButton_clicked()
  */
 void PlayWidget::on_acoustics_pushButton_clicked()
 {
-    if (ui->duration_label->text() == "00:00" && ui->position_label->text() == "00:00") {
+    if (ui->duration_label->text() == "00:00" && ui->position_label->text() == "00:00")
+    {
         ElaMessageBar::information(ElaMessageBarType::BottomRight,
                                    "Info",
                                    QStringLiteral("音效功能 暂未实现 敬请期待"),
@@ -696,13 +750,16 @@ void PlayWidget::on_acoustics_pushButton_clicked()
  */
 void PlayWidget::on_erji_toolButton_clicked()
 {
-    if (ui->duration_label->text() == "00:00" && ui->position_label->text() == "00:00") {
+    if (ui->duration_label->text() == "00:00" && ui->position_label->text() == "00:00")
+    {
         ElaMessageBar::warning(ElaMessageBarType::BottomRight,
                                "Warning",
                                QStringLiteral("暂无可播放音乐"),
                                1000,
                                this->window()); ///< 显示无音乐提示
-    } else {
+    }
+    else
+    {
         ElaMessageBar::information(ElaMessageBarType::BottomRight,
                                    "Info",
                                    QStringLiteral("一起听功能暂未实现,敬请期待"),
@@ -717,13 +774,16 @@ void PlayWidget::on_erji_toolButton_clicked()
  */
 void PlayWidget::on_lyrics_toolButton_clicked()
 {
-    if (ui->duration_label->text() == "00:00" && ui->position_label->text() == "00:00") {
+    if (ui->duration_label->text() == "00:00" && ui->position_label->text() == "00:00")
+    {
         ElaMessageBar::warning(ElaMessageBarType::BottomRight,
                                "Warning",
                                QStringLiteral("暂无可播放音乐"),
                                1000,
                                this->window()); ///< 显示无音乐提示
-    } else {
+    }
+    else
+    {
         ElaMessageBar::information(ElaMessageBarType::BottomRight,
                                    "Info",
                                    QStringLiteral("桌面歌词功能暂未实现,敬请期待"),
@@ -738,13 +798,16 @@ void PlayWidget::on_lyrics_toolButton_clicked()
  */
 void PlayWidget::on_song_queue_toolButton_clicked()
 {
-    if (ui->duration_label->text() == "00:00" && ui->position_label->text() == "00:00") {
+    if (ui->duration_label->text() == "00:00" && ui->position_label->text() == "00:00")
+    {
         ElaMessageBar::information(ElaMessageBarType::BottomRight,
                                    "Info",
                                    QStringLiteral("播放队列功能 暂未实现 敬请期待"),
                                    1000,
                                    this->window()); ///< 显示未实现提示
-    } else {
+    }
+    else
+    {
         ElaMessageBar::information(ElaMessageBarType::BottomRight,
                                    "Info",
                                    QStringLiteral("播放队列功能暂未实现,敬请期待"),

@@ -60,7 +60,8 @@ void RecentlySongChannel::initUi()
     ///< 批量操作按钮工具提示
     recently_batch_toolButton_toolTip->setToolTip(QStringLiteral("批量操作"));
     ui->recently_play_toolButton->setIcon(
-        QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/play3-white.svg"))); ///< 设置播放按钮图标
+        QIcon(QString(RESOURCE_DIR) + "/tabIcon/play3-white.svg")
+        ); ///< 设置播放按钮图标
     this->m_searchAction->setIcon(QIcon(QString(RESOURCE_DIR) + "/menuIcon/search-black.svg"));
     ///< 设置搜索动作图标
     this->m_searchAction->setIconVisibleInMenu(false); ///< 仅显示图标
@@ -83,11 +84,12 @@ void RecentlySongChannel::initUi()
     if (searchButton) {
         searchButton->installEventFilter(this); ///< 安装搜索按钮事件过滤器
     }
-    const auto lay = new QHBoxLayout(ui->table_widget);                             ///< 创建频道块布局
-    const auto block = new RecentlyChannelBlock(ui->table_widget);                  ///< 创建频道块
-    block->setCoverPix(QStringLiteral(":/TabIcon/Res/tabIcon/guess-you-love.jpg")); ///< 设置封面图片
-    lay->addWidget(block);                                                          ///< 添加频道块
-    lay->addStretch();                                                              ///< 添加拉伸
+    const auto lay = new QHBoxLayout(ui->table_widget);            ///< 创建频道块布局
+    const auto block = new RecentlyChannelBlock(ui->table_widget); ///< 创建频道块
+    block->setCoverPix(QString(RESOURCE_DIR) + "/tabIcon/guess-you-love.jpg"
+        );                 ///< 设置封面图片
+    lay->addWidget(block); ///< 添加频道块
+    lay->addStretch();     ///< 添加拉伸
 }
 
 /**

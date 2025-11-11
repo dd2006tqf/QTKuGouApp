@@ -5,7 +5,7 @@ QWidget{
 QLabel#diskLab{
     background-color:transparent;
     border:none;
-    border-image: url(":/Res/playbar/disk-black.png");
+    border-image: url("RESOURCE_DIR/playbar/disk-black.png");
 }
 QLabel#textLab1{
     background-color:transparent;

@@ -22,26 +22,28 @@
  * @brief 构造函数，初始化收藏界面
  * @param parent 父控件指针，默认为 nullptr
  */
-MyCollection::MyCollection(QWidget *parent)
+MyCollection::MyCollection(QWidget* parent)
     : QWidget(parent)
-    , ui(new Ui::MyCollection)
-    , m_buttonGroup(std::make_unique<QButtonGroup>(this))
+      , ui(new Ui::MyCollection)
+      , m_buttonGroup(std::make_unique<QButtonGroup>(this))
 {
     ui->setupUi(this);
     QFile file(GET_CURRENT_DIR + QStringLiteral("/collection.css")); ///< 加载样式表
     if (file.open(QIODevice::ReadOnly))
     {
-        this->setStyleSheet(file.readAll());             ///< 应用样式表
+        this->setStyleSheet(file.readAll()); ///< 应用样式表
     }
     else
     {
         qDebug() << "样式表打开失败QAQ";
-        STREAM_ERROR() << "样式表打开失败QAQ";          ///< 记录错误日志
+        STREAM_ERROR() << "样式表打开失败QAQ"; ///< 记录错误日志
         return;
     }
-    QTimer::singleShot(0, this, [this] {initUi();});
-    connect(ui->stackedWidget, &SlidingStackedWidget::animationFinished, [this] { enableButton(true); }); ///< 连接动画完成信号
-    enableButton(true);                                  ///< 启用按钮
+    QTimer::singleShot(0, this, [this] { initUi(); });
+    connect(ui->stackedWidget,
+            &SlidingStackedWidget::animationFinished,
+            [this] { enableButton(true); }); ///< 连接动画完成信号
+    enableButton(true);                      ///< 启用按钮
 }
 
 /**
@@ -49,7 +51,7 @@ MyCollection::MyCollection(QWidget *parent)
  */
 MyCollection::~MyCollection()
 {
-    delete ui;                                           ///< 删除 UI
+    delete ui; ///< 删除 UI
 }
 
 /**
@@ -62,33 +64,42 @@ QWidget* MyCollection::createPage(int id)
     QWidget* page = nullptr;
     switch (id)
     {
-    case 0:
-        m_singleSong = std::make_unique<SingleSong>(ui->stackedWidget);
-        connect(m_singleSong.get(), &SingleSong::find_more_music, this, &MyCollection::find_more_music);
+    case 0: m_singleSong = std::make_unique<SingleSong>(ui->stackedWidget);
+        connect(m_singleSong.get(),
+                &SingleSong::find_more_music,
+                this,
+                &MyCollection::find_more_music);
         page = m_singleSong.get();
         break;
-    case 1:
-        m_songList = std::make_unique<SongListWidget>(ui->stackedWidget);
+    case 1: m_songList = std::make_unique<SongListWidget>(ui->stackedWidget);
         page = m_songList.get();
         break;
-    case 2:
-        m_specialAlbum = std::make_unique<SpecialAlbum>(ui->stackedWidget);
-        connect(m_specialAlbum.get(), &SpecialAlbum::find_more_music, this, &MyCollection::find_more_music);
+    case 2: m_specialAlbum = std::make_unique<SpecialAlbum>(ui->stackedWidget);
+        connect(m_specialAlbum.get(),
+                &SpecialAlbum::find_more_music,
+                this,
+                &MyCollection::find_more_music);
         page = m_specialAlbum.get();
         break;
-    case 3:
-        m_collectVideo = std::make_unique<CollectVideo>(ui->stackedWidget);
-        connect(m_collectVideo.get(), &CollectVideo::find_more_music, this, &MyCollection::find_more_music);
+    case 3: m_collectVideo = std::make_unique<CollectVideo>(ui->stackedWidget);
+        connect(m_collectVideo.get(),
+                &CollectVideo::find_more_music,
+                this,
+                &MyCollection::find_more_music);
         page = m_collectVideo.get();
         break;
-    case 4:
-        m_singerWidget = std::make_unique<SingerWidget>(ui->stackedWidget);
-        connect(m_singerWidget.get(), &SingerWidget::find_more_music, this, &MyCollection::find_more_music);
+    case 4: m_singerWidget = std::make_unique<SingerWidget>(ui->stackedWidget);
+        connect(m_singerWidget.get(),
+                &SingerWidget::find_more_music,
+                this,
+                &MyCollection::find_more_music);
         page = m_singerWidget.get();
         break;
-    case 5:
-        m_deviceWidget = std::make_unique<DeviceWidget>(ui->stackedWidget);
-        connect(m_deviceWidget.get(), &DeviceWidget::find_more_music, this, &MyCollection::find_more_music);
+    case 5: m_deviceWidget = std::make_unique<DeviceWidget>(ui->stackedWidget);
+        connect(m_deviceWidget.get(),
+                &DeviceWidget::find_more_music,
+                this,
+                &MyCollection::find_more_music);
         page = m_deviceWidget.get();
         break;
     default:
@@ -116,8 +127,8 @@ void MyCollection::initStackedWidget()
     // 初始化占位页面
     for (int i = 0; i < 6; ++i)
     {
-        auto *placeholder = new QWidget;
-        auto *layout = new QVBoxLayout(placeholder);
+        auto* placeholder = new QWidget;
+        auto* layout = new QVBoxLayout(placeholder);
         layout->setContentsMargins(0, 0, 0, 0);
         layout->setSpacing(0);
         m_pages[i] = placeholder;
@@ -129,97 +140,100 @@ void MyCollection::initStackedWidget()
     ui->stackedWidget->setCurrentIndex(0);
 
     // 响应按钮点击事件
-    connect(m_buttonGroup.get(), &QButtonGroup::idClicked, this, [this](const int& id)
-    {
-        if (m_currentIdx == id)
-        {
-            return;
-        }
-
-        enableButton(false);
-
-        // 清理目标 placeholder 内旧的控件
-        QWidget *placeholder = m_pages[m_currentIdx];
-        if (!placeholder)
-        {
-            qWarning() << "[WARNING] No placeholder for page ID:" << m_currentIdx;
-            enableButton(true);
-            return;
-        }
-
-        QLayout *layout = placeholder->layout();
-        if (!layout)
-        {
-            layout = new QVBoxLayout(placeholder);
-            layout->setContentsMargins(0, 0, 0, 0);
-            layout->setSpacing(0);
-        }
-        else
-        {
-            while (QLayoutItem* item = layout->takeAt(0))
+    connect(m_buttonGroup.get(),
+            &QButtonGroup::idClicked,
+            this,
+            [this](const int& id)
             {
-                if (QWidget* widget = item->widget())
+                if (m_currentIdx == id)
                 {
-                    // qDebug()<<"删除旧的控件";
-                    widget->deleteLater();
-
+                    return;
                 }
-                delete item;
-            }
-            switch (m_currentIdx)
-            {
-            case 0:
-                m_singleSong.reset();
-                break;
-            case 1:
-                m_songList.reset();
-                break;
-            case 2:
-                m_specialAlbum.reset();
-                break;
-            case 3:
-                m_collectVideo.reset();
-                break;
-            case 4:
-                m_singerWidget.reset();
-                break;
-            case 5:
-                m_deviceWidget.reset();
-                break;
-            default:
-                break;
-            }
-        }
 
-        placeholder = m_pages[id];
-        layout = placeholder->layout();
-        // 创建新页面
-        QWidget *realPage = createPage(id);
-        if (!realPage)
-        {
-            qWarning() << "[WARNING] Failed to create page at index:" << id;
-        }
-        else
-        {
-            layout->addWidget(realPage);
-        }
+                enableButton(false);
 
-        ui->stackedWidget->slideInIdx(id);
-        m_currentIdx = id;
+                // 清理目标 placeholder 内旧的控件
+                QWidget* placeholder = m_pages[m_currentIdx];
+                if (!placeholder)
+                {
+                    qWarning() << "[WARNING] No placeholder for page ID:" << m_currentIdx;
+                    enableButton(true);
+                    return;
+                }
 
-        // 更新索引标签
-        QLabel* idxLabels[] = { ui->idx1_lab, ui->idx2_lab, ui->idx3_lab, ui->idx4_lab, ui->idx5_lab, ui->idx6_lab };
-        QLabel* numLabels[] = { ui->singleSong_number_label, ui->songList_number_label, ui->specialAlbum_number_label,
-                                ui->collectVideo_number_label, ui->singer_number_label, ui->device_number_label
-                              };
-        for (int i = 0; i < 6; ++i)
-        {
-            idxLabels[i]->setVisible(i == id);
-            numLabels[i]->setStyleSheet(i == id ? QStringLiteral("color:#26a1ff;font-size:16px;font-weight:bold;") : QString());
-        }
+                QLayout* layout = placeholder->layout();
+                if (!layout)
+                {
+                    layout = new QVBoxLayout(placeholder);
+                    layout->setContentsMargins(0, 0, 0, 0);
+                    layout->setSpacing(0);
+                }
+                else
+                {
+                    while (QLayoutItem* item = layout->takeAt(0))
+                    {
+                        if (QWidget* widget = item->widget())
+                        {
+                            // qDebug()<<"删除旧的控件";
+                            widget->deleteLater();
+                        }
+                        delete item;
+                    }
+                    switch (m_currentIdx)
+                    {
+                    case 0: m_singleSong.reset();
+                        break;
+                    case 1: m_songList.reset();
+                        break;
+                    case 2: m_specialAlbum.reset();
+                        break;
+                    case 3: m_collectVideo.reset();
+                        break;
+                    case 4: m_singerWidget.reset();
+                        break;
+                    case 5: m_deviceWidget.reset();
+                        break;
+                    default: break;
+                    }
+                }
 
-        STREAM_INFO() << "切换到 " << m_buttonGroup->button(id)->text().toStdString() << " 界面";
-    });
+                placeholder = m_pages[id];
+                layout = placeholder->layout();
+                // 创建新页面
+                QWidget* realPage = createPage(id);
+                if (!realPage)
+                {
+                    qWarning() << "[WARNING] Failed to create page at index:" << id;
+                }
+                else
+                {
+                    layout->addWidget(realPage);
+                }
+
+                ui->stackedWidget->slideInIdx(id);
+                m_currentIdx = id;
+
+                // 更新索引标签
+                QLabel* idxLabels[] = {
+                    ui->idx1_lab, ui->idx2_lab, ui->idx3_lab, ui->idx4_lab,
+                    ui->idx5_lab, ui->idx6_lab
+                };
+                QLabel* numLabels[] = {
+                    ui->singleSong_number_label, ui->songList_number_label,
+                    ui->specialAlbum_number_label,
+                    ui->collectVideo_number_label, ui->singer_number_label, ui->device_number_label
+                };
+                for (int i = 0; i < 6; ++i)
+                {
+                    idxLabels[i]->setVisible(i == id);
+                    numLabels[i]->setStyleSheet(i == id
+                                                    ? QStringLiteral(
+                                                        "color:#26a1ff;font-size:16px;font-weight:bold;")
+                                                    : QString());
+                }
+
+                STREAM_INFO() << "切换到 " << m_buttonGroup->button(id)->text().toStdString() << " 界面";
+            });
 }
 
 /**
@@ -229,16 +243,19 @@ void MyCollection::initStackedWidget()
 void MyCollection::initUi()
 {
     ui->guide_widget->setStyleSheet("font-family: 'TaiwanPearl';");
-    QTimer::singleShot(0, this, [this] {initStackedWidget();}); ///< 初始化堆栈窗口
-    QTimer::singleShot(100, this, [this]
-    {
-        initIndexLab();                                     ///< 初始化索引标签
-        ui->singleSong_pushButton->click();                ///< 默认点击单曲按钮
-        ui->stackedWidget->setAnimation(QEasingCurve::Type::OutQuart); ///< 设置动画曲线
-        ui->stackedWidget->setSpeed(400);                  ///< 设置动画速度
-        ui->stackedWidget->setContentsMargins(0, 0, 0, 0); ///< 设置边距
-        QMetaObject::invokeMethod(this, "emitInitialized", Qt::QueuedConnection);
-    });
+    QTimer::singleShot(0, this, [this] { initStackedWidget(); }); ///< 初始化堆栈窗口
+    QTimer::singleShot(100,
+                       this,
+                       [this]
+                       {
+                           initIndexLab();                     ///< 初始化索引标签
+                           ui->singleSong_pushButton->click(); ///< 默认点击单曲按钮
+                           ui->stackedWidget->setAnimation(QEasingCurve::Type::OutQuart);
+                           ///< 设置动画曲线
+                           ui->stackedWidget->setSpeed(400);                  ///< 设置动画速度
+                           ui->stackedWidget->setContentsMargins(0, 0, 0, 0); ///< 设置边距
+                           QMetaObject::invokeMethod(this, "emitInitialized", Qt::QueuedConnection);
+                       });
 }
 
 /**
@@ -247,21 +264,27 @@ void MyCollection::initUi()
  */
 void MyCollection::initIndexLab()
 {
-    QLabel* idxLabels[] = { ui->idx1_lab, ui->idx2_lab, ui->idx3_lab, ui->idx4_lab, ui->idx5_lab, ui->idx6_lab };
-    QWidget* guideWidgets[] = { ui->guide_widget1, ui->guide_widget2, ui->guide_widget3,
-                                ui->guide_widget4, ui->guide_widget5, ui->guide_widget6
-                              };
-    QLabel* numLabels[] = { ui->singleSong_number_label, ui->songList_number_label, ui->specialAlbum_number_label,
-                            ui->collectVideo_number_label, ui->singer_number_label, ui->device_number_label
-                          };
+    QLabel* idxLabels[] = {
+        ui->idx1_lab, ui->idx2_lab, ui->idx3_lab, ui->idx4_lab, ui->idx5_lab,
+        ui->idx6_lab
+    };
+    QWidget* guideWidgets[] = {
+        ui->guide_widget1, ui->guide_widget2, ui->guide_widget3,
+        ui->guide_widget4, ui->guide_widget5, ui->guide_widget6
+    };
+    QLabel* numLabels[] = {
+        ui->singleSong_number_label, ui->songList_number_label, ui->specialAlbum_number_label,
+        ui->collectVideo_number_label, ui->singer_number_label, ui->device_number_label
+    };
 
     for (int i = 0; i < 6; ++i)
     {
-        idxLabels[i]->setPixmap(QPixmap(QStringLiteral(":/Res/window/index_lab.svg")));
+        idxLabels[i]->setPixmap(QPixmap("RESOURCE_DIR/titlebarwindow/index_lab.svg"));
         guideWidgets[i]->installEventFilter(this);
         if (i == 0)
         {
-            numLabels[i]->setStyleSheet(QStringLiteral("color:#26a1ff;font-size:16px;font-weight:bold;"));
+            numLabels[i]->setStyleSheet(
+                QStringLiteral("color:#26a1ff;font-size:16px;font-weight:bold;"));
         }
         else
         {
@@ -275,7 +298,7 @@ void MyCollection::initIndexLab()
  * @brief 启用/禁用按钮
  * @param flag 是否启用
  */
-void MyCollection::enableButton(const bool &flag) const
+void MyCollection::enableButton(const bool& flag) const
 {
     ui->singleSong_pushButton->setEnabled(flag);
     ui->songList_pushButton->setEnabled(flag);
@@ -292,17 +315,20 @@ void MyCollection::enableButton(const bool &flag) const
  * @return 是否处理事件
  * @note 动态切换按钮和标签样式
  */
-bool MyCollection::eventFilter(QObject *watched, QEvent *event)
+bool MyCollection::eventFilter(QObject* watched, QEvent* event)
 {
-    QWidget* guideWidgets[] = { ui->guide_widget1, ui->guide_widget2, ui->guide_widget3,
-                                ui->guide_widget4, ui->guide_widget5, ui->guide_widget6
-                              };
-    QPushButton* buttons[] = { ui->singleSong_pushButton, ui->songList_pushButton, ui->specialAlbum_pushButton,
-                               ui->collectVideo_pushButton, ui->singer_pushButton, ui->device_pushButton
-                             };
-    QLabel* numLabels[] = { ui->singleSong_number_label, ui->songList_number_label, ui->specialAlbum_number_label,
-                            ui->collectVideo_number_label, ui->singer_number_label, ui->device_number_label
-                          };
+    QWidget* guideWidgets[] = {
+        ui->guide_widget1, ui->guide_widget2, ui->guide_widget3,
+        ui->guide_widget4, ui->guide_widget5, ui->guide_widget6
+    };
+    QPushButton* buttons[] = {
+        ui->singleSong_pushButton, ui->songList_pushButton, ui->specialAlbum_pushButton,
+        ui->collectVideo_pushButton, ui->singer_pushButton, ui->device_pushButton
+    };
+    QLabel* numLabels[] = {
+        ui->singleSong_number_label, ui->songList_number_label, ui->specialAlbum_number_label,
+        ui->collectVideo_number_label, ui->singer_number_label, ui->device_number_label
+    };
 
     for (int i = 0; i < 6; ++i)
     {
@@ -324,9 +350,10 @@ bool MyCollection::eventFilter(QObject *watched, QEvent *event)
                         font-weight:bold;
                     }
                 )");
-                numLabels[i]->setStyleSheet(buttons[i]->isChecked() ?
-                                            QStringLiteral("color:#26a1ff;font-size:16px;font-weight:bold;") :
-                                            QStringLiteral("color:#26a1ff;"));
+                numLabels[i]->setStyleSheet(buttons[i]->isChecked()
+                                                ? QStringLiteral(
+                                                    "color:#26a1ff;font-size:16px;font-weight:bold;")
+                                                : QStringLiteral("color:#26a1ff;"));
             }
             else if (event->type() == QEvent::Leave)
             {
@@ -344,9 +371,10 @@ bool MyCollection::eventFilter(QObject *watched, QEvent *event)
                         font-weight:bold;
                     }
                 )");
-                numLabels[i]->setStyleSheet(buttons[i]->isChecked() ?
-                                            QStringLiteral("color:#26a1ff;font-size:16px;font-weight:bold;") :
-                                            QString());
+                numLabels[i]->setStyleSheet(buttons[i]->isChecked()
+                                                ? QStringLiteral(
+                                                    "color:#26a1ff;font-size:16px;font-weight:bold;")
+                                                : QString());
             }
             break;
         }
@@ -359,16 +387,18 @@ bool MyCollection::eventFilter(QObject *watched, QEvent *event)
  * @param event 鼠标事件
  * @note 点击标签切换界面
  */
-void MyCollection::mousePressEvent(QMouseEvent *event)
+void MyCollection::mousePressEvent(QMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton)
     {
-        QLabel* numLabels[] = { ui->singleSong_number_label, ui->songList_number_label, ui->specialAlbum_number_label,
-                                ui->collectVideo_number_label, ui->singer_number_label, ui->device_number_label
-                              };
-        QPushButton* buttons[] = { ui->singleSong_pushButton, ui->songList_pushButton, ui->specialAlbum_pushButton,
-                                   ui->collectVideo_pushButton, ui->singer_pushButton, ui->device_pushButton
-                                 };
+        QLabel* numLabels[] = {
+            ui->singleSong_number_label, ui->songList_number_label, ui->specialAlbum_number_label,
+            ui->collectVideo_number_label, ui->singer_number_label, ui->device_number_label
+        };
+        QPushButton* buttons[] = {
+            ui->singleSong_pushButton, ui->songList_pushButton, ui->specialAlbum_pushButton,
+            ui->collectVideo_pushButton, ui->singer_pushButton, ui->device_pushButton
+        };
 
         for (int i = 0; i < 6; ++i)
         {

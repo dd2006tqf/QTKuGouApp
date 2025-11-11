@@ -28,19 +28,19 @@ QWidget#small_widget > QToolButton {
 }
 
 QToolButton#recently_share_toolButton {
-    border-image: url(":/Res/titlebar/share-gray.svg");
+    border-image: url(QString(RESOURCE_DIR) + "/titlebar/share-gray.svg");
 }
 
 QToolButton#recently_share_toolButton:hover {
-    border-image: url(":/Res/titlebar/share-blue.svg");
+    border-image: url(QString(RESOURCE_DIR) + "/titlebar/share-blue.svg");
 }
 
 QToolButton#recently_batch_toolButton {
-    border-image: url(":/Res/titlebar/batch-gray.svg");
+    border-image: url(QString(RESOURCE_DIR) + "/titlebar/batch-gray.svg");
 }
 
 QToolButton#recently_batch_toolButton:hover {
-    border-image: url(":/Res/titlebar/batch-blue.svg");
+    border-image: url(QString(RESOURCE_DIR) + "/titlebar/batch-blue.svg");
 }
 
 QLineEdit {

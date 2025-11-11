@@ -48,7 +48,10 @@ TitleWidget::TitleWidget(QWidget *parent)
     // 加载样式表
     QFile file(GET_CURRENT_DIR + QStringLiteral("/title.css"));
     if (file.open(QIODevice::ReadOnly)) {
-        this->setStyleSheet(file.readAll());
+        QString css = QString::fromUtf8(file.readAll());
+        // 替换 RESOURCE_DIR 为实际路径
+        css.replace("RESOURCE_DIR", RESOURCE_DIR);
+        this->setStyleSheet(css);
     } else {
         // qDebug() << "样式表打开失败QAQ"; ///< 调试用，记录样式表加载失败
         return;
@@ -217,21 +220,22 @@ void TitleWidget::initUi()
 
     // 设置标题索引指示器
     ui->title_index_label1->setPixmap(
-        QPixmap(QStringLiteral(":/Res/titlebar/h-line.png")).
+        QPixmap(QString(RESOURCE_DIR) + "/titlebar/h-line.png").
         scaled(30, 15, Qt::KeepAspectRatio));
     ui->title_index_label2->setPixmap(
-        QPixmap(QStringLiteral(":/Res/titlebar/h-line.png")).
+        QPixmap(QString(RESOURCE_DIR) + "/titlebar/h-line.png").
         scaled(30, 15, Qt::KeepAspectRatio));
     ui->title_index_label3->setPixmap(
-        QPixmap(QStringLiteral(":/Res/titlebar/h-line.png")).
+        QPixmap(QString(RESOURCE_DIR) + "/titlebar/h-line.png").
         scaled(30, 15, Qt::KeepAspectRatio));
     ui->title_index_label4->setPixmap(
-        QPixmap(QStringLiteral(":/Res/titlebar/h-line.png")).
+        QPixmap(QString(RESOURCE_DIR) + "/titlebar/h-line.png").
         scaled(30, 15, Qt::KeepAspectRatio));
     setTitleIndex(1);
 
     // 设置搜索框和图标
-    ui->title_line->setPixmap(QPixmap(QStringLiteral(":/TabIcon/Res/tabIcon/line-black.svg")));
+    ui->title_line->setPixmap(QPixmap(QString(RESOURCE_DIR) + "/tabIcon/line-black.svg")
+        );
 
     auto searchLineEdit = new MySearchLineEdit(this);
     searchLineEdit->setProperty("searchWay", "search_net_song");
@@ -259,13 +263,13 @@ void TitleWidget::initUi()
     ///< qDebug()<<"当前样式："<<searchLineEdit->styleSheet();
 
     // 除非自定义QToolButton否则达不到 CSS 中 border-image 的效果
-    // ui->listen_toolButton->setIcon(QIcon(":/Res/titlebar/listen-music-black.svg"));
+    // ui->listen_toolButton->setIcon(QIcon(QString(RESOURCE_DIR) + "/titlebar/listen-music-black.svg"));
 
     QPixmap roundedPix =
-        getRoundedPixmap(QPixmap(QStringLiteral(":/Res/window/portrait.jpg")),
+        getRoundedPixmap(QPixmap(QString(RESOURCE_DIR) + "/window/portrait.jpg"),
                          ui->title_portrait_label->size(),
                          ui->title_portrait_label->size().width() / 2);
-    m_originalCover.load(QStringLiteral(":/Res/window/portrait.jpg"));
+    m_originalCover.load(QString(RESOURCE_DIR) + "/window/portrait.jpg");
 
     // 设置圆角半径
     ui->title_portrait_label->setPixmap(roundedPix);
@@ -273,7 +277,7 @@ void TitleWidget::initUi()
     ui->title_portrait_label->installEventFilter(this);
 
     // 设置性别图标
-    ui->title_gender_label->setPixmap(QPixmap(QStringLiteral(":/Res/window/boy.svg")));
+    ui->title_gender_label->setPixmap(QPixmap(QString(RESOURCE_DIR) + "/window/boy.svg"));
 
     // 设置设置按钮的Frame圆角，填充颜色
     ui->min_toolButton->setRadius(6);
@@ -284,9 +288,11 @@ void TitleWidget::initUi()
     ui->max_toolButton->setFillColor(QColor(QStringLiteral("#93D2FB")));
     ui->close_toolButton->setFillColor(QColor(QStringLiteral("#E63946")));
 
-    ui->min_toolButton->setMyIcon(QIcon(QStringLiteral(":/Res/titlebar/minimize-black.svg")));
-    ui->max_toolButton->setMyIcon(QIcon(QStringLiteral(":/Res/titlebar/maximize-black.svg")));
-    ui->close_toolButton->setMyIcon(QIcon(QStringLiteral(":/Res/titlebar/close-black.svg")));
+    ui->min_toolButton->
+        setMyIcon(QIcon(QString(RESOURCE_DIR) + "/titlebar/minimize-black.svg"));
+    ui->max_toolButton->
+        setMyIcon(QIcon(QString(RESOURCE_DIR) + "/titlebar/maximize-black.svg"));
+    ui->close_toolButton->setMyIcon(QIcon(QString(RESOURCE_DIR) + "/titlebar/close-black.svg"));
 
     // 初始化退出对话框
     m_closeDialog->setParent(this->window());
@@ -352,7 +358,8 @@ void TitleWidget::mouseMoveEvent(QMouseEvent *event)
         if (this->rect().contains(m_pressPos)) {
             if (m_isMaxScreen) {
                 qobject_cast<QWidget *>(this->parent())->resize(this->m_startGeometry.size());
-                ui->max_toolButton->setMyIcon(QIcon(":/Res/titlebar/maximize-black.svg"));
+                ui->max_toolButton->setMyIcon(
+                    QIcon(QString(RESOURCE_DIR) + "/titlebar/maximize-black.svg"));
                 ///< 设置最大化图标
             }
         }
@@ -1155,8 +1162,10 @@ void TitleWidget::setTitleIndex(const int &index) const
 void TitleWidget::setMaxToolButtonIcon(bool isMax)
 {
     if (isMax) {
-        ui->max_toolButton->setMyIcon(QIcon(":/Res/titlebar/maximize-black.svg")); ///< 设置最大化图标
+        ui->max_toolButton->setMyIcon(
+            QIcon(QString(RESOURCE_DIR) + "/titlebar/maximize-black.svg")); ///< 设置最大化图标
     } else {
-        ui->max_toolButton->setMyIcon(QIcon(":/Res/titlebar/resume-black.svg")); ///< 设置还原图标
+        ui->max_toolButton->setMyIcon(
+            QIcon(QString(RESOURCE_DIR) + "/titlebar/resume-black.svg")); ///< 设置还原图标
     }
 }

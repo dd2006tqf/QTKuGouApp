@@ -47,13 +47,13 @@ void ValidationHint::setStatus(Status status, const QString& text)
     switch (status)
     {
     case Valid:
-        iconLabel->setPixmap(QPixmap(":/Res/window/check-green.svg").scaled(12, 12));
+        iconLabel->setPixmap(QPixmap(QString(RESOURCE_DIR) + "/window/check-green.svg").scaled(12, 12));
         fadeInIcon();
         textLabel->setStyleSheet("font-family: 'TaiwanPearl'; font-size: 11px; color: green; letter-spacing: 1px;");
         break;
 
     case Invalid:
-        iconLabel->setPixmap(QPixmap(":/Res/window/error-red.svg").scaled(12, 12));
+        iconLabel->setPixmap(QPixmap(QString(RESOURCE_DIR) + "/window/error-red.svg").scaled(12, 12));
         fadeInIcon();
         textLabel->setStyleSheet("font-family: 'TaiwanPearl'; font-size: 11px; color: red; letter-spacing: 1px;");
         break;

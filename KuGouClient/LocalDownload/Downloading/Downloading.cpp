@@ -57,9 +57,11 @@ void Downloading::initUi()
     ui->title_widget->setStyleSheet("font-family: 'TaiwanPearl';font-size: 13px;");
     auto setting_toolButton_toolTip = new ElaToolTip(ui->setting_toolButton); ///< 创建设置按钮工具提示
     setting_toolButton_toolTip->setToolTip(QStringLiteral("下载设置"));           ///< 设置下载设置提示
-    ui->start_toolButton->setIcon(QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/play3-white.svg")));
+    ui->start_toolButton->setIcon(QIcon(QString(RESOURCE_DIR) + "/tabIcon/play3-white.svg")
+        );
     ///< 设置开始按钮图标
-    ui->stop_toolButton->setIcon(QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/stop-gray.svg")));
+    ui->stop_toolButton->setIcon(QIcon(QString(RESOURCE_DIR) + "/tabIcon/stop-gray.svg")
+        );
     ///< 设置停止按钮图标
     ui->clear_toolButton->setIcon(QIcon(QString(RESOURCE_DIR) + "/menuIcon/delete-black.svg"));
     ///< 设置清除按钮图标

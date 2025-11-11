@@ -75,7 +75,11 @@ void SearchResultWidget::handleSuggestion(const QString &suggestText)
         }
     }
     // 处理播放项悬空指针
-    if (m_playingItem && m_searchMusicItemVector.contains(m_playingItem)) {
+    if (m_playingItem && m_searchMusicItemVector
+
+        .
+        contains(m_playingItem)
+    ) {
         m_playingItem = nullptr;
     }
     ///< 清空容器
@@ -139,7 +143,9 @@ void SearchResultWidget::handleSuggestion(const QString &suggestText)
                                          songObj["issueDate"].toString(),
                                          "yyyy-MM-dd hh:mm:ss");
                                  song.cover = song.coverUrl.isEmpty()
-                                                  ? QPixmap(":/Res/tablisticon/pix4.png")
+                                                  ? QPixmap(
+                                                      QString(RESOURCE_DIR) +
+                                                      "/Res/tablisticon/pix4.png")
                                                   : song.cover;
                                  songs.append(song);
                              }
@@ -275,7 +281,8 @@ void SearchResultWidget::initUi()
         playAllBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon); ///< 设置图标+文本样式
         playAllBtn->setFixedSize(100, 30);                            ///< 设置固定大小
         playAllBtn->setIcon(
-            QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/play3-white.svg"))); ///< 设置播放图标
+            QIcon(QString(RESOURCE_DIR) + "/tabIcon/play3-white.svg")
+            ); ///< 设置播放图标
         playAllBtn->setText("播放全部");
 
         // 创建“高潮试听”按钮
@@ -285,7 +292,8 @@ void SearchResultWidget::initUi()
         highListenBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);  ///< 设置图标+文本样式
         highListenBtn->setFixedSize(100, 30);                             ///< 设置固定大小
         highListenBtn->setIcon(QIcon(
-            QStringLiteral(":/TabIcon/Res/tabIcon/highListen-white.svg"))); ///< 设置高音质图标
+                QString(RESOURCE_DIR) + "/tabIcon/highListen-white.svg")
+            ); ///< 设置高音质图标
         highListenBtn->setText("高潮试听");
 
         // 创建“下载全部”按钮
@@ -295,7 +303,7 @@ void SearchResultWidget::initUi()
         downloadAllBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);   ///< 设置图标+文本样式
         downloadAllBtn->setFixedSize(100, 30);                              ///< 设置固定大小
         downloadAllBtn->setIcon(
-            QIcon(QStringLiteral(":/Res/window/download.svg"))); ///< 设置下载图标
+            QIcon(QString(RESOURCE_DIR) + "/window/download.svg")); ///< 设置下载图标
         downloadAllBtn->setText("下载全部");
 
         // 创建“批量操作”按钮
@@ -305,7 +313,8 @@ void SearchResultWidget::initUi()
         batchOperationBtn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);      ///< 设置图标+文本样式
         batchOperationBtn->setFixedSize(100, 30);                                 ///< 设置固定大小
         batchOperationBtn->setIcon(
-            QIcon(QStringLiteral(":/TabIcon/Res/tabIcon/batch-operation-black.svg")));
+            QIcon(QString(RESOURCE_DIR) + "/tabIcon/batch-operation-black.svg")
+            );
         ///< 设置批量操作图标
         batchOperationBtn->setText("批量操作");
 
